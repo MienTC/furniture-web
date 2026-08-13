@@ -1,0 +1,112 @@
+# Kế hoạnh Xây dựng Trang web Thương mại Điện tử Bán Đồ Nội thất (Furniture E-Commerce)
+
+Dự án trang web thương mại điện tử bán đồ nội thất cao cấp (**InteriorCraft / Nội Thất LuxDecor**) được thiết kế và cấu trúc chuẩn hóa theo kiến trúc module của dự án tham chiếu `tev-fe-admin`, tích hợp **Ant Design (antd)** và **Tailwind CSS**, cùng hệ thống **Mock Data đầy đủ, phong phú**.
+
+---
+
+## 🏗️ Kiến trúc & Cấu trúc Dự án (Theo mẫu `tev-fe-admin`)
+
+Thư mục chính: `e:/FW/noithatweb`
+
+```
+noithatweb/
+├── package.json
+├── vite.config.ts
+├── tsconfig.json
+├── index.html
+└── src/
+    ├── main.tsx
+    ├── AppRoot.tsx
+    ├── routes.tsx
+    ├── assets/            # Hình ảnh, logo, icons
+    ├── common/            # Constants, utils, helpers, formatters (VND, date, rating)
+    │   ├── constants/
+    │   ├── utils/
+    │   └── components/
+    ├── components/        # Layouts chung & UI Components dùng lại
+    │   ├── layout/        # Header, Footer, MainLayout, AdminLayout, Sidebar
+    │   └── ui/            # ProductCard, CategoryCard, RatingStars, StatusBadge
+    ├── contexts/          # CartContext, AuthContext, WishlistContext
+    ├── features/          # Các module chức năng theo kiến trúc tev-fe-admin
+    │   ├── auth/          # Đăng nhập, đăng ký, modal auth
+    │   ├── products/      # Danh sách sản phẩm, Lọc & Tìm kiếm, Chi tiết sản phẩm
+    │   ├── cart/          # Giỏ hàng, Mã giảm giá, Tính tiền
+    │   ├── checkout/      # Thanh toán, Điền địa chỉ giao hàng, Đặt hàng thành công
+    │   ├── orders/        # Quản lý đơn hàng, Theo dõi trạng thái giao hàng
+    │   ├── wishlist/      # Sản phẩm yêu thích
+    │   ├── home/          # Trang chủ (Banner Hero, Flash Sale, Danh mục nổi bật, Bán chạy, Gợi ý)
+    │   └── admin/         # Dashboard quản trị (Thống kê đơn hàng, Quản lý sản phẩm, Doanh thu)
+    ├── lib/               # Storage utilities, mock API delay helpers
+    ├── routes/            # Route constants & Configs
+    ├── services/          # Mock data services (ProductService, OrderService, CategoryService, CouponService)
+    ├── mock/              # Dữ liệu Mock Data chi tiết (20+ sản phẩm nội thất cao cấp, danh mục, đánh giá, mã giảm giá)
+    ├── store/             # Global states
+    ├── styles/            # Tailwind CSS setup & Ant Design custom tokens
+    └── types/             # TypeScript Types/Interfaces (Product, Category, Order, CartItem, Review, User)
+```
+
+---
+
+## 🎨 Công nghệ & Giao diện (Design System)
+
+- **Framework**: Vite + React 19 + TypeScript
+- **UI Library**: Ant Design (`antd`) với custom theme configuration (nâu gỗ ấm áp `#8B4513` / vàng đồng `#D4AF37` / xám xám hiện đại `#1A1A1A`)
+- **Styling**: Tailwind CSS + Ant Design Tokens
+- **Icons**: Lucide React / Ant Design Icons
+- **State & Data Handling**: React Context API + LocalStorage Persistence cho Giỏ hàng, Yêu thích, Đơn hàng, User Session
+
+---
+
+## 📦 Mock Data Đầy đủ bao gồm
+
+1. **Danh mục sản phẩm (Categories)**:
+   - Phòng khách (Sofa, Bàn trà, Kệ TV, Ghế thư giãn)
+   - Phòng ngủ (Giường ngủ, Tủ quần áo, Bàn trang điểm, Tab đầu giường)
+   - Phòng ăn (Bàn ăn gỗ sồi, Ghế ăn bọc da, Tủ rượu)
+   - Phòng làm việc (Bàn làm việc thông minh, Ghế công thái học, Kệ sách)
+   - Đèn & Trang trí (Đèn chùm pha lê, Thảm trải sàn, Tranh nghệ thuật)
+2. **Danh sách Sản phẩm (20+ Sản phẩm thực tế kèm ảnh HD, mô tả, thông số kỹ thuật, giá, giảm giá, số lượng tồn)**.
+3. **Mã giảm giá (Vouchers/Coupons)**: `NOITHAT10` (-10%), `FREESHIP` (Miễn phí vận chuyển), `LUXURY500K` (-500,000đ).
+4. **Đánh giá & Bình luận (Reviews)** từ khách hàng thực tế kèm ảnh/sao đánh giá.
+5. **Đơn hàng mẫu (Orders)**: Danh sách đơn hàng với trạng thái (Chờ xác nhận, Đang vận chuyển, Đã giao, Đã hủy).
+
+---
+
+## 🚀 Các Chức Năng Chính Sẽ Tới Người Dùng
+
+1. **Trang Chủ (Home)**:
+   - Hero Banner Carousel sang trọng giới thiệu bộ sưu tập mới.
+   - Danh mục sản phẩm trực quan.
+   - Sản phẩm nổi bật / Flash Sale / Bán chạy.
+   - Lý do chọn thương hiệu (Bảo hành 5 năm, Miễn phí lắp đặt, Giao hàng toàn quốc).
+   - Đăng ký nhận bản tin & Đánh giá từ khách hàng.
+2. **Trang Danh Sách Sản Phẩm & Lọc (Product Listing & Filtering)**:
+   - Bộ lọc đa tiêu chí (Theo danh mục, khoảng giá, chất liệu: Gỗ sồi, Gỗ óc chó, Da thật, Kim loại; Đánh giá sao).
+   - Sắp xếp (Mới nhất, Giá tăng/giảm, Bán chạy).
+   - Tìm kiếm từ khóa thông minh với highlight.
+3. **Trang Chi Tiết Sản Phẩm (Product Detail)**:
+   - Gallery hình ảnh nhiều góc chụp.
+   - Thông tin thông số kỹ thuật chi tiết (Kích thước, chất liệu, màu sắc, xuất xứ).
+   - Nút Thêm vào giỏ / Mua ngay / Thêm vào Yêu thích.
+   - Tabs: Mô tả sản phẩm, Chi tiết thông số, Đánh giá từ người mua & Form gửi đánh giá.
+4. **Giỏ Hàng & Thanh Toán (Cart & Checkout)**:
+   - Drawer / Page Giỏ hàng với điều chỉnh số lượng, xóa sản phẩm.
+   - Áp dụng Mã giảm giá tự động cập nhật tổng tiền.
+   - Form thông tin giao hàng & Phương thức thanh toán (COD, Chuyển khoản QR Bank, Thẻ ATM/Visa).
+   - Màn hình Xác nhận Đặt hàng thành công kèm Mã đơn hàng & Timeline theo dõi.
+5. **Quản Lý Đơn Hàng & Yêu Thích (Orders & Wishlist)**:
+   - Màn hình lịch sử đơn hàng của người dùng với status badge Antd.
+   - Danh sách sản phẩm đã lưu vào danh sách yêu thích.
+6. **Dashboard Quản Trị Admin (Admin Portal View)**:
+   - Thống kê doanh thu, tổng đơn hàng, sản phẩm tồn kho.
+   - Bảng quản lý danh sách sản phẩm (Thêm/Sửa/Xóa sản phẩm mock).
+   - Quản lý trạng thái đơn hàng (Duyệt đơn, Đang giao, Đã giao).
+
+---
+
+## 📋 Mẫu Phê Duyệt Bước Tiếp Theo (Verification Plan)
+
+### Kiểm thử & Xác minh:
+1. Chạy lệnh cài đặt `npm install` và server `npm run dev`.
+2. Kiểm tra hiển thị responsive trên các kích thước màn hình (Desktop, Tablet, Mobile).
+3. Test toàn bộ luồng người dùng: Xem sản phẩm -> Lọc -> Chi tiết sản phẩm -> Thêm vào giỏ -> Áp mã voucher -> Thanh toán -> Xem lịch sử đơn hàng -> Quản trị Admin.
