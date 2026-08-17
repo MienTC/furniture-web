@@ -39,24 +39,104 @@
 }
 
 .gold-gradient-text {
-  background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #78350f 100%);
+  background: linear-gradient(135deg, #fef08a 0%, #facc15 40%, #fb923c 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+}
+
+.ruby-gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #fca5a5 40%, #ef4444 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
 }
 
 /* Antd customization tweaks */
 .ant-btn-primary {
-  background-color: #78350f !important;
-  border-color: #78350f !important;
+  background-color: #b91c1c !important;
+  border-color: #b91c1c !important;
 }
 
 .ant-btn-primary:hover {
-  background-color: #92400e !important;
-  border-color: #92400e !important;
+  background-color: #dc2626 !important;
+  border-color: #dc2626 !important;
 }
 
 .ant-tag-amber {
-  color: #b45309;
-  background: #fffbeb;
-  border-color: #fde68a;
+  color: #b91c1c;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+/* Thin Scrollbar for sidebar and sub-panels */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #f5f5f4;
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #d6d3d1;
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #b91c1c;
+}
+
+/* Hero Button with pure white background and sharp red text */
+.hero-btn-white {
+  background-color: #ffffff !important;
+  color: #b91c1c !important;
+  border: 2px solid #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-weight: 700 !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+}
+
+.hero-btn-white:hover {
+  background-color: #f5f5f4 !important;
+  color: #991b1b !important;
+  transform: scale(1.05) translateY(-1px) !important;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.8) !important;
+}
+
+.hero-btn-white * {
+  color: #b91c1c !important;
+}
+
+/* Antd Pagination red accent */
+.ant-pagination-item-active {
+  border-color: #b91c1c !important;
+}
+
+.ant-pagination-item-active a {
+  color: #b91c1c !important;
+}
+
+/* Antd Radio button active */
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+  color: #b91c1c !important;
+  border-color: #b91c1c !important;
+  background: #fef2f2 !important;
+}
+
+/* Antd Slider red track */
+.ant-slider .ant-slider-track {
+  background-color: #b91c1c !important;
+}
+
+.ant-slider .ant-slider-handle::after {
+  box-shadow: 0 0 0 2px #b91c1c !important;
 }

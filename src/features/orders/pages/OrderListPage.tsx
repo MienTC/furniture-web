@@ -45,7 +45,7 @@ export const OrderListPage: React.FC = () => {
           </div>
           <h3 className="font-bold text-stone-800 text-lg">Chưa có đơn hàng nào trong mục này</h3>
           <p className="text-xs text-stone-500">Khám phá các sản phẩm nội thất cao cấp ngay!</p>
-          <Link to="/products" className="inline-block bg-amber-950 text-white text-xs font-bold px-6 py-2.5 rounded-lg">
+          <Link to="/products" className="inline-block bg-red-700 hover:bg-red-800 text-white text-xs font-bold px-6 py-2.5 rounded-lg transition-colors">
             Khám phá ngay
           </Link>
         </div>
@@ -61,7 +61,7 @@ export const OrderListPage: React.FC = () => {
                 {/* Header info */}
                 <div className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-100 pb-3">
                   <div className="flex items-center gap-3">
-                    <span className="font-mono font-bold text-amber-950 text-sm">{order.id}</span>
+                    <span className="font-mono font-bold text-red-950 text-sm">{order.id}</span>
                     <span className="text-stone-300">•</span>
                     <span className="text-xs text-stone-500 flex items-center gap-1">
                       <Clock size={14} /> {formatDate(order.createdAt)}
@@ -74,7 +74,7 @@ export const OrderListPage: React.FC = () => {
                     </Tag>
                     <Link
                       to={`/orders/${order.id}`}
-                      className="text-xs font-bold text-amber-900 hover:text-amber-700 flex items-center gap-1"
+                      className="text-xs font-bold text-red-700 hover:text-red-600 flex items-center gap-1"
                     >
                       <Eye size={14} /> Xem chi tiết
                     </Link>
@@ -90,7 +90,7 @@ export const OrderListPage: React.FC = () => {
                         <h4 className="font-bold text-stone-900 line-clamp-1">{item.product.name}</h4>
                         <p className="text-stone-500">Màu: {item.selectedColor || 'Chuẩn'} | Số lượng: {item.quantity}</p>
                       </div>
-                      <span className="font-bold text-amber-950 text-xs">{formatVND(item.product.price * item.quantity)}</span>
+                      <span className="font-bold text-red-700 text-xs">{formatVND(item.product.price * item.quantity)}</span>
                     </div>
                   ))}
                 </div>
@@ -100,7 +100,7 @@ export const OrderListPage: React.FC = () => {
                   <span className="text-stone-500">Người nhận: <strong>{order.customerInfo.fullName}</strong> ({order.customerInfo.phone})</span>
                   <div className="text-right">
                     <span className="text-stone-500 mr-2">Tổng tiền thanh toán:</span>
-                    <strong className="text-lg font-bold font-serif-heading text-amber-950">{formatVND(order.totalAmount)}</strong>
+                    <strong className="text-lg font-bold font-serif-heading text-red-700">{formatVND(order.totalAmount)}</strong>
                   </div>
                 </div>
               </div>

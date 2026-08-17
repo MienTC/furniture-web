@@ -116,7 +116,7 @@ export const ProductDetailPage: React.FC = () => {
                 key={idx}
                 onClick={() => setSelectedImage(img)}
                 className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all shrink-0 ${
-                  activeImage === img ? 'border-amber-900 ring-2 ring-amber-800/30' : 'border-stone-200 opacity-70 hover:opacity-100'
+                  activeImage === img ? 'border-red-700 ring-2 ring-red-700/30' : 'border-stone-200 opacity-70 hover:opacity-100'
                 }`}
               >
                 <img src={img} alt="" className="w-full h-full object-cover" />
@@ -129,7 +129,7 @@ export const ProductDetailPage: React.FC = () => {
         <div className="space-y-6">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs font-bold text-amber-800 uppercase tracking-widest">
+              <span className="text-xs font-bold text-red-700 uppercase tracking-widest">
                 {product.categoryName}
               </span>
               <span className="text-stone-300">•</span>
@@ -150,8 +150,8 @@ export const ProductDetailPage: React.FC = () => {
           </div>
 
           {/* Price Box */}
-          <div className="p-4 rounded-2xl bg-amber-950/5 border border-amber-900/10 flex items-baseline gap-4">
-            <span className="text-3xl font-bold text-amber-950 font-serif-heading">
+          <div className="p-4 rounded-2xl bg-red-950/5 border border-red-900/10 flex items-baseline gap-4">
+            <span className="text-3xl font-bold text-red-700 font-serif-heading">
               {formatVND(finalPrice)}
             </span>
             {product.discountPercent && (
@@ -165,7 +165,7 @@ export const ProductDetailPage: React.FC = () => {
           {product.colorOptions.length > 0 && (
             <div className="space-y-2">
               <label className="text-xs font-bold text-stone-800 block">
-                Tùy chọn màu sắc / hoàn thiện: <span className="text-amber-900">{activeColor}</span>
+                Tùy chọn màu sắc / hoàn thiện: <span className="text-red-700">{activeColor}</span>
               </label>
               <div className="flex flex-wrap gap-2">
                 {product.colorOptions.map((color) => (
@@ -174,7 +174,7 @@ export const ProductDetailPage: React.FC = () => {
                     onClick={() => setSelectedColor(color)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
                       activeColor === color
-                        ? 'bg-amber-950 text-white border-amber-950 font-bold shadow-xs'
+                        ? 'bg-red-700 text-white border-red-700 font-bold shadow-xs'
                         : 'bg-white text-stone-700 border-stone-300 hover:border-stone-400'
                     }`}
                   >
@@ -197,7 +197,7 @@ export const ProductDetailPage: React.FC = () => {
             </div>
             <div>
               <span className="text-stone-400 block">Thời gian bảo hành:</span>
-              <span className="font-semibold text-amber-900">{product.warranty}</span>
+              <span className="font-semibold text-red-700">{product.warranty}</span>
             </div>
             <div>
               <span className="text-stone-400 block">Vận chuyển:</span>
@@ -229,13 +229,13 @@ export const ProductDetailPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => addToCart(product, quantity, activeColor)}
-                className="flex-1 bg-amber-950 hover:bg-amber-900 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all text-sm"
+                className="flex-1 bg-stone-900 hover:bg-stone-800 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all text-sm"
               >
                 <ShoppingBag size={18} /> Thêm Vào Giỏ Hàng
               </button>
               <button
                 onClick={handleBuyNow}
-                className="flex-1 bg-amber-700 hover:bg-amber-600 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all text-sm"
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all text-sm"
               >
                 Mua Ngay Thanh Toán
               </button>
@@ -264,9 +264,9 @@ export const ProductDetailPage: React.FC = () => {
               children: (
                 <div className="space-y-4 text-stone-700 text-xs sm:text-sm leading-relaxed py-4">
                   <p>{product.description}</p>
-                  <div className="bg-amber-50 p-4 rounded-xl border border-amber-200/60">
-                    <h4 className="font-bold text-amber-950 text-sm mb-2">Đặc điểm nổi bật:</h4>
-                    <ul className="list-disc list-inside space-y-1 text-amber-900">
+                  <div className="bg-red-50/70 p-4 rounded-xl border border-red-200/60">
+                    <h4 className="font-bold text-red-950 text-sm mb-2">Đặc điểm nổi bật:</h4>
+                    <ul className="list-disc list-inside space-y-1 text-red-900">
                       <li>Chất liệu chính: {product.material} qua xử lý chống ẩm mốc.</li>
                       <li>Khung kết cấu vững chắc, chịu lực đến 500kg.</li>
                       <li>Thiết kế chuẩn công thái học nâng đỡ tối ưu không gian sống.</li>
@@ -327,7 +327,7 @@ export const ProductDetailPage: React.FC = () => {
                       onClick={() => setReviewModalOpen(true)}
                       icon={<MessageSquare size={14} />}
                       type="primary"
-                      className="!bg-amber-900 font-bold text-xs"
+                      className="!bg-red-700 hover:!bg-red-600 font-bold text-xs"
                     >
                       Viết Đánh Giá
                     </Button>
@@ -377,7 +377,7 @@ export const ProductDetailPage: React.FC = () => {
         onOk={handleAddReview}
         okText="Gửi Đánh Giá"
         cancelText="Hủy"
-        okButtonProps={{ className: '!bg-amber-900' }}
+        okButtonProps={{ className: '!bg-red-700' }}
       >
         <div className="space-y-4 py-3">
           <div>

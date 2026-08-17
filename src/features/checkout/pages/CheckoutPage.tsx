@@ -82,7 +82,7 @@ export const CheckoutPage: React.FC = () => {
             {/* Delivery Info Box */}
             <div className="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 space-y-4 shadow-2xs">
               <h3 className="text-lg font-serif-heading font-bold text-stone-900 border-b border-stone-100 pb-3 flex items-center gap-2">
-                <Truck size={20} className="text-amber-800" /> 1. Thông Tin Nhận Hàng & Lắp Đặt
+                <Truck size={20} className="text-red-700" /> 1. Thông Tin Nhận Hàng & Lắp Đặt
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -148,7 +148,7 @@ export const CheckoutPage: React.FC = () => {
             {/* Payment Method Selector */}
             <div className="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 space-y-4 shadow-2xs">
               <h3 className="text-lg font-serif-heading font-bold text-stone-900 border-b border-stone-100 pb-3 flex items-center gap-2">
-                <CreditCard size={20} className="text-amber-800" /> 2. Phương Thức Thanh Toán
+                <CreditCard size={20} className="text-red-700" /> 2. Phương Thức Thanh Toán
               </h3>
 
               <div className="space-y-3">
@@ -156,11 +156,11 @@ export const CheckoutPage: React.FC = () => {
                   onClick={() => setPaymentMethod('bank_transfer')}
                   className={`p-4 rounded-xl border flex items-center gap-4 cursor-pointer transition-all ${
                     paymentMethod === 'bank_transfer'
-                      ? 'border-amber-900 bg-amber-950/5 ring-1 ring-amber-900'
+                      ? 'border-red-700 bg-red-950/5 ring-1 ring-red-700'
                       : 'border-stone-200 hover:border-stone-300'
                   }`}
                 >
-                  <QrCode size={24} className="text-amber-800 shrink-0" />
+                  <QrCode size={24} className="text-red-700 shrink-0" />
                   <div className="flex-1">
                     <h4 className="font-bold text-stone-900 text-xs">Chuyển Khoản Ngân Hàng Qua Mã QR Code</h4>
                     <p className="text-[11px] text-stone-500">Tự động xác nhận giao dịch & ưu đãi xử lý đơn nhanh nhất</p>
@@ -172,11 +172,11 @@ export const CheckoutPage: React.FC = () => {
                   onClick={() => setPaymentMethod('cod')}
                   className={`p-4 rounded-xl border flex items-center gap-4 cursor-pointer transition-all ${
                     paymentMethod === 'cod'
-                      ? 'border-amber-900 bg-amber-950/5 ring-1 ring-amber-900'
+                      ? 'border-red-700 bg-red-950/5 ring-1 ring-red-700'
                       : 'border-stone-200 hover:border-stone-300'
                   }`}
                 >
-                  <Banknote size={24} className="text-amber-800 shrink-0" />
+                  <Banknote size={24} className="text-red-700 shrink-0" />
                   <div className="flex-1">
                     <h4 className="font-bold text-stone-900 text-xs">Thanh Toán Tiền Mặt Khi Nhận Hàng (COD)</h4>
                     <p className="text-[11px] text-stone-500">Kiểm tra sản phẩm tận nhà trước khi thanh toán</p>
@@ -187,9 +187,9 @@ export const CheckoutPage: React.FC = () => {
 
               {/* QR Code preview box if Bank transfer selected */}
               {paymentMethod === 'bank_transfer' && (
-                <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs space-y-2 text-amber-950">
+                <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-xs space-y-2 text-red-950">
                   <p className="font-bold flex items-center gap-1.5">
-                    <CheckCircle2 size={16} className="text-amber-800" /> Hệ thống sẽ hiển thị mã QR kèm nội dung chuyển khoản tự động ngay sau khi hoàn tất đặt hàng.
+                    <CheckCircle2 size={16} className="text-red-700" /> Hệ thống sẽ hiển thị mã QR kèm nội dung chuyển khoản tự động ngay sau khi hoàn tất đặt hàng.
                   </p>
                 </div>
               )}
@@ -215,7 +215,7 @@ export const CheckoutPage: React.FC = () => {
                         <p className="font-bold text-stone-900 truncate">{item.product.name}</p>
                         <p className="text-stone-500">SL: {item.quantity} x {formatVND(itemPrice)}</p>
                       </div>
-                      <span className="font-bold text-amber-950 text-xs">{formatVND(itemPrice * item.quantity)}</span>
+                      <span className="font-bold text-red-700 text-xs">{formatVND(itemPrice * item.quantity)}</span>
                     </div>
                   );
                 })}
@@ -227,7 +227,7 @@ export const CheckoutPage: React.FC = () => {
                   <span>{formatVND(subtotal)}</span>
                 </div>
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-amber-800">
+                  <div className="flex justify-between text-red-700">
                     <span>Giảm giá voucher:</span>
                     <span className="font-bold">-{formatVND(discountAmount)}</span>
                   </div>
@@ -238,7 +238,7 @@ export const CheckoutPage: React.FC = () => {
                 </div>
                 <div className="pt-3 border-t border-stone-200 flex justify-between items-baseline">
                   <span className="font-bold text-stone-900 text-sm">Tổng cộng:</span>
-                  <span className="text-2xl font-bold font-serif-heading text-amber-950">
+                  <span className="text-2xl font-bold font-serif-heading text-red-700">
                     {formatVND(totalAmount)}
                   </span>
                 </div>
@@ -249,10 +249,9 @@ export const CheckoutPage: React.FC = () => {
                 htmlType="submit"
                 loading={submitting}
                 block
-                size="large"
-                className="!bg-amber-950 hover:!bg-amber-900 font-bold text-xs !rounded-xl !h-12 uppercase tracking-wider"
+                className="!bg-red-700 hover:!bg-red-800 font-bold !py-5 !rounded-xl text-xs uppercase tracking-wider shadow-md"
               >
-                Xác Nhận Đặt Hàng Ngay
+                Xác Nhận Đặt Hàng ({formatVND(totalAmount)})
               </Button>
             </div>
           </div>

@@ -54,7 +54,7 @@ export const CartPage: React.FC = () => {
         </div>
         <Link
           to="/products"
-          className="inline-flex items-center gap-2 bg-amber-950 hover:bg-amber-900 text-white font-bold px-8 py-3.5 rounded-full text-xs shadow-md transition-all"
+          className="inline-flex items-center gap-2 bg-red-700 hover:bg-red-800 text-white font-bold px-8 py-3.5 rounded-full text-xs shadow-md transition-all"
         >
           Khám Phá Cửa Hàng <ArrowRight size={16} />
         </Link>
@@ -87,21 +87,21 @@ export const CartPage: React.FC = () => {
       </div>
 
       {/* Free Shipping Progress Indicator */}
-      <div className="p-4 rounded-2xl bg-amber-950/5 border border-amber-900/10 space-y-2">
+      <div className="p-4 rounded-2xl bg-red-950/5 border border-red-900/10 space-y-2">
         <div className="flex items-center justify-between text-xs font-semibold">
-          <span className="flex items-center gap-1.5 text-amber-950">
-            <Truck size={16} className="text-amber-800" />
+          <span className="flex items-center gap-1.5 text-stone-900">
+            <Truck size={16} className="text-red-700" />
             {amountLeftForFreeShipping === 0 ? (
               <strong className="text-emerald-700">Chúc mừng! Bạn được MIỄN PHÍ VẬN CHUYỂN toàn quốc!</strong>
             ) : (
               <span>
-                Mua thêm <strong className="text-amber-900">{formatVND(amountLeftForFreeShipping)}</strong> để được Miễn phí vận chuyển
+                Mua thêm <strong className="text-red-700">{formatVND(amountLeftForFreeShipping)}</strong> để được Miễn phí vận chuyển
               </span>
             )}
           </span>
           <span className="text-stone-500">{freeShippingProgress}%</span>
         </div>
-        <Progress percent={freeShippingProgress} showInfo={false} strokeColor="#78350f" size="small" />
+        <Progress percent={freeShippingProgress} showInfo={false} strokeColor="#b91c1c" size="small" />
       </div>
 
       {/* Cart Content Grid */}
@@ -124,12 +124,12 @@ export const CartPage: React.FC = () => {
 
                   {/* Title & Info */}
                   <div className="flex-1 space-y-1 text-center sm:text-left">
-                    <span className="text-[10px] font-bold uppercase text-amber-800 tracking-wider">
+                    <span className="text-[10px] font-bold uppercase text-red-700 tracking-wider">
                       {item.product.categoryName}
                     </span>
                     <Link
                       to={`/products/${item.product.slug}`}
-                      className="font-bold text-stone-900 hover:text-amber-900 transition-colors text-sm line-clamp-1 block"
+                      className="font-bold text-stone-900 hover:text-red-700 transition-colors text-sm line-clamp-1 block"
                     >
                       {item.product.name}
                     </Link>
@@ -164,7 +164,7 @@ export const CartPage: React.FC = () => {
 
                   {/* Item Total */}
                   <div className="text-right min-w-[100px]">
-                    <span className="text-sm font-bold text-amber-950 block">
+                    <span className="text-sm font-bold text-red-700 block">
                       {formatVND(itemTotal)}
                     </span>
                   </div>
@@ -182,7 +182,7 @@ export const CartPage: React.FC = () => {
             })}
           </div>
 
-          <Link to="/products" className="inline-flex items-center gap-1 text-xs font-bold text-amber-900 hover:underline pt-2">
+          <Link to="/products" className="inline-flex items-center gap-1 text-xs font-bold text-red-700 hover:underline pt-2">
             <ArrowLeft size={14} /> Tiếp tục mua sắm thêm sản phẩm
           </Link>
         </div>
@@ -192,14 +192,14 @@ export const CartPage: React.FC = () => {
           {/* Voucher Entry Box */}
           <div className="bg-white p-6 rounded-2xl border border-stone-200 space-y-4 shadow-2xs">
             <h4 className="font-bold text-stone-900 text-sm flex items-center gap-1.5">
-              <TagIcon size={16} className="text-amber-800" /> Mã Giảm Giá Ưu Đãi
+              <TagIcon size={16} className="text-red-700" /> Mã Giảm Giá Ưu Đãi
             </h4>
 
             {appliedVoucher ? (
-              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200 flex items-center justify-between">
                 <div>
-                  <span className="font-mono font-bold text-amber-950 text-xs block">{appliedVoucher.code}</span>
-                  <span className="text-[11px] text-amber-800">{appliedVoucher.description}</span>
+                  <span className="font-mono font-bold text-red-950 text-xs block">{appliedVoucher.code}</span>
+                  <span className="text-[11px] text-red-800">{appliedVoucher.description}</span>
                 </div>
                 <button onClick={removeVoucher} className="text-stone-400 hover:text-rose-600">
                   <X size={16} />
@@ -216,7 +216,7 @@ export const CartPage: React.FC = () => {
                 <Button
                   onClick={() => handleApplyVoucherCode()}
                   type="primary"
-                  className="!bg-amber-900 font-bold text-xs"
+                  className="!bg-red-700 hover:!bg-red-600 font-bold text-xs"
                 >
                   Áp Dụng
                 </Button>
@@ -230,9 +230,9 @@ export const CartPage: React.FC = () => {
                 <button
                   key={v.code}
                   onClick={() => handleApplyVoucherCode(v.code)}
-                  className="w-full text-left p-2 rounded-lg bg-stone-50 hover:bg-amber-50 border border-stone-200 flex items-center justify-between text-xs transition-colors"
+                  className="w-full text-left p-2 rounded-lg bg-stone-50 hover:bg-red-50 border border-stone-200 flex items-center justify-between text-xs transition-colors"
                 >
-                  <span className="font-mono font-bold text-amber-900">{v.code}</span>
+                  <span className="font-mono font-bold text-red-700">{v.code}</span>
                   <span className="text-[10px] text-stone-500">{v.discountValue}{v.discountType === 'percentage' ? '%' : '₫'}</span>
                 </button>
               ))}
@@ -252,7 +252,7 @@ export const CartPage: React.FC = () => {
               </div>
 
               {discountAmount > 0 && (
-                <div className="flex justify-between text-amber-800">
+                <div className="flex justify-between text-red-700">
                   <span>Giảm giá (Voucher):</span>
                   <span className="font-bold">-{formatVND(discountAmount)}</span>
                 </div>
@@ -268,14 +268,14 @@ export const CartPage: React.FC = () => {
 
             <div className="pt-3 border-t border-stone-200 flex justify-between items-baseline">
               <span className="font-bold text-stone-900 text-sm">Tổng thanh toán:</span>
-              <span className="text-2xl font-bold font-serif-heading text-amber-950">
+              <span className="text-2xl font-bold font-serif-heading text-red-700">
                 {formatVND(totalAmount)}
               </span>
             </div>
 
             <button
               onClick={() => navigate('/checkout')}
-              className="w-full bg-amber-950 hover:bg-amber-900 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all text-xs uppercase tracking-wider"
+              className="w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all text-xs uppercase tracking-wider"
             >
               Tiến Hành Thanh Toán <ArrowRight size={16} />
             </button>

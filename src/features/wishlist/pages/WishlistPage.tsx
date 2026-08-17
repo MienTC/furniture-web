@@ -30,7 +30,7 @@ export const WishlistPage: React.FC = () => {
           </p>
           <Link
             to="/products"
-            className="inline-flex items-center gap-2 bg-amber-950 hover:bg-amber-900 text-white font-bold px-6 py-3 rounded-full text-xs transition-all"
+            className="inline-flex items-center gap-2 bg-red-700 hover:bg-red-800 text-white font-bold px-6 py-3 rounded-full text-xs transition-all shadow-md"
           >
             Khám Phá Cửa Hàng <ArrowRight size={14} />
           </Link>

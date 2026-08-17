@@ -67,13 +67,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="absolute inset-x-0 bottom-3 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-2 justify-center">
           <Link
             to={`/products/${product.slug}`}
-            className="flex-1 bg-white/90 hover:bg-white text-stone-800 font-medium text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md backdrop-blur-sm transition-all"
+            className="flex-1 bg-white/95 hover:bg-white text-stone-800 font-medium text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md backdrop-blur-sm transition-all"
           >
             <Eye size={14} /> Chi tiết
           </Link>
           <button
             onClick={() => addToCart(product)}
-            className="flex-1 bg-amber-900 hover:bg-amber-800 text-white font-medium text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md transition-all"
+            className="flex-1 bg-red-700 hover:bg-red-800 text-white font-medium text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md transition-all"
           >
             <ShoppingBag size={14} /> Thêm vào giỏ
           </button>
@@ -83,12 +83,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Content */}
       <div className="p-4 flex-1 flex flex-col justify-between">
         <div>
-          <span className="text-xs font-semibold text-amber-800 tracking-wide uppercase mb-1 block">
+          <span className="text-xs font-semibold text-red-700 tracking-wide uppercase mb-1 block">
             {product.categoryName}
           </span>
           <Link
             to={`/products/${product.slug}`}
-            className="font-medium text-stone-900 hover:text-amber-800 transition-colors line-clamp-2 text-sm leading-snug mb-2"
+            className="font-medium text-stone-900 hover:text-red-700 transition-colors line-clamp-2 text-sm leading-snug mb-2"
           >
             {product.name}
           </Link>
@@ -99,7 +99,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Material & Price Footer */}
         <div className="mt-3 pt-3 border-t border-stone-100 flex items-center justify-between">
           <div className="flex flex-col">
-            <span className="text-base font-bold text-amber-950">
+            <span className="text-base font-bold text-red-700">
               {formatVND(finalPrice)}
             </span>
             {product.discountPercent && (

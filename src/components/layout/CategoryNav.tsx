@@ -7,15 +7,15 @@ export const CategoryNav: React.FC = () => {
   const location = useLocation();
 
   return (
-    <nav className="hidden md:block bg-stone-100/70 border-t border-stone-200/60">
+    <nav className="hidden md:block bg-stone-100/80 border-t border-stone-200/70">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between text-xs font-semibold text-stone-700">
         <div className="flex items-center gap-1">
           <Link
             to="/products"
             className={`px-4 py-2.5 flex items-center gap-1.5 transition-colors ${
               location.pathname === "/products"
-                ? "bg-amber-900 text-white font-bold"
-                : "hover:text-amber-900 hover:bg-white/80"
+                ? "bg-red-700 text-white font-bold shadow-xs"
+                : "hover:text-red-700 hover:bg-white/90"
             }`}
           >
             <SlidersHorizontal size={14} /> Tất cả Sản phẩm
@@ -24,14 +24,14 @@ export const CategoryNav: React.FC = () => {
             <Link
               key={cat.id}
               to={`/products?category=${cat.id}`}
-              className="px-3.5 py-2.5 hover:text-amber-900 hover:bg-white/60 transition-colors"
+              className="px-3.5 py-2.5 hover:text-red-700 hover:bg-white/80 transition-colors"
             >
               {cat.name}
             </Link>
           ))}
         </div>
 
-        <div className="flex items-center gap-4 text-amber-900 font-medium">
+        <div className="flex items-center gap-4 text-red-700 font-medium">
           <Link to="/orders" className="hover:underline">
             Theo dõi đơn hàng
           </Link>

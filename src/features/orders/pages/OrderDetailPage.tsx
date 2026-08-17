@@ -25,7 +25,7 @@ export const OrderDetailPage: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center space-y-4">
         <h2 className="text-2xl font-bold text-stone-800">Không tìm thấy đơn hàng</h2>
-        <Link to="/orders" className="inline-block bg-amber-950 text-white text-xs font-bold px-6 py-2.5 rounded-lg">
+        <Link to="/orders" className="inline-block bg-red-700 text-white text-xs font-bold px-6 py-2.5 rounded-lg">
           Quay lại danh sách đơn hàng
         </Link>
       </div>
@@ -48,7 +48,7 @@ export const OrderDetailPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
       {/* Header */}
       <div>
-        <Link to="/orders" className="inline-flex items-center gap-1 text-xs font-bold text-stone-600 hover:text-amber-950 mb-2">
+        <Link to="/orders" className="inline-flex items-center gap-1 text-xs font-bold text-stone-600 hover:text-red-700 mb-2">
           <ArrowLeft size={14} /> Quay lại danh sách đơn hàng
         </Link>
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -96,7 +96,7 @@ export const OrderDetailPage: React.FC = () => {
                     <p className="text-stone-500">Tùy chọn: {item.selectedColor || 'Gỗ tự nhiên'} | Kích thước: {item.product.dimensions}</p>
                     <p className="text-stone-500">Số lượng: <strong>{item.quantity}</strong> x {formatVND(item.product.price)}</p>
                   </div>
-                  <span className="font-bold text-amber-950 text-sm">
+                  <span className="font-bold text-red-700 text-sm">
                     {formatVND(item.product.price * item.quantity)}
                   </span>
                 </div>
@@ -106,22 +106,22 @@ export const OrderDetailPage: React.FC = () => {
 
           {/* QR Bank Transfer Box if Bank Transfer */}
           {order.customerInfo.paymentMethod === 'bank_transfer' && (
-            <div className="bg-amber-950 text-amber-50 p-6 sm:p-8 rounded-2xl border border-amber-800 space-y-4">
+            <div className="bg-linear-to-r from-stone-950 via-stone-900 to-red-950 text-stone-100 p-6 sm:p-8 rounded-2xl border border-red-800/40 space-y-4 shadow-md">
               <div className="flex items-center gap-3">
-                <QrCode size={28} className="text-amber-400" />
+                <QrCode size={28} className="text-amber-300" />
                 <div>
                   <h4 className="font-serif-heading font-bold text-white text-lg">Chuyển Khoản Ngân Hàng Tự Động (VietQR)</h4>
-                  <p className="text-xs text-amber-200">Quét mã QR bằng ứng dụng Mobile Banking của bạn</p>
+                  <p className="text-xs text-stone-300">Quét mã QR bằng ứng dụng Mobile Banking của bạn</p>
                 </div>
               </div>
 
               <div className="bg-white p-4 rounded-xl text-stone-900 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                 <div className="text-center sm:text-left space-y-2">
                   <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest block">Ngân Hàng MB Bank</span>
-                  <p className="font-bold text-sm">STK: <span className="font-mono text-amber-900">8888999999999</span></p>
+                  <p className="font-bold text-sm">STK: <span className="font-mono text-red-700">8888999999999</span></p>
                   <p className="text-xs text-stone-600">Chủ tài khoản: <strong>CTCP NOITHAT LUXDECOR</strong></p>
-                  <p className="text-xs text-stone-600">Số tiền: <strong className="text-amber-950 font-bold text-sm">{formatVND(order.totalAmount)}</strong></p>
-                  <p className="text-xs text-stone-600">Nội dung CK: <strong className="font-mono bg-stone-100 px-2 py-0.5 rounded text-amber-900">{order.id}</strong></p>
+                  <p className="text-xs text-stone-600">Số tiền: <strong className="text-red-700 font-bold text-sm">{formatVND(order.totalAmount)}</strong></p>
+                  <p className="text-xs text-stone-600">Nội dung CK: <strong className="font-mono bg-stone-100 px-2 py-0.5 rounded text-red-700">{order.id}</strong></p>
                 </div>
 
                 <div className="flex flex-col items-center justify-center p-3 bg-stone-50 rounded-xl border border-stone-200">
@@ -181,7 +181,7 @@ export const OrderDetailPage: React.FC = () => {
                 <span>{formatVND(order.subtotal)}</span>
               </div>
               {order.discountAmount > 0 && (
-                <div className="flex justify-between text-amber-800">
+                <div className="flex justify-between text-red-700">
                   <span>Giảm giá voucher:</span>
                   <span className="font-bold">-{formatVND(order.discountAmount)}</span>
                 </div>
@@ -192,7 +192,7 @@ export const OrderDetailPage: React.FC = () => {
               </div>
               <div className="pt-3 border-t border-stone-200 flex justify-between items-baseline">
                 <span className="font-bold text-stone-900 text-sm">Tổng cộng:</span>
-                <span className="text-xl font-bold font-serif-heading text-amber-950">
+                <span className="text-xl font-bold font-serif-heading text-red-700">
                   {formatVND(order.totalAmount)}
                 </span>
               </div>

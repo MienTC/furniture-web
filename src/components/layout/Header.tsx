@@ -65,24 +65,24 @@ export const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-xs">
       {/* Top Banner */}
-      <div className="bg-amber-950 text-amber-100 text-xs py-2 px-4">
+      <div className="bg-stone-900 text-stone-200 text-xs py-2 px-4 border-b border-stone-800">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
-              <Truck size={14} className="text-amber-400" /> Miễn phí vận chuyển
+              <Truck size={14} className="text-red-500" /> Miễn phí vận chuyển
               đơn từ 15 triệu
             </span>
             <span className="hidden md:flex items-center gap-1.5">
-              <ShieldCheck size={14} className="text-amber-400" /> Bảo hành 5
+              <ShieldCheck size={14} className="text-red-500" /> Bảo hành 5
               năm
             </span>
           </div>
           <div className="flex items-center gap-4">
             <a
               href="tel:19008888"
-              className="hover:text-amber-300 flex items-center gap-1"
+              className="hover:text-red-400 flex items-center gap-1 transition-colors"
             >
-              <PhoneCall size={12} /> Hotline: 0393.241003
+              <PhoneCall size={12} className="text-red-500" /> Hotline: 0393.241003
             </a>
           </div>
         </div>
@@ -92,14 +92,14 @@ export const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-6">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-15 h-15 rounded-xl flex items-center justify-center text-amber-300 shadow-md group-hover:scale-105 transition-transform">
-            <img src="/logo1.png" alt="" />          
+          <div className="w-15 h-15 rounded-xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+            <img src="/logo1.png" alt="Logo" />          
           </div>
           <div>
             <span className="text-xl font-bold font-serif-heading text-stone-900 tracking-tight block leading-none">
               {APP_NAME}
             </span>
-            <span className="text-[10px] text-amber-800 tracking-widest uppercase font-semibold">
+            <span className="text-[10px] text-red-700 tracking-widest uppercase font-bold">
               Interior Luxury
             </span>
           </div>
@@ -124,13 +124,13 @@ export const Header: React.FC = () => {
           {/* Wishlist */}
           <Link
             to="/wishlist"
-            className="relative p-2 text-stone-700 hover:text-amber-900 transition-colors"
+            className="relative p-2 text-stone-700 hover:text-red-700 transition-colors"
           >
             <Badge
               count={wishlistIds.length}
               overflowCount={99}
               size="small"
-              color="#92400e"
+              color="#dc2626"
             >
               <Heart size={22} />
             </Badge>
@@ -139,21 +139,21 @@ export const Header: React.FC = () => {
           {/* Cart Drawer Link */}
           <Link
             to="/cart"
-            className="flex items-center gap-2 p-2 rounded-xl bg-stone-100 hover:bg-amber-100/60 transition-colors text-stone-800"
+            className="flex items-center gap-2 p-2 rounded-xl bg-stone-100 hover:bg-red-50 transition-colors text-stone-800"
           >
             <Badge
               count={itemCount}
               overflowCount={99}
               size="small"
-              color="#78350f"
+              color="#dc2626"
             >
-              <ShoppingBag size={22} className="text-amber-950" />
+              <ShoppingBag size={22} className="text-stone-800" />
             </Badge>
             <div className="hidden lg:flex flex-col text-left">
               <span className="text-[10px] text-stone-500 font-medium leading-none">
                 Giỏ hàng
               </span>
-              <span className="text-xs font-bold text-amber-950 leading-tight">
+              <span className="text-xs font-bold text-red-700 leading-tight">
                 {subtotal.toLocaleString("vi-VN")}₫
               </span>
             </div>
@@ -172,7 +172,7 @@ export const Header: React.FC = () => {
                   "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
                 }
                 alt={user?.name || "User"}
-                className="w-8 h-8 rounded-full object-cover border border-amber-800/20"
+                className="w-8 h-8 rounded-full object-cover border border-red-700/20"
               />
               <span className="hidden md:inline text-xs font-semibold text-stone-800">
                 {user?.name.split(" ")[0]}
@@ -214,7 +214,7 @@ export const Header: React.FC = () => {
           <Link
             to="/products"
             onClick={() => setMobileMenuOpen(false)}
-            className="py-2 px-3 rounded-lg font-bold text-amber-900 bg-amber-50"
+            className="py-2 px-3 rounded-lg font-bold text-red-700 bg-red-50"
           >
             Tất cả Sản Phẩm
           </Link>
@@ -223,7 +223,7 @@ export const Header: React.FC = () => {
               key={cat.id}
               to={`/products?category=${cat.id}`}
               onClick={() => setMobileMenuOpen(false)}
-              className="py-2 px-3 rounded-lg hover:bg-stone-100 text-stone-800"
+              className="py-2 px-3 rounded-lg hover:bg-stone-100 text-stone-800 hover:text-red-700"
             >
               {cat.name}
             </Link>
@@ -233,14 +233,14 @@ export const Header: React.FC = () => {
             <Link
               to="/orders"
               onClick={() => setMobileMenuOpen(false)}
-              className="py-2 text-stone-700"
+              className="py-2 text-stone-700 hover:text-red-700"
             >
               Quản lý Đơn hàng
             </Link>
             <Link
               to="/wishlist"
               onClick={() => setMobileMenuOpen(false)}
-              className="py-2 text-stone-700"
+              className="py-2 text-stone-700 hover:text-red-700"
             >
               Sản phẩm Yêu thích ({wishlistIds.length})
             </Link>
