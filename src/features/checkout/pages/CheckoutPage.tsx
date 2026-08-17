@@ -72,8 +72,8 @@ export const CheckoutPage: React.FC = () => {
           phone: user?.phone || '',
           email: user?.email || '',
           address: user?.address || '',
-          city: 'TP. Hồ Chí Minh',
-          district: 'Bình Thạnh',
+          city: 'TP. Hà Nội',
+          district: 'Quận Hà Đông',
         }}
       >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
