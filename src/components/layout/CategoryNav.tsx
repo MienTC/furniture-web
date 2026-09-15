@@ -1,10 +1,11 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { SlidersHorizontal } from "lucide-react";
-import { MOCK_CATEGORIES } from "~/mock/data";
+import { useCategories } from "~/features/products/hooks/useCategory";
 
 export const CategoryNav: React.FC = () => {
   const location = useLocation();
+  const { categories } = useCategories();
 
   return (
     <nav className="hidden md:block bg-stone-100/70 border-t border-stone-200/60">
@@ -20,7 +21,7 @@ export const CategoryNav: React.FC = () => {
           >
             <SlidersHorizontal size={14} /> Tất cả Sản phẩm
           </Link>
-          {MOCK_CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <Link
               key={cat.id}
               to={`/products?category=${cat.id}`}
@@ -30,11 +31,8 @@ export const CategoryNav: React.FC = () => {
             </Link>
           ))}
         </div>
-
         <div className="flex items-center gap-4 text-amber-900 font-medium">
-          <Link to="/orders" className="hover:underline">
-            Theo dõi đơn hàng
-          </Link>
+          <Link to="/orders" className="hover:underline">Theo dõi đơn hàng</Link>
         </div>
       </div>
     </nav>
