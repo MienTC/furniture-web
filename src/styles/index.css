@@ -6,30 +6,13 @@
     color: #292524;
     background-color: #fafaf9;
   }
-  
-  h1, h2, h3, .font-serif-heading {
-    font-family: 'Playfair Display', serif;
-  }
 }
 
 /* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f5f5f4;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #d6d3d1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a29e;
-}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f5f5f4; }
+::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
 
 /* Glassmorphism utility */
 .glass-panel {
@@ -45,18 +28,6 @@
 }
 
 /* Antd customization tweaks */
-.ant-btn-primary {
-  background-color: #78350f !important;
-  border-color: #78350f !important;
-}
-
-.ant-btn-primary:hover {
-  background-color: #92400e !important;
-  border-color: #92400e !important;
-}
-
-.ant-tag-amber {
-  color: #b45309;
-  background: #fffbeb;
-  border-color: #fde68a;
-}
+.ant-btn-primary { background-color: #78350f !important; border-color: #78350f !important; }
+.ant-btn-primary:hover { background-color: #92400e !important; border-color: #92400e !important; }
+.ant-tag-amber { color: #b45309; background: #fffbeb; border-color: #fde68a; }
