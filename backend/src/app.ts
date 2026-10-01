@@ -33,6 +33,14 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Health check root endpoint for VibeHost & uptime monitors
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'LuxDecor API Server' });
+});
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // Swagger UI Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
