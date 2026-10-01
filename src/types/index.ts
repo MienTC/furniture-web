@@ -1,7 +1,9 @@
-export type CategoryId = 'phong-khach' | 'phong-ngu' | 'phong-an' | 'phong-lam-viec' | 'den-trang-tri';
+export type CategoryId = string;
 
 export interface Category {
   id: CategoryId;
+  s_ID?: string;
+  parentId?: string | null;
   name: string;
   slug: string;
   description: string;
@@ -44,16 +46,36 @@ export interface Product {
   description: string;
   specifications: Record<string, string>;
   reviews?: Review[];
+  variants?: ProductVariant[];
+}
+
+export interface ProductVariant {
+  id?: string;
+  s_ID?: string;
+  s_product_ID?: string;
+  sku?: string;
+  variant_name: string;
+  color?: string;
+  size?: string;
+  material?: string;
+  image_url?: string;
+  list_price?: number;
+  sale_price: number;
+  stock_quantity?: number;
 }
 
 export interface CartItem {
   product: Product;
   quantity: number;
   selectedColor?: string;
+  selectedVariant?: ProductVariant;
+  selectedPrice?: number;
 }
 
 export interface Voucher {
+  id?: string;
   code: string;
+  name?: string;
   discountType: 'percentage' | 'fixed';
   discountValue: number;
   minOrderValue: number;
@@ -107,3 +129,6 @@ export interface ProductFilterParams {
   onSaleOnly?: boolean;
   sortBy?: 'featured' | 'price-asc' | 'price-desc' | 'rating' | 'newest';
 }
+
+export * from './response.type';
+export * from './banner.type';

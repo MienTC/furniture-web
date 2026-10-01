@@ -5,7 +5,15 @@ import { useWishlist } from "~/contexts/WishlistContext";
 import { useAuth } from "~/contexts/AuthContext";
 import { useCategories } from "~/features/products/hooks/useCategory";
 import { APP_NAME } from "~/common/constants";
-import { ShoppingBag, Heart, Search, Menu, PhoneCall, ShieldCheck, Truck } from "lucide-react";
+import {
+  ShoppingBag,
+  Heart,
+  Search,
+  Menu,
+  PhoneCall,
+  ShieldCheck,
+  Truck,
+} from "lucide-react";
 import { Badge, Dropdown, MenuProps, Drawer, Input } from "antd";
 import { CategoryNav } from "./CategoryNav";
 
@@ -16,26 +24,39 @@ export const Header: React.FC = () => {
   const { user, logout } = useAuth();
   const { categories } = useCategories();
 
-  const [searchQuery, setSearchQuery]   = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    if (searchQuery.trim())
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
   };
 
   const userMenuItems: MenuProps["items"] = [
-    { key: "user-info", label: (
-      <div className="py-1 px-1">
-        <p className="font-bold text-stone-800">{user?.name}</p>
-        <p className="text-xs text-stone-500">{user?.email}</p>
-      </div>
-    )},
+    {
+      key: "user-info",
+      label: (
+        <div className="py-1 px-1">
+          <p className="font-bold text-stone-800">{user?.name}</p>
+          <p className="text-xs text-stone-500">{user?.email}</p>
+        </div>
+      ),
+    },
     { type: "divider" },
-    { key: "orders",   label: <Link to="/orders">Đơn hàng của tôi</Link> },
-    { key: "wishlist", label: <Link to="/wishlist">Sản phẩm yêu thích ({wishlistIds.length})</Link> },
+    { key: "orders", label: <Link to="/orders">Đơn hàng của tôi</Link> },
+    {
+      key: "wishlist",
+      label: (
+        <Link to="/wishlist">Sản phẩm yêu thích ({wishlistIds.length})</Link>
+      ),
+    },
     { type: "divider" },
-    { key: "logout", danger: true, label: <span onClick={logout}>Đăng xuất</span> },
+    {
+      key: "logout",
+      danger: true,
+      label: <span onClick={logout}>Đăng xuất</span>,
+    },
   ];
 
   return (
@@ -45,13 +66,18 @@ export const Header: React.FC = () => {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
-              <Truck size={14} className="text-amber-400" /> Miễn phí vận chuyển đơn từ 15 triệu
+              <Truck size={14} className="text-amber-400" /> Miễn phí vận chuyển
+              đơn từ 15 triệu
             </span>
             <span className="hidden md:flex items-center gap-1.5">
-              <ShieldCheck size={14} className="text-amber-400" /> Bảo hành 5 năm
+              <ShieldCheck size={14} className="text-amber-400" /> Bảo hành 5
+              năm
             </span>
           </div>
-          <a href="tel:0393241003" className="hover:text-amber-300 flex items-center gap-1">
+          <a
+            href="tel:0393241003"
+            className="hover:text-amber-300 flex items-center gap-1"
+          >
             <PhoneCall size={12} /> Hotline: 0393.241003
           </a>
         </div>
@@ -64,12 +90,19 @@ export const Header: React.FC = () => {
             <img src="/logo1.png" alt="" />
           </div>
           <div>
-            <span className="text-xl font-bold text-stone-900 tracking-tight block leading-none">{APP_NAME}</span>
-            <span className="text-[10px] text-amber-800 tracking-widest uppercase font-semibold">Interior Luxury</span>
+            <span className="text-2xl font-black font-serif text-stone-900 tracking-tight block leading-none">
+              {APP_NAME}
+            </span>
+            <span className="text-[10px] text-amber-800 tracking-widest uppercase font-semibold">
+              Interior Luxury
+            </span>
           </div>
         </Link>
 
-        <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md">
+        <form
+          onSubmit={handleSearch}
+          className="hidden md:flex flex-1 max-w-md"
+        >
           <Input
             placeholder="Nhập từ khóa, mở lối không gian!"
             value={searchQuery}
@@ -80,26 +113,53 @@ export const Header: React.FC = () => {
         </form>
 
         <div className="flex items-center gap-3 md:gap-5">
-          <Link to="/wishlist" className="relative p-2 text-stone-700 hover:text-amber-900 transition-colors">
-            <Badge count={wishlistIds.length} overflowCount={99} size="small" color="#92400e">
+          <Link
+            to="/wishlist"
+            className="relative p-2 text-stone-700 hover:text-amber-900 transition-colors"
+          >
+            <Badge
+              count={wishlistIds.length}
+              overflowCount={99}
+              size="small"
+              color="#92400e"
+            >
               <Heart size={22} />
             </Badge>
           </Link>
 
-          <Link to="/cart" className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-stone-100 hover:bg-amber-100/60 transition-colors text-stone-800 min-w-[120px]">
-            <Badge count={itemCount} overflowCount={99} size="small" color="#78350f">
+          <Link
+            to="/cart"
+            className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-stone-100 hover:bg-amber-100/60 transition-colors text-stone-800 min-w-[120px]"
+          >
+            <Badge
+              count={itemCount}
+              overflowCount={99}
+              size="small"
+              color="#78350f"
+            >
               <ShoppingBag size={22} className="text-amber-950" />
             </Badge>
             <div className="flex flex-col text-left">
-              <span className="text-[10px] text-stone-500 font-medium leading-none">Giỏ hàng</span>
-              <span className="text-xs font-bold text-amber-950 leading-tight">{subtotal.toLocaleString("vi-VN")}₫</span>
+              <span className="text-[10px] text-stone-500 font-medium leading-none">
+                Giỏ hàng
+              </span>
+              <span className="text-xs font-bold text-amber-950 leading-tight">
+                {subtotal.toLocaleString("vi-VN")}₫
+              </span>
             </div>
           </Link>
 
-          <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" trigger={["click"]}>
+          <Dropdown
+            menu={{ items: userMenuItems }}
+            placement="bottomRight"
+            trigger={["click"]}
+          >
             <button className="flex items-center gap-2 p-1.5 rounded-full hover:bg-stone-100 transition-colors">
               <img
-                src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"}
+                src={
+                  user?.avatar ||
+                  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+                }
                 alt={user?.name || "User"}
                 className="w-8 h-8 rounded-full object-cover border border-amber-800/20"
               />
@@ -109,7 +169,10 @@ export const Header: React.FC = () => {
             </button>
           </Dropdown>
 
-          <button onClick={() => setMobileMenuOpen(true)} className="md:hidden p-2 text-stone-700">
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="md:hidden p-2 text-stone-700"
+          >
             <Menu size={24} />
           </button>
         </div>
@@ -118,22 +181,74 @@ export const Header: React.FC = () => {
       <CategoryNav />
 
       {/* Mobile Drawer */}
-      <Drawer title="Danh Mục Nội Thất" placement="left" onClose={() => setMobileMenuOpen(false)} open={mobileMenuOpen} width={300}>
+      <Drawer
+        title="Danh Mục Nội Thất"
+        placement="left"
+        onClose={() => setMobileMenuOpen(false)}
+        open={mobileMenuOpen}
+        width={300}
+      >
         <div className="flex flex-col gap-3">
           <form onSubmit={handleSearch} className="mb-2">
-            <Input placeholder="Tìm kiếm..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} prefix={<Search size={16} />} />
+            <Input
+              placeholder="Tìm kiếm..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              prefix={<Search size={16} />}
+            />
           </form>
-          <Link to="/products" onClick={() => setMobileMenuOpen(false)} className="py-2 px-3 rounded-lg font-bold text-amber-900 bg-amber-50">
+          <Link
+            to="/products"
+            onClick={() => setMobileMenuOpen(false)}
+            className="py-2 px-3 rounded-lg font-bold text-amber-900 bg-amber-50"
+          >
             Tất cả Sản Phẩm
           </Link>
-          {categories.map((cat) => (
-            <Link key={cat.id} to={`/products?category=${cat.id}`} onClick={() => setMobileMenuOpen(false)} className="py-2 px-3 rounded-lg hover:bg-stone-100 text-stone-800">
-              {cat.name}
-            </Link>
-          ))}
+          {categories
+            .filter((c) => !c.parentId)
+            .map((cat) => {
+              const subs = categories.filter((c) => c.parentId === cat.id);
+              return (
+                <div key={cat.id} className="space-y-1">
+                  <Link
+                    to={`/products?category=${cat.id}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="py-2 px-3 rounded-lg hover:bg-stone-100 text-stone-900 font-bold block text-sm"
+                  >
+                    {cat.name}
+                  </Link>
+                  {subs.length > 0 && (
+                    <div className="pl-4 space-y-1 border-l-2 border-stone-200 ml-2">
+                      {subs.map((sub) => (
+                        <Link
+                          key={sub.id}
+                          to={`/products?category=${sub.id}`}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="block py-1 px-2 rounded text-xs text-stone-600 hover:text-amber-900 hover:bg-amber-50"
+                        >
+                          {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           <div className="mt-4 pt-4 border-t border-stone-200 flex flex-col gap-2">
-            <Link to="/orders" onClick={() => setMobileMenuOpen(false)} className="py-2 text-stone-700">Quản lý Đơn hàng</Link>
-            <Link to="/wishlist" onClick={() => setMobileMenuOpen(false)} className="py-2 text-stone-700">Sản phẩm Yêu thích ({wishlistIds.length})</Link>
+            <Link
+              to="/orders"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2 text-stone-700"
+            >
+              Quản lý Đơn hàng
+            </Link>
+            <Link
+              to="/wishlist"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2 text-stone-700"
+            >
+              Sản phẩm Yêu thích ({wishlistIds.length})
+            </Link>
           </div>
         </div>
       </Drawer>

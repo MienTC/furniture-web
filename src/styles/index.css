@@ -1,10 +1,21 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
 @layer base {
-  body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
+  html, body {
+    font-family: var(--font-sans);
     color: #292524;
     background-color: #fafaf9;
+    letter-spacing: -0.01em;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    letter-spacing: -0.02em;
   }
 }
 
@@ -31,3 +42,55 @@
 .ant-btn-primary { background-color: #78350f !important; border-color: #78350f !important; }
 .ant-btn-primary:hover { background-color: #92400e !important; border-color: #92400e !important; }
 .ant-tag-amber { color: #b45309; background: #fffbeb; border-color: #fde68a; }
+
+/* Product Rich HTML Description Styling */
+.ck-content {
+  font-family: var(--font-sans);
+  color: #44403c;
+  line-height: 1.7;
+}
+
+.ck-content h1, .ck-content h2, .ck-content h3, .ck-content h4 {
+  font-weight: 700;
+  color: #1c1917;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ck-content h1 { font-size: 1.4rem; }
+.ck-content h2 { font-size: 1.25rem; }
+.ck-content h3 { font-size: 1.125rem; }
+
+.ck-content p {
+  margin-bottom: 1rem;
+}
+
+.ck-content ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.ck-content ol {
+  list-style-type: decimal;
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.ck-content img {
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 0.75rem;
+  margin: 1.25rem auto;
+  display: block;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.ck-content a {
+  color: #b45309;
+  text-decoration: underline;
+  font-weight: 500;
+}
+.ck-content a:hover {
+  color: #78350f;
+}

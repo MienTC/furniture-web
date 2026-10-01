@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Tag as TagIcon, Copy, CheckCircle2, LogIn, UserPlus } from 'lucide-react';
 import { Button, message } from 'antd';
-import type { IFVoucher } from '~/mock/vouchers/mock-vouchers';
+import type { IFVoucher } from '~/types';
 
 export const VoucherSuccessPopup: React.FC<{ voucher: IFVoucher; onClose: () => void }> = ({ voucher, onClose }) => {
   const [copied, setCopied] = useState(false);

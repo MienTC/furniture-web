@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { productService } from '~/services/productService';
 import { useCart } from '~/contexts/CartContext';
 import { useWishlist } from '~/contexts/WishlistContext';
 import { ProductGallery } from '~/features/products/components/ProductGallery';
@@ -8,17 +7,40 @@ import { ProductInfo } from '~/features/products/components/ProductInfo';
 import { ProductActions } from '~/features/products/components/ProductActions';
 import { ProductTabs } from '~/features/products/components/ProductTabs';
 import { ProductCard } from '~/components/ui/ProductCard';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
+import { useProductDetail, useProducts } from '../hooks/useProduct';
 
 export const ProductDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { toggleWishlist, isWishlisted } = useWishlist();
-  const product = productService.getProductBySlug(slug ?? '');
+
+  const { product, isProductLoading } = useProductDetail(slug ?? '');
+  const { products: relatedProducts } = useProducts(
+    product ? { categoryId: product.categoryId } : undefined
+  );
+
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
+  const [selectedVariant, setSelectedVariant] = useState<import('~/types').ProductVariant | null>(null);
   const [quantity, setQuantity]           = useState(1);
+
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    if (product?.variants && product.variants.length > 0) {
+      setSelectedVariant(product.variants[0]);
+    }
+  }, [slug, product]);
+
+  if (isProductLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-24 text-center flex flex-col items-center justify-center space-y-4">
+        <Loader2 className="animate-spin text-amber-900" size={36} />
+        <p className="text-sm font-medium text-stone-600">Đang tải thông tin chi tiết sản phẩm...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -32,7 +54,7 @@ export const ProductDetailPage: React.FC = () => {
   const activeImage = selectedImage || product.images[0];
   const activeColor = selectedColor || product.colorOptions[0];
   const liked       = isWishlisted(product.id);
-  const related     = productService.getProducts({ categoryId: product.categoryId }).filter(p => p.id !== product.id).slice(0, 4);
+  const related     = relatedProducts.filter(p => p.id !== product.id).slice(0, 4);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
@@ -42,12 +64,21 @@ export const ProductDetailPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         <ProductGallery product={product} activeImage={activeImage} onSelect={setSelectedImage} />
         <div className="space-y-6">
-          <ProductInfo product={product} activeColor={activeColor} onSelectColor={setSelectedColor} />
+          <ProductInfo
+            product={product}
+            activeColor={activeColor}
+            onSelectColor={setSelectedColor}
+            selectedVariant={selectedVariant}
+            onSelectVariant={setSelectedVariant}
+          />
           <ProductActions
             product={product} quantity={quantity} liked={liked}
             onQuantityChange={setQuantity}
-            onAddToCart={() => addToCart(product, quantity, activeColor)}
-            onBuyNow={() => { addToCart(product, quantity, activeColor); navigate('/checkout'); }}
+            onAddToCart={() => addToCart(product, quantity, activeColor, selectedVariant || undefined, selectedVariant?.sale_price)}
+            onBuyNow={() => {
+              addToCart(product, quantity, activeColor, selectedVariant || undefined, selectedVariant?.sale_price);
+              navigate('/checkout');
+            }}
             onToggleWishlist={() => toggleWishlist(product.id)}
           />
         </div>

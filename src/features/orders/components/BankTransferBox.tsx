@@ -1,12 +1,18 @@
 import React from 'react';
 import { QrCode } from 'lucide-react';
 import { formatVND } from '~/common/utils/formatters';
-import { MOCK_BANK_INFO } from '~/mock/payment/mock-payment';
+
+const BANK_INFO = {
+  bankName: 'MB Bank',
+  accountNumber: '1234567890',
+  accountHolder: 'LUX DECOR',
+  qrApiBase: 'https://api.qrserver.com/v1/create-qr-code/',
+};
 
 interface Props { orderId: string; totalAmount: number; }
 
 export const BankTransferBox: React.FC<Props> = ({ orderId, totalAmount }) => {
-  const bank = MOCK_BANK_INFO;
+  const bank = BANK_INFO;
   const qrData = `STK:${bank.accountNumber}-${bank.accountHolder.replace(/\s/g, '')}-ND:${orderId}-AMOUNT:${totalAmount}`;
   return (
     <div className="bg-amber-950 text-amber-50 p-6 sm:p-8 rounded-2xl border border-amber-800 space-y-4">

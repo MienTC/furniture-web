@@ -1,5 +1,4 @@
 import { CartItem, Order, Product, User } from '~/types';
-import { MOCK_INITIAL_ORDERS, MOCK_PRODUCTS, MOCK_USERS } from '~/mock/data';
 
 const CART_KEY = 'luxdecor_cart';
 const WISHLIST_KEY = 'luxdecor_wishlist';
@@ -38,13 +37,9 @@ export const storageService = {
   getOrders(): Order[] {
     try {
       const data = localStorage.getItem(ORDERS_KEY);
-      if (!data) {
-        localStorage.setItem(ORDERS_KEY, JSON.stringify(MOCK_INITIAL_ORDERS));
-        return MOCK_INITIAL_ORDERS;
-      }
-      return JSON.parse(data);
+      return data ? JSON.parse(data) : [];
     } catch {
-      return MOCK_INITIAL_ORDERS;
+      return [];
     }
   },
   saveOrders(orders: Order[]): void {
@@ -55,13 +50,9 @@ export const storageService = {
   getProducts(): Product[] {
     try {
       const data = localStorage.getItem(PRODUCTS_KEY);
-      if (!data) {
-        localStorage.setItem(PRODUCTS_KEY, JSON.stringify(MOCK_PRODUCTS));
-        return MOCK_PRODUCTS;
-      }
-      return JSON.parse(data);
+      return data ? JSON.parse(data) : [];
     } catch {
-      return MOCK_PRODUCTS;
+      return [];
     }
   },
   saveProducts(products: Product[]): void {
@@ -72,9 +63,9 @@ export const storageService = {
   getUser(): User | null {
     try {
       const data = localStorage.getItem(USER_KEY);
-      return data ? JSON.parse(data) : MOCK_USERS[1]; // default customer
+      return data ? JSON.parse(data) : null;
     } catch {
-      return MOCK_USERS[1];
+      return null;
     }
   },
   saveUser(user: User | null): void {

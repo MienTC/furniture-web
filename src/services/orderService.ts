@@ -1,7 +1,7 @@
-import { Order, OrderStatus, OrderCustomerInfo, CartItem, Voucher } from '~/types';
+import { Order, OrderStatus, OrderCustomerInfo, CartItem, Voucher, IFVoucher } from '~/types';
 import { storageService } from './storageService';
-import { MOCK_VOUCHERS } from '~/mock/data';
 import { SHIPPING_FEE, FREE_SHIPPING_THRESHOLD } from '~/common/constants';
+import instanceBE from './v1/instance';
 
 export const orderService = {
   getOrders(): Order[] {
@@ -12,17 +12,31 @@ export const orderService = {
     return storageService.getOrders().find(o => o.id === id);
   },
 
-  validateVoucher(code: string, subtotal: number): { valid: boolean; voucher?: Voucher; error?: string } {
-    const voucher = MOCK_VOUCHERS.find(v => v.code.toUpperCase() === code.trim().toUpperCase());
-    if (!voucher) {
-      return { valid: false, error: 'Mã giảm giá không tồn tại' };
-    }
+  async validateVoucher(code: string, subtotal: number): Promise<{ valid: boolean; voucher?: Voucher; error?: string }> {
+    try {
+      const res: any = await instanceBE.get(`/vouchers/${code}`);
+      const v: IFVoucher = res.data;
+      if (!v) return { valid: false, error: 'Mã giảm giá không tồn tại' };
 
-    if (subtotal < voucher.minOrderValue) {
-      return { valid: false, error: `Mã áp dụng cho đơn hàng tối thiểu ${voucher.minOrderValue.toLocaleString('vi-VN')}₫` };
-    }
+      if (subtotal < (v.minOrderValue || 0)) {
+        return { valid: false, error: `Mã áp dụng cho đơn hàng tối thiểu ${(v.minOrderValue || 0).toLocaleString('vi-VN')}₫` };
+      }
 
-    return { valid: true, voucher };
+      return {
+        valid: true,
+        voucher: {
+          code: v.code,
+          name: v.name,
+          discountType: v.discountType,
+          discountValue: v.discountValue,
+          minOrderValue: v.minOrderValue,
+          maxDiscount: v.maxDiscount,
+          description: v.description,
+        }
+      };
+    } catch (err: any) {
+      return { valid: false, error: err.message || 'Mã giảm giá không hợp lệ' };
+    }
   },
 
   calculateDiscount(voucher: Voucher, subtotal: number): number {
@@ -44,13 +58,6 @@ export const orderService = {
     const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
     
     let discountAmount = 0;
-    if (voucherCode) {
-      const vResult = this.validateVoucher(voucherCode, subtotal);
-      if (vResult.valid && vResult.voucher) {
-        discountAmount = this.calculateDiscount(vResult.voucher, subtotal);
-      }
-    }
-
     const shippingFee = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
     const totalAmount = Math.max(0, subtotal - discountAmount + shippingFee);
 
@@ -67,22 +74,20 @@ export const orderService = {
       voucherCode,
     };
 
-    const orders = storageService.getOrders();
-    orders.unshift(newOrder);
-    storageService.saveOrders(orders);
-    
-    // Clear cart after creating order
-    storageService.saveCart([]);
+    const currentOrders = storageService.getOrders();
+    currentOrders.unshift(newOrder);
+    storageService.saveOrders(currentOrders);
 
     return newOrder;
   },
 
-  updateOrderStatus(orderId: string, status: OrderStatus): Order | null {
+  updateOrderStatus(orderId: string, status: OrderStatus): boolean {
     const orders = storageService.getOrders();
     const index = orders.findIndex(o => o.id === orderId);
-    if (index === -1) return null;
+    if (index === -1) return false;
+
     orders[index].status = status;
     storageService.saveOrders(orders);
-    return orders[index];
+    return true;
   }
 };

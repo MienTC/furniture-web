@@ -3,7 +3,7 @@ import { Flame, Clock, Tag as TagIcon, X } from 'lucide-react';
 import { Skeleton, Modal } from 'antd';
 import { useAuth } from '~/contexts/AuthContext';
 import { VoucherSuccessPopup, LoginRequiredPopup } from './VoucherPopup';
-import type { IFVoucher } from '~/mock/vouchers/mock-vouchers';
+import type { IFVoucher } from '~/types';
 
 interface Props { vouchers: IFVoucher[]; isLoading: boolean; }
 
