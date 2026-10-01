@@ -1,6 +1,6 @@
 import React from 'react';
 import { Carousel } from 'antd';
-import type { IFBanner } from '~/mock/banners/mock-banners';
+import type { IFBanner } from '~/types';
 
 interface Props { banners: IFBanner[]; isLoading: boolean; }
 

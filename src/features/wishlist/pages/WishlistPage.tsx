@@ -1,13 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useWishlist } from '~/contexts/WishlistContext';
-import { productService } from '~/services/productService';
 import { ProductCard } from '~/components/ui/ProductCard';
-import { Heart, ArrowRight } from 'lucide-react';
+import { Heart, ArrowRight, Loader2 } from 'lucide-react';
+import { useProducts } from '~/features/products/hooks/useProduct';
 
 export const WishlistPage: React.FC = () => {
   const { wishlistIds } = useWishlist();
-  const products = productService.getProducts().filter(p => wishlistIds.includes(p.id));
+  const { products: allProducts, isProductsLoading } = useProducts();
+  const products = allProducts.filter(p => wishlistIds.includes(p.id));
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
@@ -15,7 +16,12 @@ export const WishlistPage: React.FC = () => {
         <h1 className="text-2xl sm:text-3xl font-bold text-stone-900">Sản Phẩm Yêu Thích</h1>
         <p className="text-xs text-stone-500">Đang có {products.length} sản phẩm được lưu</p>
       </div>
-      {products.length === 0 ? (
+      {isProductsLoading ? (
+        <div className="bg-white rounded-2xl p-16 text-center border border-stone-200 flex flex-col items-center justify-center space-y-3">
+          <Loader2 className="animate-spin text-amber-900" size={32} />
+          <p className="text-sm text-stone-500">Đang tải danh sách yêu thích...</p>
+        </div>
+      ) : products.length === 0 ? (
         <div className="bg-white rounded-2xl p-12 text-center border border-stone-200 space-y-4">
           <div className="w-16 h-16 rounded-full bg-stone-100 mx-auto flex items-center justify-center text-stone-400"><Heart size={32} /></div>
           <h3 className="font-bold text-stone-800 text-lg">Chưa có sản phẩm yêu thích</h3>

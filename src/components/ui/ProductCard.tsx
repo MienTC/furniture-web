@@ -22,102 +22,84 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     : product.price;
 
   return (
-    <div className="group relative bg-white rounded-2xl overflow-hidden border border-stone-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+    <div className="group relative bg-white rounded-xl overflow-hidden hover:shadow-2xl transition-all duration-500 flex flex-col h-full border border-transparent hover:border-amber-100">
       {/* Image Container */}
-      <div className="relative aspect-4/3 overflow-hidden bg-stone-100">
+      <div className="relative aspect-[4/5] overflow-hidden bg-stone-100">
         <img
           src={product.images[0]}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
         />
+        {/* Overlay gradient for a premium feel */}
+        <div className="absolute inset-0 bg-gradient-to-t from-stone-900/40 via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
         {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start">
+        <div className="absolute top-4 left-4 flex flex-col gap-2 items-start">
           {product.discountPercent && (
-            <Tag color="error" className="font-bold border-none px-2.5 py-0.5 rounded-full text-xs shadow-sm">
+            <span className="bg-amber-900 text-white font-bold px-2 py-1 rounded text-[10px] uppercase tracking-wider shadow-sm">
               -{product.discountPercent}%
-            </Tag>
+            </span>
           )}
           {product.isNew && (
-            <Tag color="gold" className="font-bold border-none px-2.5 py-0.5 rounded-full text-xs shadow-sm">
+            <span className="bg-stone-900 text-amber-100 font-bold px-2 py-1 rounded text-[10px] uppercase tracking-wider shadow-sm">
               MỚI
-            </Tag>
-          )}
-          {product.isBestSeller && (
-            <Tag color="volcano" className="font-bold border-none px-2.5 py-0.5 rounded-full text-xs shadow-sm">
-              HOT BÁN CHẠY
-            </Tag>
+            </span>
           )}
         </div>
 
         {/* Wishlist Button */}
         <button
           onClick={() => toggleWishlist(product.id)}
-          className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+          className={`absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all z-10 ${
             liked
-              ? 'bg-rose-500 text-white shadow-md'
-              : 'bg-white/90 text-stone-600 hover:text-rose-500 hover:bg-white shadow-sm'
+              ? 'bg-amber-900 text-white shadow-md'
+              : 'bg-white/80 backdrop-blur-md text-stone-600 hover:text-amber-900 hover:bg-white shadow-sm'
           }`}
           title="Yêu thích"
         >
-          <Heart size={18} className={liked ? 'fill-current' : ''} />
+          <Heart size={16} className={liked ? 'fill-current' : ''} />
         </button>
 
         {/* Hover Quick Action overlay */}
-        <div className="absolute inset-x-0 bottom-3 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-2 justify-center">
+        <div className="absolute inset-x-0 bottom-4 px-4 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0 flex gap-3 justify-center z-10">
           <Link
             to={`/products/${product.slug}`}
-            className="flex-1 bg-white/90 hover:bg-white text-stone-800 font-medium text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md backdrop-blur-sm transition-all"
+            className="flex-1 bg-white hover:bg-stone-50 text-stone-900 font-semibold text-xs py-3 px-4 rounded flex items-center justify-center gap-2 shadow-lg transition-all uppercase tracking-wider"
           >
             <Eye size={14} /> Chi tiết
           </Link>
           <button
             onClick={() => addToCart(product)}
-            className="flex-1 bg-amber-900 hover:bg-amber-800 text-white font-medium text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md transition-all"
+            className="flex-1 bg-amber-900 hover:bg-amber-950 text-white font-semibold text-xs py-3 px-4 rounded flex items-center justify-center gap-2 shadow-lg transition-all uppercase tracking-wider"
           >
-            <ShoppingBag size={14} /> Thêm vào giỏ
+            <ShoppingBag size={14} /> Mua ngay
           </button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-4 flex-1 flex flex-col justify-between">
-        <div>
-          <span className="text-xs font-semibold text-amber-800 tracking-wide uppercase mb-1 block">
-            {product.categoryName}
+      <div className="p-5 flex-1 flex flex-col items-center text-center">
+        <span className="text-[10px] font-semibold text-stone-500 tracking-[0.2em] uppercase mb-2 block">
+          {product.categoryName}
+        </span>
+        <Link
+          to={`/products/${product.slug}`}
+          className="font-serif font-bold text-stone-900 hover:text-amber-800 transition-colors line-clamp-2 text-base leading-snug mb-3 px-2"
+        >
+          {product.name}
+        </Link>
+        
+        <RatingStars rating={product.rating} count={product.reviewCount} />
+
+        <div className="mt-auto pt-4 flex flex-col items-center gap-1">
+          <span className="text-lg font-bold text-amber-900 font-serif">
+            {formatVND(finalPrice)}
           </span>
-          <Link
-            to={`/products/${product.slug}`}
-            className="font-medium text-stone-900 hover:text-amber-800 transition-colors line-clamp-2 text-sm leading-snug mb-2"
-          >
-            {product.name}
-          </Link>
-
-          <RatingStars rating={product.rating} count={product.reviewCount} />
-        </div>
-
-        {/* Material & Price Footer */}
-        <div className="mt-3 pt-3 border-t border-stone-100 flex items-center justify-between">
-          <div className="flex flex-col">
-            <span className="text-base font-bold text-amber-950">
-              {formatVND(finalPrice)}
+          {product.discountPercent && (
+            <span className="text-xs text-stone-400 line-through">
+              {formatVND(product.price)}
             </span>
-            {product.discountPercent && (
-              <span className="text-xs text-stone-400 line-through">
-                {formatVND(product.price)}
-              </span>
-            )}
-          </div>
-
-          <Button
-            type="primary"
-            size="small"
-            icon={<ShoppingBag size={14} />}
-            onClick={() => addToCart(product)}
-            className="!rounded-lg text-xs"
-          >
-            Mua ngay
-          </Button>
+          )}
         </div>
       </div>
     </div>

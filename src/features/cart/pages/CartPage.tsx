@@ -6,10 +6,11 @@ import { FreeShippingBar } from '~/features/cart/components/FreeShippingBar';
 import { VoucherBox } from '~/features/cart/components/VoucherBox';
 import { CartOrderSummary } from '~/features/cart/components/CartOrderSummary';
 import { ShoppingBag, Trash2, ArrowRight, ArrowLeft } from 'lucide-react';
-import { MOCK_VOUCHERS } from '~/mock/data';
+import { useVouchers } from '~/features/vouchers/hooks/useVoucher';
 
 export const CartPage: React.FC = () => {
   const navigate = useNavigate();
+  const { vouchers } = useVouchers();
   const { cart, removeFromCart, updateQuantity, clearCart, subtotal, appliedVoucher, discountAmount, applyVoucher, removeVoucher, shippingFee, totalAmount } = useCart();
 
   if (cart.length === 0) {
@@ -49,7 +50,7 @@ export const CartPage: React.FC = () => {
           </Link>
         </div>
         <div className="space-y-6">
-          <VoucherBox appliedVoucher={appliedVoucher} suggestedVouchers={MOCK_VOUCHERS} onApply={applyVoucher} onRemove={removeVoucher} />
+          <VoucherBox appliedVoucher={appliedVoucher} suggestedVouchers={vouchers} onApply={applyVoucher} onRemove={removeVoucher} />
           <CartOrderSummary subtotal={subtotal} discountAmount={discountAmount} shippingFee={shippingFee} totalAmount={totalAmount} onCheckout={() => navigate('/checkout')} />
         </div>
       </div>

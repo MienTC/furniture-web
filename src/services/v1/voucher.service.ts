@@ -1,28 +1,29 @@
-import { APP_ENV } from '~/common/com-env';
-import { MOCK_VOUCHERS } from '~/mock/vouchers/mock-vouchers';
-import type { IFVoucher } from '~/mock/vouchers/mock-vouchers';
+import type { IFVoucher, ResponseAPI } from '~/types';
 import instanceBE from './instance';
 
 export class VoucherService {
   async fetchVouchers(): Promise<IFVoucher[]> {
-    if (APP_ENV.useMock) return MOCK_VOUCHERS;
-    const res = await instanceBE.get<any, any>('/vouchers');
-    return res.data;
+    try {
+      const res = await instanceBE.get<any, ResponseAPI<IFVoucher[]>>('/vouchers');
+      return res.data;
+    } catch (err: any) {
+      throw err;
+    }
   }
 
   async fetchVoucherByCode(code: string): Promise<IFVoucher> {
-    if (APP_ENV.useMock) {
-      const v = MOCK_VOUCHERS.find(x => x.code.toUpperCase() === code.toUpperCase());
-      if (!v) throw new Error(`Mã "${code}" không tồn tại`);
-      return v;
+    try {
+      const res = await instanceBE.get<any, ResponseAPI<IFVoucher>>(`/vouchers/${code}`);
+      return res.data;
+    } catch (err: any) {
+      throw new Error(`Mã "${code}" không hợp lệ hoặc đã hết hạn`);
     }
-    const res = await instanceBE.get<any, any>(`/vouchers/${code}`);
-    return res.data;
   }
 
   validateVoucher(voucher: IFVoucher, subtotal: number): { valid: boolean; error?: string } {
-    if (subtotal < voucher.minOrderValue)
-      return { valid: false, error: `Mã áp dụng cho đơn từ ${voucher.minOrderValue.toLocaleString('vi-VN')}₫` };
+    if (subtotal < (voucher.minOrderValue || 0)) {
+      return { valid: false, error: `Mã áp dụng cho đơn từ ${(voucher.minOrderValue || 0).toLocaleString('vi-VN')}₫` };
+    }
     return { valid: true };
   }
 

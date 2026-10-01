@@ -1,10 +1,10 @@
 # Kế hoạnh Xây dựng Trang web Thương mại Điện tử Bán Đồ Nội thất (Furniture E-Commerce)
 
-Dự án trang web thương mại điện tử bán đồ nội thất cao cấp (**InteriorCraft / Nội Thất LuxDecor**) được thiết kế và cấu trúc chuẩn hóa theo kiến trúc module của dự án tham chiếu `tev-fe-admin`, tích hợp **Ant Design (antd)** và **Tailwind CSS**, cùng hệ thống **Mock Data đầy đủ, phong phú**.
+Dự án trang web thương mại điện tử bán đồ nội thất cao cấp (**InteriorCraft / Nội Thất LuxDecor**) được thiết kế và cấu trúc chuẩn hóa , tích hợp **Ant Design (antd)** và **Tailwind CSS**, cùng hệ thống **Mock Data đầy đủ, phong phú**.
 
 ---
 
-## 🏗️ Kiến trúc & Cấu trúc Dự án (Theo mẫu `tev-fe-admin`)
+## 🏗️ Kiến trúc & Cấu trúc Dự án
 
 Thư mục chính: `e:/FW/noithatweb`
 

@@ -6,7 +6,13 @@ import { message } from 'antd';
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: Product, quantity?: number, selectedColor?: string) => void;
+  addToCart: (
+    product: Product,
+    quantity?: number,
+    selectedColor?: string,
+    selectedVariant?: import('~/types').ProductVariant,
+    priceOverride?: number
+  ) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -15,7 +21,7 @@ interface CartContextType {
   voucherCode: string;
   appliedVoucher: Voucher | null;
   discountAmount: number;
-  applyVoucher: (code: string) => boolean;
+  applyVoucher: (code: string) => Promise<boolean>;
   removeVoucher: () => void;
   shippingFee: number;
   totalAmount: number;
@@ -32,16 +38,35 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     storageService.saveCart(cart);
   }, [cart]);
 
-  const addToCart = (product: Product, quantity = 1, selectedColor?: string) => {
+  const addToCart = (
+    product: Product,
+    quantity = 1,
+    selectedColor?: string,
+    selectedVariant?: import('~/types').ProductVariant,
+    priceOverride?: number
+  ) => {
     setCart((prev) => {
-      const existingIndex = prev.findIndex((item) => item.product.id === product.id);
+      const matchKey = (item: CartItem) =>
+        item.product.id === product.id &&
+        item.selectedColor === (selectedColor || product.colorOptions[0]) &&
+        item.selectedVariant?.s_ID === selectedVariant?.s_ID;
+
+      const existingIndex = prev.findIndex(matchKey);
       if (existingIndex > -1) {
         const updated = [...prev];
         updated[existingIndex].quantity += quantity;
-        if (selectedColor) updated[existingIndex].selectedColor = selectedColor;
         return updated;
       } else {
-        return [...prev, { product, quantity, selectedColor: selectedColor || product.colorOptions[0] }];
+        return [
+          ...prev,
+          {
+            product,
+            quantity,
+            selectedColor: selectedColor || product.colorOptions[0],
+            selectedVariant,
+            selectedPrice: priceOverride ?? selectedVariant?.sale_price ?? product.price,
+          },
+        ];
       }
     });
     message.success(`Đã thêm "${product.name}" vào giỏ hàng!`);
@@ -69,10 +94,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const subtotal = cart.reduce((sum, item) => {
+    const itemPrice = item.selectedPrice ?? item.selectedVariant?.sale_price ?? item.product.price;
+    return sum + itemPrice * item.quantity;
+  }, 0);
 
-  const applyVoucher = (code: string): boolean => {
-    const res = orderService.validateVoucher(code, subtotal);
+  const applyVoucher = async (code: string): Promise<boolean> => {
+    const res = await orderService.validateVoucher(code, subtotal);
     if (!res.valid || !res.voucher) {
       message.error(res.error || 'Mã không hợp lệ');
       return false;
