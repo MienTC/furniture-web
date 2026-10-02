@@ -14,7 +14,9 @@ export interface IFQualityBadge {
 }
 
 export interface IFShowcaseSection {
+  id?: string;
   title: string;
+  subtitle?: string;
   description: string;
   imageUrl: string;
   badges: IFQualityBadge[];

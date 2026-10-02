@@ -5,7 +5,6 @@ import type { IFShowcaseSection } from '~/types';
 
 export const ShowcaseSection: React.FC<{ showcase?: IFShowcaseSection | null }> = ({ showcase: incoming }) => {
   const showcase: IFShowcaseSection = incoming || {
-    id: 'default-showcase',
     title: 'Không Gian Sang Trọng Cho Căn Hộ Đương Đại',
     subtitle: 'Khám phá giải pháp kiến tạo không gian sống với những bộ sưu tập nội thất thông minh, tối ưu diện tích và chuẩn gu thượng lưu.',
     description: 'Khám phá giải pháp kiến tạo không gian sống với những bộ sưu tập nội thất thông minh, tối ưu diện tích và chuẩn gu thượng lưu.',
