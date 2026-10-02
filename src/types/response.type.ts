@@ -4,17 +4,23 @@ export type ResponseAPI<T = any> = {
   message: string;
   data: T;
   traceId: string;
-};
-
-export type ResponsePagination<T = any> = {
-  items: T[];
-  pagination: {
+  pagination?: {
     page: number;
     limit: number;
     total: number;
     totalPages: number;
   };
 };
+
+export interface ProductListResponse {
+  products: import('./index').Product[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
 
 export interface IFTokens {
   access_token: string;

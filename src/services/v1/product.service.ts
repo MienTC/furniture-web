@@ -1,4 +1,4 @@
-import type { Product, ProductFilterParams, Category, ResponseAPI } from '~/types';
+import type { Product, ProductFilterParams, Category, ResponseAPI, ProductListResponse } from '~/types';
 import instanceBE from './instance';
 
 export class ProductService {
@@ -11,7 +11,7 @@ export class ProductService {
     }
   }
 
-  async fetchProducts(params?: ProductFilterParams): Promise<Product[]> {
+  async fetchProducts(params?: ProductFilterParams): Promise<ProductListResponse> {
     try {
       const response = await instanceBE.get<any, ResponseAPI<Product[]>>('/products', {
         params: {
@@ -23,10 +23,19 @@ export class ProductService {
           inStockOnly: params?.inStockOnly ? 'true' : undefined,
           onSaleOnly: params?.onSaleOnly ? 'true' : undefined,
           sortBy: params?.sortBy || undefined,
-          limit: 1000,
+          page: params?.page || 1,
+          limit: params?.limit || 12,
         },
       });
-      return response.data;
+      return {
+        products: response.data || [],
+        pagination: response.pagination || {
+          page: params?.page || 1,
+          limit: params?.limit || 12,
+          total: response.data?.length || 0,
+          totalPages: 1,
+        },
+      };
     } catch (err: any) {
       throw err;
     }

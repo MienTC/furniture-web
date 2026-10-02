@@ -3,6 +3,7 @@ import { Flame, Clock, Tag as TagIcon, X } from 'lucide-react';
 import { Skeleton, Modal } from 'antd';
 import { useAuth } from '~/contexts/AuthContext';
 import { VoucherSuccessPopup, LoginRequiredPopup } from './VoucherPopup';
+import { AuthModal } from '~/components/ui/AuthModal';
 import type { IFVoucher } from '~/types';
 
 interface Props { vouchers: IFVoucher[]; isLoading: boolean; }
@@ -29,7 +30,14 @@ const VoucherCard: React.FC<{ voucher: IFVoucher; onClaim: (v: IFVoucher) => voi
 export const VoucherSection: React.FC<Props> = ({ vouchers, isLoading }) => {
   const { user } = useAuth();
   const [modalOpen, setModalOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authTab, setAuthTab] = useState<'login' | 'register'>('login');
   const [active, setActive] = useState<IFVoucher | null>(null);
+
+  const handleOpenAuth = (tab: 'login' | 'register') => {
+    setAuthTab(tab);
+    setAuthModalOpen(true);
+  };
 
   return (
     <section className="max-w-7xl mx-auto px-4">
@@ -52,9 +60,15 @@ export const VoucherSection: React.FC<Props> = ({ vouchers, isLoading }) => {
       >
         {user && active
           ? <VoucherSuccessPopup voucher={active} onClose={() => setModalOpen(false)} />
-          : <LoginRequiredPopup onClose={() => setModalOpen(false)} />
+          : <LoginRequiredPopup onClose={() => setModalOpen(false)} onOpenAuth={handleOpenAuth} />
         }
       </Modal>
+
+      <AuthModal
+        open={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        defaultTab={authTab}
+      />
     </section>
   );
 };

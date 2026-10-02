@@ -117,6 +117,9 @@ export interface User {
   role: 'customer' | 'admin';
   phone?: string;
   address?: string;
+  s_ID?: string;
+  s_user?: string;
+  avatar_url?: string;
 }
 
 export interface ProductFilterParams {
@@ -128,6 +131,8 @@ export interface ProductFilterParams {
   inStockOnly?: boolean;
   onSaleOnly?: boolean;
   sortBy?: 'featured' | 'price-asc' | 'price-desc' | 'rating' | 'newest';
+  page?: number;
+  limit?: number;
 }
 
 export * from './response.type';

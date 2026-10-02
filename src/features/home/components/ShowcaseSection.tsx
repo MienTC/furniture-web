@@ -3,8 +3,26 @@ import { Link } from 'react-router-dom';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
 import type { IFShowcaseSection } from '~/types';
 
-export const ShowcaseSection: React.FC<{ showcase: IFShowcaseSection }> = ({ showcase }) => {
-  if (!showcase) return null;
+export const ShowcaseSection: React.FC<{ showcase?: IFShowcaseSection | null }> = ({ showcase: incoming }) => {
+  const showcase: IFShowcaseSection = incoming || {
+    id: 'default-showcase',
+    title: 'Không Gian Sang Trọng Cho Căn Hộ Đương Đại',
+    subtitle: 'Khám phá giải pháp kiến tạo không gian sống với những bộ sưu tập nội thất thông minh, tối ưu diện tích và chuẩn gu thượng lưu.',
+    description: 'Khám phá giải pháp kiến tạo không gian sống với những bộ sưu tập nội thất thông minh, tối ưu diện tích và chuẩn gu thượng lưu.',
+    imageUrl: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80',
+    ctaLink: '/products',
+    ctaLabel: 'Khám Phá Bộ Sưu Tập',
+    badges: [
+      { id: '1', label: 'BỘ SƯU TẬP 2026', colorClass: 'bg-amber-800' },
+      { id: '2', label: 'THIẾT KẾ ĐỘC QUYỀN', colorClass: 'bg-stone-800' },
+    ],
+    highlights: [
+      'Gỗ tự nhiên nguyên khối',
+      'Động cơ tự động nhập khẩu',
+      'Giao lắp tận nhà 24/7',
+      'Bảo hành chính hãng 5 năm',
+    ],
+  };
 
   const badges = showcase.badges || [];
   const highlights = showcase.highlights || [];

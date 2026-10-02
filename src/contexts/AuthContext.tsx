@@ -9,6 +9,8 @@ const authService = new AuthService();
 interface AuthContextType {
   user: User | null;
   login: (role: 'customer' | 'admin') => Promise<void>;
+  loginWithCredentials: (loginName: string, password: string) => Promise<boolean>;
+  register: (data: { s_user: string; email: string; s_PWD: string; phone?: string }) => Promise<boolean>;
   logout: () => void;
   isAdmin: boolean;
 }
@@ -34,21 +36,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = async (role: 'customer' | 'admin') => {
+  const loginWithCredentials = async (loginName: string, password: string): Promise<boolean> => {
     try {
-      const username = role === 'admin' ? 'admin' : 'customer';
-      const password = role === 'admin' ? 'Admin@123456' : 'Customer@123456';
-
-      const data = await authService.login(username, password);
+      const data = await authService.login(loginName, password);
       localStorage.setItem('luxdecor_access_token', data.access_token);
       localStorage.setItem('luxdecor_refresh_token', data.refresh_token);
 
       setUser(data.user);
       storageService.saveUser(data.user);
-      message.success(`Đã đăng nhập thành công với tư cách ${data.user.name} (${data.user.role.toUpperCase()})`);
+      message.success(`Đăng nhập thành công! Chào mừng ${data.user.name}`);
+      return true;
     } catch (err: any) {
       message.error(err.message || 'Đăng nhập thất bại');
+      return false;
     }
+  };
+
+  const register = async (data: { s_user: string; email: string; s_PWD: string; phone?: string }): Promise<boolean> => {
+    try {
+      const res = await authService.register(data);
+      localStorage.setItem('luxdecor_access_token', res.access_token);
+      localStorage.setItem('luxdecor_refresh_token', res.refresh_token);
+
+      setUser(res.user);
+      storageService.saveUser(res.user);
+      message.success(`Đăng ký tài khoản thành công! Chào mừng ${res.user.name}`);
+      return true;
+    } catch (err: any) {
+      message.error(err.message || 'Đăng ký thất bại');
+      return false;
+    }
+  };
+
+  const login = async (role: 'customer' | 'admin') => {
+    const username = role === 'admin' ? 'admin' : 'customer';
+    const password = role === 'admin' ? 'Admin@123456' : 'Customer@123456';
+    await loginWithCredentials(username, password);
   };
 
   const logout = async () => {
@@ -61,7 +84,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAdmin: user?.role === 'admin' }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        loginWithCredentials,
+        register,
+        logout,
+        isAdmin: user?.role === 'admin',
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

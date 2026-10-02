@@ -14,7 +14,9 @@ export function useProducts(params?: ProductFilterParams) {
   });
 
   return {
-    products: data ?? [],
+    products: data?.products ?? [],
+    pagination: data?.pagination ?? { page: 1, limit: 12, total: 0, totalPages: 1 },
+    totalCount: data?.pagination?.total ?? 0,
     isProductsLoading: isLoading,
     refetchProducts: refetch,
   };

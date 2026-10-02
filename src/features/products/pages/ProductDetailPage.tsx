@@ -18,7 +18,7 @@ export const ProductDetailPage: React.FC = () => {
 
   const { product, isProductLoading } = useProductDetail(slug ?? '');
   const { products: relatedProducts } = useProducts(
-    product ? { categoryId: product.categoryId } : undefined
+    product ? { categoryId: product.categoryId, limit: 5 } : undefined
   );
 
   const [selectedImage, setSelectedImage] = useState('');

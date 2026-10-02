@@ -14,18 +14,26 @@ import {
   ShieldCheck,
   Truck,
 } from "lucide-react";
-import { Badge, Dropdown, MenuProps, Drawer, Input } from "antd";
+import { Badge, Dropdown, MenuProps, Drawer, Input, Button } from "antd";
 import { CategoryNav } from "./CategoryNav";
+import { AuthModal } from "~/components/ui/AuthModal";
 
 export const Header: React.FC = () => {
   const navigate = useNavigate();
   const { itemCount, subtotal } = useCart();
   const { wishlistIds } = useWishlist();
-  const { user, logout } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const { categories } = useCategories();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authDefaultTab, setAuthDefaultTab] = useState<'login' | 'register'>('login');
+
+  const openAuth = (tab: 'login' | 'register') => {
+    setAuthDefaultTab(tab);
+    setAuthModalOpen(true);
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,17 +41,21 @@ export const Header: React.FC = () => {
       navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
   };
 
-  const userMenuItems: MenuProps["items"] = [
+  const userMenuItems: MenuProps["items"] = user ? [
     {
       key: "user-info",
       label: (
         <div className="py-1 px-1">
-          <p className="font-bold text-stone-800">{user?.name}</p>
-          <p className="text-xs text-stone-500">{user?.email}</p>
+          <p className="font-bold text-stone-800">{user.name}</p>
+          <p className="text-xs text-stone-500">{user.email}</p>
+          <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 uppercase">
+            {user.role}
+          </span>
         </div>
       ),
     },
     { type: "divider" },
+    ...(isAdmin ? [{ key: "admin", label: <Link to="/admin">Trang Quản Trị Hệ Thống</Link> }, { type: "divider" as const }] : []),
     { key: "orders", label: <Link to="/orders">Đơn hàng của tôi</Link> },
     {
       key: "wishlist",
@@ -56,6 +68,15 @@ export const Header: React.FC = () => {
       key: "logout",
       danger: true,
       label: <span onClick={logout}>Đăng xuất</span>,
+    },
+  ] : [
+    {
+      key: "login",
+      label: <span onClick={() => openAuth('login')} className="font-bold text-amber-900">Đăng nhập tài khoản</span>,
+    },
+    {
+      key: "register",
+      label: <span onClick={() => openAuth('register')}>Đăng ký tài khoản mới</span>,
     },
   ];
 
@@ -149,25 +170,46 @@ export const Header: React.FC = () => {
             </div>
           </Link>
 
-          <Dropdown
-            menu={{ items: userMenuItems }}
-            placement="bottomRight"
-            trigger={["click"]}
-          >
-            <button className="flex items-center gap-2 p-1.5 rounded-full hover:bg-stone-100 transition-colors">
-              <img
-                src={
-                  user?.avatar ||
-                  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-                }
-                alt={user?.name || "User"}
-                className="w-8 h-8 rounded-full object-cover border border-amber-800/20"
-              />
-              <span className="hidden md:inline text-xs font-semibold text-stone-800">
-                {user?.name?.split(" ")[0]}
-              </span>
-            </button>
-          </Dropdown>
+          {user ? (
+            <Dropdown
+              menu={{ items: userMenuItems }}
+              placement="bottomRight"
+              trigger={["click"]}
+            >
+              <button className="flex items-center gap-2 p-1.5 rounded-full hover:bg-stone-100 transition-colors">
+                <img
+                  src={
+                    user.avatar ||
+                    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+                  }
+                  alt={user.name || "User"}
+                  className="w-8 h-8 rounded-full object-cover border border-amber-800/20"
+                />
+                <span className="hidden md:inline text-xs font-semibold text-stone-800">
+                  {user.name?.split(" ")[0]}
+                </span>
+              </button>
+            </Dropdown>
+          ) : (
+            <div className="flex items-center gap-1.5">
+              <Button
+                type="text"
+                size="small"
+                onClick={() => openAuth('login')}
+                className="!text-xs font-semibold !text-stone-700 hover:!text-amber-900"
+              >
+                Đăng nhập
+              </Button>
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => openAuth('register')}
+                className="!text-xs font-semibold !bg-amber-900 hover:!bg-amber-800 !rounded-lg"
+              >
+                Đăng ký
+              </Button>
+            </div>
+          )}
 
           <button
             onClick={() => setMobileMenuOpen(true)}
@@ -235,6 +277,30 @@ export const Header: React.FC = () => {
               );
             })}
           <div className="mt-4 pt-4 border-t border-stone-200 flex flex-col gap-2">
+            {!user ? (
+              <div className="flex flex-col gap-2 pb-3 border-b border-stone-200">
+                <Button
+                  block
+                  type="primary"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openAuth('login');
+                  }}
+                  className="!bg-amber-900 font-bold"
+                >
+                  Đăng Nhập
+                </Button>
+                <Button
+                  block
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openAuth('register');
+                  }}
+                >
+                  Đăng Ký Tài Khoản
+                </Button>
+              </div>
+            ) : null}
             <Link
               to="/orders"
               onClick={() => setMobileMenuOpen(false)}
@@ -252,6 +318,12 @@ export const Header: React.FC = () => {
           </div>
         </div>
       </Drawer>
+
+      <AuthModal
+        open={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        defaultTab={authDefaultTab}
+      />
     </header>
   );
 };

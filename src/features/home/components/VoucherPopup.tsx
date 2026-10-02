@@ -31,8 +31,7 @@ export const VoucherSuccessPopup: React.FC<{ voucher: IFVoucher; onClose: () => 
   );
 };
 
-export const LoginRequiredPopup: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-  const navigate = useNavigate();
+export const LoginRequiredPopup: React.FC<{ onClose: () => void; onOpenAuth?: (tab: 'login' | 'register') => void }> = ({ onClose, onOpenAuth }) => {
   return (
     <div className="text-center space-y-5 py-2">
       <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mx-auto">
@@ -43,10 +42,27 @@ export const LoginRequiredPopup: React.FC<{ onClose: () => void }> = ({ onClose 
         <p className="text-stone-500 text-sm mt-1">Bạn cần có tài khoản để lưu và sử dụng mã giảm giá.</p>
       </div>
       <div className="flex flex-col gap-3">
-        <Button type="primary" block icon={<LogIn size={15} />} onClick={() => { navigate('/login'); onClose(); }} className="!bg-amber-800 hover:!bg-amber-700 !border-0 font-bold">
+        <Button
+          type="primary"
+          block
+          icon={<LogIn size={15} />}
+          onClick={() => {
+            onClose();
+            if (onOpenAuth) onOpenAuth('login');
+          }}
+          className="!bg-amber-800 hover:!bg-amber-700 !border-0 font-bold"
+        >
           Đăng Nhập
         </Button>
-        <Button block icon={<UserPlus size={15} />} onClick={() => { navigate('/register'); onClose(); }} className="!border-amber-700 !text-amber-800 font-bold">
+        <Button
+          block
+          icon={<UserPlus size={15} />}
+          onClick={() => {
+            onClose();
+            if (onOpenAuth) onOpenAuth('register');
+          }}
+          className="!border-amber-700 !text-amber-800 font-bold"
+        >
           Tạo Tài Khoản Mới
         </Button>
       </div>

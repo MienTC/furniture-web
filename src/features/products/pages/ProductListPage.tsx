@@ -12,6 +12,9 @@ const PAGE_SIZE = 12;
 
 export const ProductListPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+
   const [filterParams, setFilterParams] = useState<ProductFilterParams>({
     categoryId: searchParams.get('category') ?? '',
     search: searchParams.get('search') ?? '',
@@ -22,8 +25,6 @@ export const ProductListPage: React.FC = () => {
     onSaleOnly: false,
     sortBy: 'featured',
   });
-  const [currentPage, setCurrentPage] = useState(1);
-  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
   useEffect(() => {
     setFilterParams((p) => ({
@@ -35,8 +36,11 @@ export const ProductListPage: React.FC = () => {
   }, [searchParams]);
 
   const { categories } = useCategories();
-  const { products, isProductsLoading } = useProducts(filterParams);
-  const { products: allProducts } = useProducts();
+  const { products, pagination, totalCount, isProductsLoading } = useProducts({
+    ...filterParams,
+    page: currentPage,
+    limit: PAGE_SIZE,
+  });
 
   const handleChange = (partial: Partial<ProductFilterParams>) => {
     setFilterParams((p) => ({ ...p, ...partial }));
@@ -61,9 +65,7 @@ export const ProductListPage: React.FC = () => {
     setSearchParams({});
   };
 
-  // Pagination calculation
-  const startIndex = (currentPage - 1) * PAGE_SIZE;
-  const paginatedProducts = products.slice(startIndex, startIndex + PAGE_SIZE);
+  const totalProductsCount = categories.reduce((sum, c) => sum + (c.itemCount || 0), 0) || 668;
 
   const activeCategory = categories.find(
     (c) => c.id === filterParams.categoryId || c.slug === filterParams.categoryId
@@ -81,7 +83,7 @@ export const ProductListPage: React.FC = () => {
             {activeCategory ? activeCategory.name : 'Tất Cả Sản Phẩm Nội Thất'}
           </h1>
           <p className="text-xs text-stone-300">
-            Khám phá hơn {products.length} mẫu nội thất cao cấp chế tác tinh xảo, đẳng cấp thượng lưu.
+            Khám phá hơn {totalCount || totalProductsCount} mẫu nội thất cao cấp chế tác tinh xảo, đẳng cấp thượng lưu.
           </p>
         </div>
       </div>
@@ -132,8 +134,11 @@ export const ProductListPage: React.FC = () => {
           <FilterPanel
             filterParams={filterParams}
             categories={categories}
-            totalCount={allProducts.length}
-            getCategoryCount={(id) => allProducts.filter((p) => p.categoryId === id).length}
+            totalCount={totalCount || totalProductsCount}
+            getCategoryCount={(id) => {
+              const cat = categories.find((c) => c.id === id);
+              return cat?.itemCount || 0;
+            }}
             onChange={handleChange}
             onReset={handleReset}
           />
@@ -150,8 +155,11 @@ export const ProductListPage: React.FC = () => {
           <FilterPanel
             filterParams={filterParams}
             categories={categories}
-            totalCount={allProducts.length}
-            getCategoryCount={(id) => allProducts.filter((p) => p.categoryId === id).length}
+            totalCount={totalCount || totalProductsCount}
+            getCategoryCount={(id) => {
+              const cat = categories.find((c) => c.id === id);
+              return cat?.itemCount || 0;
+            }}
             onChange={(p) => {
               handleChange(p);
               setMobileFilterOpen(false);
@@ -186,18 +194,18 @@ export const ProductListPage: React.FC = () => {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {paginatedProducts.map((p) => (
+                {products.map((p) => (
                   <ProductCard key={p.id} product={p} />
                 ))}
               </div>
 
               {/* Pagination */}
-              {products.length > PAGE_SIZE && (
+              {totalCount > PAGE_SIZE && (
                 <div className="flex justify-center items-center pt-8 border-t border-stone-200">
                   <Pagination
                     current={currentPage}
                     pageSize={PAGE_SIZE}
-                    total={products.length}
+                    total={totalCount}
                     onChange={(p) => {
                       setCurrentPage(p);
                       window.scrollTo({ top: 200, behavior: 'smooth' });
