@@ -110,7 +110,7 @@ export const AdminLayout: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Tag color="green">Đang kết nối Mock API</Tag>
+            <Tag color="green">Hệ Thống Đang Trực Tuyến</Tag>
           </div>
         </header>
 
