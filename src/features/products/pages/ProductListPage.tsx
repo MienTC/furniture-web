@@ -77,7 +77,7 @@ export const ProductListPage: React.FC = () => {
           <span className="text-xs text-amber-400 font-bold uppercase tracking-widest">
             LuxDecor Collections
           </span>
-          <h1 className="text-3xl font-bold font-serif text-white">
+          <h1 className="text-3xl font-bold text-white">
             {activeCategory ? activeCategory.name : 'Tất Cả Sản Phẩm Nội Thất'}
           </h1>
           <p className="text-xs text-stone-300">

@@ -60,7 +60,7 @@ export const ProductInfo: React.FC<Props> = ({
             Xuất xứ: {product.origin || "LuxDecor"}
           </span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold font-serif text-stone-900 leading-snug">
+        <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 leading-snug">
           {product.name}
         </h1>
         <div className="flex items-center gap-4 mt-3">
@@ -78,7 +78,7 @@ export const ProductInfo: React.FC<Props> = ({
 
       {/* Dynamic Price Box */}
       <div className="p-5 rounded-2xl bg-amber-950/5 border border-amber-900/10 flex items-baseline gap-4">
-        <span className="text-3xl font-bold font-serif text-amber-950">
+        <span className="text-3xl font-bold text-amber-950 tabular-nums">
           {formatVND(activeSalePrice)}
         </span>
         {activeOriginalPrice && activeOriginalPrice > activeSalePrice && (

@@ -12,7 +12,7 @@ export const CategoryGrid: React.FC<Props> = ({ categories, isLoading }) => {
     <section className="max-w-7xl mx-auto px-4 space-y-8">
       <div className="text-center space-y-2">
         <span className="text-xs font-bold uppercase tracking-widest text-amber-800">Không Gian Sống</span>
-        <h2 className="text-2xl sm:text-3xl font-bold font-serif text-stone-900">Khám Phá Theo Danh Mục Nội Thất</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-stone-900">Khám Phá Theo Danh Mục Nội Thất</h2>
         <div className="w-16 h-0.5 bg-amber-800 mx-auto mt-2" />
       </div>
       {isLoading ? (

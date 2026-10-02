@@ -65,7 +65,7 @@ export const FilterPanel: React.FC<Props> = ({
       {/* Category Section */}
       <div>
         <div className="flex items-center justify-between mb-3 pb-2 border-b border-stone-200">
-          <h4 className="font-bold font-serif text-stone-900 text-sm tracking-wide">
+          <h4 className="font-bold text-stone-900 text-sm tracking-wide">
             Danh Mục Sản Phẩm
           </h4>
           {filterParams.categoryId && (
@@ -228,7 +228,7 @@ export const FilterPanel: React.FC<Props> = ({
 
       {/* Price Slider */}
       <div className="pt-4 border-t border-stone-200">
-        <h4 className="font-bold font-serif text-stone-900 text-sm mb-2">Khoảng Giá (VND)</h4>
+        <h4 className="font-bold text-stone-900 text-sm mb-2">Khoảng Giá (VND)</h4>
         <div className="px-2">
           <Slider
             range
@@ -248,7 +248,7 @@ export const FilterPanel: React.FC<Props> = ({
 
       {/* Material Options */}
       <div className="pt-4 border-t border-stone-200">
-        <h4 className="font-bold font-serif text-stone-900 text-sm mb-3">Chất Liệu</h4>
+        <h4 className="font-bold text-stone-900 text-sm mb-3">Chất Liệu</h4>
         <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
           {MATERIAL_OPTIONS.map((mat) => (
             <label

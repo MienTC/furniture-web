@@ -90,7 +90,7 @@ export const Header: React.FC = () => {
             <img src="/logo1.png" alt="" />
           </div>
           <div>
-            <span className="text-2xl font-black font-serif text-stone-900 tracking-tight block leading-none">
+            <span className="text-2xl font-black text-stone-900 tracking-tight block leading-none">
               {APP_NAME}
             </span>
             <span className="text-[10px] text-amber-800 tracking-widest uppercase font-semibold">

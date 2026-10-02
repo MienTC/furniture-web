@@ -44,7 +44,7 @@ export const AdminLayout: React.FC = () => {
             <div className="w-8 h-8 rounded-lg bg-amber-700 flex items-center justify-center text-amber-200">
               <Sparkles size={18} />
             </div>
-            <span className="font-serif-heading font-bold text-white text-lg">
+            <span className="font-bold text-white text-lg">
               LuxAdmin
             </span>
           </Link>
@@ -102,7 +102,7 @@ export const AdminLayout: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0">
         <header className="bg-white px-8 py-4 border-b border-stone-200 flex items-center justify-between shadow-xs">
           <div>
-            <h2 className="text-xl font-bold text-stone-900 font-serif-heading">
+            <h2 className="text-xl font-bold text-stone-900">
               Quản Trị Hệ Thống LuxDecor
             </h2>
             <p className="text-xs text-stone-500">

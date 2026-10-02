@@ -12,7 +12,7 @@ const antdTheme = {
     colorPrimary: '#78350f', colorPrimaryHover: '#92400e', colorPrimaryActive: '#451a03',
     colorBgBase: '#fafaf9', colorText: '#1c1917',
     borderRadius: 10,
-    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontFamily: "'Inter', sans-serif",
     colorLink: '#92400e', colorLinkHover: '#78350f',
   },
   components: {

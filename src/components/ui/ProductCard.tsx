@@ -84,7 +84,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </span>
         <Link
           to={`/products/${product.slug}`}
-          className="font-serif font-bold text-stone-900 hover:text-amber-800 transition-colors line-clamp-2 text-base leading-snug mb-3 px-2"
+          className="font-bold text-stone-900 hover:text-amber-800 transition-colors line-clamp-2 text-base leading-snug mb-3 px-2"
         >
           {product.name}
         </Link>
@@ -92,7 +92,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <RatingStars rating={product.rating} count={product.reviewCount} />
 
         <div className="mt-auto pt-4 flex flex-col items-center gap-1">
-          <span className="text-lg font-bold text-amber-900 font-serif">
+          <span className="text-lg font-bold text-amber-900 tabular-nums">
             {formatVND(finalPrice)}
           </span>
           {product.discountPercent && (
