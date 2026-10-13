@@ -51,6 +51,11 @@ const UserSchema = new Schema<IUserDocument>(
       type: Boolean,
       default: true, // true = active, false = blocked
     },
+    loyalty_points: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     refresh_token: {
       type: String,
       default: null,

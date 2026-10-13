@@ -59,7 +59,7 @@ export class ProductController {
         limit = 12,
       } = req.query;
 
-      const filter: any = { is_active: true };
+      const conditions: any[] = [{ is_active: true }];
 
       // Category filter (match s_ID or slug)
       if (categoryId && categoryId !== 'all') {
@@ -68,23 +68,28 @@ export class ProductController {
           $or: [{ slug: catStr }, { s_ID: catStr }],
         }).lean();
         if (cat) {
-          filter.$or = [{ category_id: (cat as any).s_ID }, { category_id: (cat as any).slug }];
+          conditions.push({
+            $or: [{ category_id: (cat as any).s_ID }, { category_id: (cat as any).slug }],
+          });
         } else {
-          filter.category_id = catStr;
+          conditions.push({ category_id: catStr });
         }
       }
 
       // Keyword search
       if (search) {
         const regex = new RegExp(String(search).trim(), 'i');
-        filter.$or = [{ s_Name: regex }, { description: regex }, { material: regex }];
+        conditions.push({
+          $or: [{ s_Name: regex }, { description: regex }, { material: regex }],
+        });
       }
 
       // Price range
       if (minPrice || maxPrice) {
-        filter.price = {};
-        if (minPrice) filter.price.$gte = Number(minPrice);
-        if (maxPrice) filter.price.$lte = Number(maxPrice);
+        const priceCond: any = {};
+        if (minPrice) priceCond.$gte = Number(minPrice);
+        if (maxPrice) priceCond.$lte = Number(maxPrice);
+        conditions.push({ price: priceCond });
       }
 
       // Materials filter (comma separated or array)
@@ -92,19 +97,20 @@ export class ProductController {
         const matList: string[] = Array.isArray(materials)
           ? (materials as any[]).map(String)
           : String(materials).split(',').map((m) => m.trim());
-        filter.material = { $in: matList.map((m) => new RegExp(m, 'i')) };
+        conditions.push({ material: { $in: matList.map((m) => new RegExp(m, 'i')) } });
       }
 
       // Stock
       if (inStockOnly === 'true') {
-        filter.in_stock = true;
-        filter.stock_quantity = { $gt: 0 };
+        conditions.push({ in_stock: true, stock_quantity: { $gt: 0 } });
       }
 
       // On sale (discount > 0)
       if (onSaleOnly === 'true') {
-        filter.discount_percent = { $gt: 0 };
+        conditions.push({ discount_percent: { $gt: 0 } });
       }
+
+      const filter: any = conditions.length > 1 ? { $and: conditions } : conditions[0];
 
       // Sorting
       let sortOption: any = { dt_create: -1 };

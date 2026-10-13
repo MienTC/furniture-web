@@ -46,7 +46,7 @@ export const ReviewModal: React.FC<Props> = ({ product, open, onClose }) => {
       onOk={handleSubmit}
       okText="Gửi"
       cancelText="Hủy"
-      okButtonProps={{ className: "!bg-amber-900" }}
+      okButtonProps={{ className: "!bg-brand-coral hover:!bg-[#c95f5f] font-bold" }}
     >
       <div className="space-y-4 py-3">
         <div>

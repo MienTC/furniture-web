@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RotateCcw, ChevronRight, ChevronDown, Check } from 'lucide-react';
+import { ReloadOutlined, RightOutlined } from '@ant-design/icons';
 import { Slider, Checkbox, Button } from 'antd';
 import { MATERIAL_OPTIONS } from '~/common/constants';
 import type { Category, ProductFilterParams } from '~/types';
@@ -71,7 +71,7 @@ export const FilterPanel: React.FC<Props> = ({
           {filterParams.categoryId && (
             <button
               onClick={() => onChange({ categoryId: '' })}
-              className="text-[11px] text-amber-800 hover:underline font-medium"
+              className="text-[11px] text-brand-coral hover:underline font-medium cursor-pointer"
             >
               Xem tất cả
             </button>
@@ -82,9 +82,9 @@ export const FilterPanel: React.FC<Props> = ({
           {/* All products button */}
           <button
             onClick={() => onChange({ categoryId: '' })}
-            className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between ${
+            className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between cursor-pointer ${
               !filterParams.categoryId
-                ? 'bg-amber-900 text-white shadow-xs'
+                ? 'bg-brand-coral text-white shadow-xs'
                 : 'text-stone-700 hover:bg-stone-100'
             }`}
           >
@@ -92,7 +92,7 @@ export const FilterPanel: React.FC<Props> = ({
             <span
               className={`text-[10px] px-2 py-0.5 rounded-full ${
                 !filterParams.categoryId
-                  ? 'bg-amber-800 text-amber-100'
+                  ? 'bg-brand-peach text-stone-900 font-bold'
                   : 'bg-stone-200 text-stone-600'
               }`}
             >
@@ -113,7 +113,7 @@ export const FilterPanel: React.FC<Props> = ({
                   onClick={() => onChange({ categoryId: root.id })}
                   className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
                     isRootSelected
-                      ? 'bg-amber-900 text-white shadow-xs'
+                      ? 'bg-brand-coral text-white shadow-xs'
                       : 'text-stone-800 hover:bg-stone-100'
                   }`}
                 >
@@ -121,11 +121,11 @@ export const FilterPanel: React.FC<Props> = ({
                     {lv2Categories.length > 0 && (
                       <button
                         onClick={(e) => toggleRoot(root.id, e)}
-                        className={`p-0.5 rounded hover:bg-black/10 transition-transform ${
+                        className={`p-0.5 rounded hover:bg-black/10 transition-transform cursor-pointer ${
                           isExpanded ? 'rotate-90' : ''
                         }`}
                       >
-                        <ChevronRight size={13} />
+                        <RightOutlined style={{ fontSize: 11 }} />
                       </button>
                     )}
                     <span className="truncate">{root.name}</span>
@@ -134,7 +134,7 @@ export const FilterPanel: React.FC<Props> = ({
                     <span
                       className={`text-[10px] px-1.5 py-0.5 rounded shrink-0 font-mono ${
                         isRootSelected
-                          ? 'bg-amber-800 text-amber-100'
+                          ? 'bg-brand-peach text-stone-900 font-bold'
                           : 'bg-stone-100 text-stone-500'
                       }`}
                     >
@@ -145,7 +145,7 @@ export const FilterPanel: React.FC<Props> = ({
 
                 {/* Subcategories (Level 2 & Level 3) */}
                 {isExpanded && lv2Categories.length > 0 && (
-                  <div className="pl-3 py-1 space-y-1 border-l-2 border-amber-900/20 ml-3.5 my-1">
+                  <div className="pl-3 py-1 space-y-1 border-l-2 border-brand-coral/30 ml-3.5 my-1">
                     {lv2Categories.map((sub) => {
                       const lv3Categories = categories.filter((c) => c.parentId === sub.id);
                       const isSubSelected = filterParams.categoryId === sub.id;
@@ -158,7 +158,7 @@ export const FilterPanel: React.FC<Props> = ({
                             onClick={() => onChange({ categoryId: sub.id })}
                             className={`w-full text-left px-2.5 py-1.5 rounded-md text-[11px] font-medium transition-all flex items-center justify-between cursor-pointer ${
                               isSubSelected
-                                ? 'bg-amber-800 text-white font-bold'
+                                ? 'bg-brand-coral text-white font-bold shadow-2xs'
                                 : 'text-stone-700 hover:bg-stone-100'
                             }`}
                           >
@@ -166,11 +166,11 @@ export const FilterPanel: React.FC<Props> = ({
                               {lv3Categories.length > 0 && (
                                 <button
                                   onClick={(e) => toggleLv2(sub.id, e)}
-                                  className={`p-0.5 rounded hover:bg-black/10 transition-transform ${
+                                  className={`p-0.5 rounded hover:bg-black/10 transition-transform cursor-pointer ${
                                     isLv2Expanded ? 'rotate-90' : ''
                                   }`}
                                 >
-                                  <ChevronRight size={11} />
+                                  <RightOutlined style={{ fontSize: 10 }} />
                                 </button>
                               )}
                               <span className="truncate">{sub.name}</span>
@@ -179,7 +179,7 @@ export const FilterPanel: React.FC<Props> = ({
                               <span
                                 className={`text-[9px] px-1.5 py-0.2 rounded font-mono shrink-0 ${
                                   isSubSelected
-                                    ? 'bg-amber-700 text-amber-100'
+                                    ? 'bg-brand-peach text-stone-900 font-bold'
                                     : 'bg-stone-100 text-stone-500'
                                 }`}
                               >
@@ -198,10 +198,10 @@ export const FilterPanel: React.FC<Props> = ({
                                   <button
                                     key={lv3.id}
                                     onClick={() => onChange({ categoryId: lv3.id })}
-                                    className={`w-full text-left px-2 py-1 rounded text-[10px] transition-all flex items-center justify-between ${
+                                    className={`w-full text-left px-2 py-1 rounded text-[10px] transition-all flex items-center justify-between cursor-pointer ${
                                       isLv3Selected
-                                        ? 'bg-amber-700 text-white font-bold'
-                                        : 'text-stone-600 hover:text-amber-900 hover:bg-amber-50/50'
+                                        ? 'bg-brand-peach/80 text-stone-900 font-bold'
+                                        : 'text-stone-600 hover:text-brand-coral hover:bg-brand-peach/20'
                                     }`}
                                   >
                                     <span className="truncate">{lv3.name}</span>
@@ -253,7 +253,7 @@ export const FilterPanel: React.FC<Props> = ({
           {MATERIAL_OPTIONS.map((mat) => (
             <label
               key={mat}
-              className="flex items-center gap-2 text-xs text-stone-700 cursor-pointer hover:text-amber-900"
+              className="flex items-center gap-2 text-xs text-stone-700 cursor-pointer hover:text-brand-coral"
             >
               <Checkbox
                 checked={filterParams.materials?.includes(mat)}
@@ -292,9 +292,9 @@ export const FilterPanel: React.FC<Props> = ({
       <div className="pt-4 border-t border-stone-200">
         <Button
           onClick={onReset}
-          icon={<RotateCcw size={13} />}
+          icon={<ReloadOutlined style={{ fontSize: 12 }} />}
           block
-          className="!rounded-lg text-xs !border-stone-300 hover:!border-amber-800 hover:!text-amber-900"
+          className="!rounded-lg text-xs !border-stone-300 hover:!border-brand-coral hover:!text-brand-coral cursor-pointer font-bold"
         >
           Đặt lại bộ lọc
         </Button>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Tabs, message } from 'antd';
-import { User, Lock, Mail, Phone, Sparkles } from 'lucide-react';
+import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { useAuth } from '~/contexts/AuthContext';
 
 interface AuthModalProps {
@@ -56,8 +56,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
       destroyOnClose
     >
       <div className="text-center pt-2 pb-4">
-        <div className="w-12 h-12 rounded-2xl bg-amber-900 text-amber-200 mx-auto flex items-center justify-center mb-3 shadow-md">
-          <Sparkles size={24} />
+        <div className="w-12 h-12 rounded-2xl bg-brand-coral text-white mx-auto flex items-center justify-center mb-3 shadow-md">
+          <ThunderboltOutlined style={{ fontSize: 24 }} />
         </div>
         <h3 className="text-xl font-bold text-stone-900">
           {activeTab === 'login' ? 'Đăng Nhập Tài Khoản' : 'Đăng Ký Tài Khoản'}
@@ -85,7 +85,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập hoặc email' }]}
           >
             <Input
-              prefix={<User size={15} className="text-stone-400 mr-1" />}
+              prefix={<UserOutlined className="text-stone-400 mr-1" style={{ fontSize: 15 }} />}
               placeholder="Tên đăng nhập hoặc Email"
               className="!py-2.5 !rounded-xl"
             />
@@ -96,7 +96,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
           >
             <Input.Password
-              prefix={<Lock size={15} className="text-stone-400 mr-1" />}
+              prefix={<LockOutlined className="text-stone-400 mr-1" style={{ fontSize: 15 }} />}
               placeholder="Mật khẩu"
               className="!py-2.5 !rounded-xl"
             />
@@ -111,7 +111,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             htmlType="submit"
             loading={loading}
             block
-            className="!h-11 !rounded-xl !bg-amber-900 hover:!bg-amber-800 font-bold text-sm tracking-wide shadow-md"
+            className="!h-11 !rounded-xl !bg-brand-coral hover:!bg-[#c95f5f] font-bold text-sm tracking-wide shadow-md cursor-pointer"
           >
             Đăng Nhập
           </Button>
@@ -121,7 +121,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             <button
               type="button"
               onClick={() => setActiveTab('register')}
-              className="text-amber-900 font-bold hover:underline"
+              className="text-brand-coral font-bold hover:underline cursor-pointer"
             >
               Đăng ký ngay
             </button>
@@ -137,7 +137,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             ]}
           >
             <Input
-              prefix={<User size={15} className="text-stone-400 mr-1" />}
+              prefix={<UserOutlined className="text-stone-400 mr-1" style={{ fontSize: 15 }} />}
               placeholder="Tên đăng nhập (viết liền không dấu)"
               className="!py-2.5 !rounded-xl"
             />
@@ -151,7 +151,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             ]}
           >
             <Input
-              prefix={<Mail size={15} className="text-stone-400 mr-1" />}
+              prefix={<MailOutlined className="text-stone-400 mr-1" style={{ fontSize: 15 }} />}
               placeholder="Địa chỉ Email"
               className="!py-2.5 !rounded-xl"
             />
@@ -162,7 +162,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             rules={[{ pattern: /^[0-9]{9,11}$/, message: 'Số điện thoại gồm 9-11 chữ số' }]}
           >
             <Input
-              prefix={<Phone size={15} className="text-stone-400 mr-1" />}
+              prefix={<PhoneOutlined className="text-stone-400 mr-1" style={{ fontSize: 15 }} />}
               placeholder="Số điện thoại (tùy chọn)"
               className="!py-2.5 !rounded-xl"
             />
@@ -176,7 +176,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             ]}
           >
             <Input.Password
-              prefix={<Lock size={15} className="text-stone-400 mr-1" />}
+              prefix={<LockOutlined className="text-stone-400 mr-1" style={{ fontSize: 15 }} />}
               placeholder="Mật khẩu"
               className="!py-2.5 !rounded-xl"
             />
@@ -187,7 +187,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             htmlType="submit"
             loading={loading}
             block
-            className="!h-11 !rounded-xl !bg-amber-900 hover:!bg-amber-800 font-bold text-sm tracking-wide shadow-md"
+            className="!h-11 !rounded-xl !bg-brand-coral hover:!bg-[#c95f5f] font-bold text-sm tracking-wide shadow-md cursor-pointer"
           >
             Tạo Tài Khoản
           </Button>
@@ -197,7 +197,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             <button
               type="button"
               onClick={() => setActiveTab('login')}
-              className="text-amber-900 font-bold hover:underline"
+              className="text-brand-coral font-bold hover:underline cursor-pointer"
             >
               Đăng nhập
             </button>

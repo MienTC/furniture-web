@@ -7,7 +7,7 @@ import { ProductInfo } from '~/features/products/components/ProductInfo';
 import { ProductActions } from '~/features/products/components/ProductActions';
 import { ProductTabs } from '~/features/products/components/ProductTabs';
 import { ProductCard } from '~/components/ui/ProductCard';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 import { useProductDetail, useProducts } from '../hooks/useProduct';
 
 export const ProductDetailPage: React.FC = () => {
@@ -35,9 +35,29 @@ export const ProductDetailPage: React.FC = () => {
 
   if (isProductLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-24 text-center flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="animate-spin text-amber-900" size={36} />
-        <p className="text-sm font-medium text-stone-600">Đang tải thông tin chi tiết sản phẩm...</p>
+      <div className="max-w-7xl mx-auto px-4 py-8 space-y-12 animate-pulse">
+        <div className="h-4 bg-stone-200 rounded w-48" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+          <div className="space-y-4">
+            <div className="aspect-square bg-stone-200 rounded-2xl w-full" />
+            <div className="flex gap-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="size-20 bg-stone-200 rounded-xl" />
+              ))}
+            </div>
+          </div>
+          <div className="space-y-6">
+            <div className="h-8 bg-stone-200 rounded w-3/4" />
+            <div className="h-5 bg-stone-200 rounded w-1/3" />
+            <div className="h-10 bg-stone-200 rounded w-1/2" />
+            <div className="space-y-2">
+              <div className="h-4 bg-stone-100 rounded w-full" />
+              <div className="h-4 bg-stone-100 rounded w-5/6" />
+              <div className="h-4 bg-stone-100 rounded w-4/6" />
+            </div>
+            <div className="h-12 bg-stone-200 rounded-xl w-full" />
+          </div>
+        </div>
       </div>
     );
   }
@@ -46,20 +66,20 @@ export const ProductDetailPage: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center space-y-4">
         <h2 className="text-2xl font-bold text-stone-800">Không tìm thấy sản phẩm</h2>
-        <Link to="/products" className="inline-block bg-amber-900 text-white text-xs font-bold px-6 py-2.5 rounded-lg">Quay lại cửa hàng</Link>
+        <Link to="/products" className="inline-block bg-brand-coral hover:bg-[#c95f5f] text-white text-xs font-bold px-6 py-2.5 rounded-lg shadow-sm">Quay lại cửa hàng</Link>
       </div>
     );
   }
 
   const activeImage = selectedImage || product.images[0];
-  const activeColor = selectedColor || product.colorOptions[0];
+  const activeColor = selectedColor || product.colorOptions?.[0] || 'Tiêu chuẩn';
   const liked       = isWishlisted(product.id);
   const related     = relatedProducts.filter(p => p.id !== product.id).slice(0, 4);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
-      <Link to="/products" className="inline-flex items-center gap-1 text-xs font-bold text-stone-600 hover:text-amber-900">
-        <ArrowLeft size={16} /> Quay lại danh sách sản phẩm
+      <Link to="/products" className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-600 hover:text-brand-coral">
+        <ArrowLeftOutlined style={{ fontSize: 14 }} /> Quay lại danh sách sản phẩm
       </Link>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         <ProductGallery product={product} activeImage={activeImage} onSelect={setSelectedImage} />

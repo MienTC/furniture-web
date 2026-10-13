@@ -93,7 +93,7 @@ export interface OrderCustomerInfo {
   city: string;
   district: string;
   note?: string;
-  paymentMethod: 'cod' | 'bank_transfer' | 'credit_card';
+  paymentMethod: 'cod' | 'bank_transfer' | 'credit_card' | 'vnpay';
 }
 
 export interface Order {
@@ -107,6 +107,9 @@ export interface Order {
   totalAmount: number;
   status: OrderStatus;
   voucherCode?: string;
+  paymentStatus?: 'unpaid' | 'paid' | 'refunded';
+  paymentTransactionId?: string;
+  paymentPaidAt?: string | null;
 }
 
 export interface User {
@@ -137,3 +140,5 @@ export interface ProductFilterParams {
 
 export * from './response.type';
 export * from './banner.type';
+export * from './payment.type';
+export * from './admin.type';

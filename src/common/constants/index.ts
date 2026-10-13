@@ -1,8 +1,8 @@
 export const APP_NAME = "LuxDecor Furniture";
 export const APP_SLOGAN = "Kiến Tạo Không Gian Sống Sang Trọng & Đẳng Cấp";
 
-export const SHIPPING_FEE = 300000; // 300,000 VND
-export const FREE_SHIPPING_THRESHOLD = 15000000; // Miễn phí vận chuyển cho đơn trên 15 triệu
+export const SHIPPING_FEE = 0; // Miễn phí vận chuyển toàn quốc
+export const FREE_SHIPPING_THRESHOLD = 0; // Luôn miễn phí vận chuyển
 
 export const MATERIAL_OPTIONS = [
   "Gỗ Sồi Tự Nhiên",

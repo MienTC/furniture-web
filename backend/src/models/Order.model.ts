@@ -33,7 +33,7 @@ const OrderSchema = new Schema<IOrderDocument>(
     },
     payment_method: {
       type: String,
-      enum: ['cod', 'bank_transfer', 'credit_card'],
+      enum: ['cod', 'bank_transfer', 'credit_card', 'vnpay', 'momo'],
       default: 'cod',
     },
     payment_status: {
@@ -41,6 +41,14 @@ const OrderSchema = new Schema<IOrderDocument>(
       enum: ['unpaid', 'paid', 'refunded'],
       default: 'unpaid',
       index: true,
+    },
+    payment_transaction_id: {
+      type: String,
+      default: '',
+    },
+    payment_paid_at: {
+      type: Date,
+      default: null,
     },
     subtotal: {
       type: Number,
@@ -89,11 +97,11 @@ const OrderSchema = new Schema<IOrderDocument>(
     },
     city: {
       type: String,
-      required: true,
+      default: 'Toàn quốc',
     },
     district: {
       type: String,
-      required: true,
+      default: '',
     },
     ward: {
       type: String,

@@ -30,3 +30,13 @@ export function useShowcase() {
   });
   return { showcase: data, isShowcaseLoading: isLoading };
 }
+
+export function usePromoImg4() {
+  const { data, isLoading } = useQuery({
+    queryKey: ['promoImg4'],
+    queryFn: () => bannerService.fetchPromoImg4(),
+    staleTime: 10 * 60 * 1000,
+  });
+  return { promoImg4: data, isPromoLoading: isLoading };
+}
+

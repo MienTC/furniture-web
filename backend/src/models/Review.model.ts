@@ -53,6 +53,14 @@ const ReviewSchema = new Schema<IReviewDocument>(
       type: Boolean,
       default: false,
     },
+    images: {
+      type: [String],
+      default: [],
+    },
+    admin_reply: {
+      type: String,
+      default: '',
+    },
     is_approved: {
       type: Boolean,
       default: true,

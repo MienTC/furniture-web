@@ -7,9 +7,11 @@ import { VoucherModel } from '../models/Voucher.model.js';
 import { VoucherUsageModel } from '../models/VoucherUsage.model.js';
 import { CartModel } from '../models/Cart.model.js';
 import { CartItemModel } from '../models/CartItem.model.js';
+import { UserModel } from '../models/User.model.js';
 import { generateId } from '../utils/generateId.js';
 import { sendSuccess, sendError } from '../utils/response.js';
 import { AuthRequest } from '../types/index.js';
+import { NotificationService } from '../services/notification.service.js';
 
 export class OrderController {
   /**
@@ -45,8 +47,9 @@ export class OrderController {
         }
 
         const qty = Number(item.quantity) || 1;
-        if (product.stock_quantity < qty) {
-          return sendError(res, `Sản phẩm "${product.s_Name}" chỉ còn ${product.stock_quantity} cái trong kho`, 400);
+        const currentStock = typeof product.stock_quantity === 'number' ? product.stock_quantity : 999;
+        if (currentStock < qty) {
+          return sendError(res, `Sản phẩm "${product.s_Name}" chỉ còn ${currentStock} cái trong kho`, 400);
         }
 
         const lineTotal = product.price * qty;
@@ -91,8 +94,8 @@ export class OrderController {
         }
       }
 
-      // 3. Shipping fee policy
-      const shippingFee = subtotal >= 5000000 ? 0 : 300000;
+      // 3. Shipping fee policy: Miễn phí vận chuyển toàn quốc
+      const shippingFee = 0;
       const totalAmount = Math.max(0, subtotal - discountAmount + shippingFee);
 
       // 4. Create Order document
@@ -162,13 +165,31 @@ export class OrderController {
         await usage.save();
       }
 
-      // 7. Clear user cart if logged in
+      // 7. Clear user cart if logged in & Tích điểm thành viên (100.000 VNĐ = 1 điểm)
       if (userId !== 'guest') {
         const cart = await CartModel.findOne({ user_id: userId });
         if (cart) {
           await CartItemModel.deleteMany({ s_cart_id: cart.s_ID });
         }
+
+        const pointsEarned = Math.floor(newOrder.total_amount / 100000);
+        if (pointsEarned > 0) {
+          await UserModel.findOneAndUpdate(
+            { s_ID: userId },
+            { $inc: { loyalty_points: pointsEarned } }
+          );
+        }
       }
+
+      // 8. Tự động thông báo tới Telegram Admin (chạy ngầm không chặn luồng)
+      NotificationService.notifyNewOrder({
+        orderId: newOrder.s_order_id,
+        customerName: newOrder.recipient_name,
+        phone: newOrder.phone,
+        totalAmount: newOrder.total_amount,
+        paymentMethod: newOrder.payment_method,
+        address: `${newOrder.address_line}${newOrder.district ? ', ' + newOrder.district : ''}${newOrder.city ? ', ' + newOrder.city : ''}`,
+      }).catch((err) => console.warn('Lỗi gửi Telegram notify order:', err));
 
       return sendSuccess(
         res,
@@ -203,6 +224,9 @@ export class OrderController {
             s_ID: ord.s_ID,
             createdAt: ord.dt_created ? new Date(ord.dt_created).toISOString() : '',
             status: ord.status,
+            paymentStatus: ord.payment_status,
+            paymentTransactionId: ord.payment_transaction_id,
+            paymentPaidAt: ord.payment_paid_at ? new Date(ord.payment_paid_at).toISOString() : null,
             subtotal: ord.subtotal,
             discountAmount: ord.discount_amount,
             shippingFee: ord.shipping_fee,
@@ -259,6 +283,9 @@ export class OrderController {
         s_ID: order.s_ID,
         createdAt: order.dt_created ? new Date(order.dt_created).toISOString() : '',
         status: order.status,
+        paymentStatus: order.payment_status,
+        paymentTransactionId: order.payment_transaction_id,
+        paymentPaidAt: order.payment_paid_at ? new Date(order.payment_paid_at).toISOString() : null,
         subtotal: order.subtotal,
         discountAmount: order.discount_amount,
         shippingFee: order.shipping_fee,

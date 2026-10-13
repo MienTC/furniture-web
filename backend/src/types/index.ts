@@ -33,6 +33,7 @@ export interface JWTPayload {
   userId: string;
   s_ID: string;
   email: string;
+  s_user?: string;
   role: 'customer' | 'admin';
 }
 
@@ -55,6 +56,7 @@ export interface IUser {
   avatar_url?: string;
   role: 'customer' | 'admin';
   status: boolean;
+  loyalty_points?: number;
   refresh_token?: string;
   dt_create: Date;
   dt_edit: Date;
@@ -139,6 +141,7 @@ export interface IProduct {
   sku: string;
   short_description?: string;
   description?: string;
+  video_url?: string;
   price: number;
   original_price?: number;
   discount_percent?: number;
@@ -231,7 +234,7 @@ export interface IVoucherUsage {
  * Order Status
  */
 export type OrderStatus = 'pending' | 'processing' | 'shipping' | 'completed' | 'cancelled';
-export type PaymentMethod = 'cod' | 'bank_transfer' | 'credit_card';
+export type PaymentMethod = 'cod' | 'bank_transfer' | 'credit_card' | 'vnpay' | 'momo';
 
 /**
  * Order Interface (Table LS_Orders)
@@ -243,6 +246,8 @@ export interface IOrder {
   status: OrderStatus;
   payment_method: PaymentMethod;
   payment_status: 'unpaid' | 'paid' | 'refunded';
+  payment_transaction_id?: string;
+  payment_paid_at?: Date;
   subtotal: number;
   discount_amount: number;
   shipping_fee: number;
@@ -292,6 +297,8 @@ export interface IReview {
   rating: number;
   comment: string;
   verified_purchase: boolean;
+  images?: string[];
+  admin_reply?: string;
   is_approved: boolean;
   dt_create: Date;
   dt_edit: Date;
@@ -307,7 +314,8 @@ export interface IBanner {
   image_url: string;
   link_url?: string;
   badge_text?: string;
-  type: 'hero' | 'showcase' | 'trustbar';
+  highlights?: string[];
+  type: 'hero' | 'showcase' | 'trustbar' | 'promo_img4';
   icon_name?: string;
   sort_order: number;
   is_active: boolean;

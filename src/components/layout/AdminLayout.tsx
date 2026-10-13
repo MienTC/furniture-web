@@ -1,123 +1,196 @@
 import React from "react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "~/contexts/AuthContext";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Tooltip, Popover, Button } from "antd";
 import {
-  LayoutDashboard,
-  Package,
-  ShoppingBag,
-  Users,
-  LogOut,
-  Sparkles,
-  ArrowLeft,
-} from "lucide-react";
-import { Tag } from "antd";
+  IconDashboard,
+  IconPackage,
+  IconShoppingBag,
+  IconUsers,
+  IconCategory,
+  IconPhoto,
+  IconTicket,
+  IconStar,
+  IconArrowLeft,
+  IconLogout,
+  IconShieldLock,
+  IconCreditCard,
+  IconPhoneCall,
+} from "@tabler/icons-react";
+import { useAuth } from "~/contexts/AuthContext";
+import { cn } from "~/lib";
+import UAvatar from "~/components/ui/uavatar";
+import UBadge from "~/components/ui/ubadge";
 
 export const AdminLayout: React.FC = () => {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { user, login } = useAuth();
+  const { user, logout } = useAuth();
 
-  const menuItems = [
+  const menu = [
     {
-      key: "/admin",
-      label: "Tổng Quan Dashboard",
-      icon: <LayoutDashboard size={18} />,
+      name: "Tổng quan Dashboard",
+      icon: IconDashboard,
+      path: "/admin",
+      exact: true,
     },
     {
-      key: "/admin/products",
-      label: "Quản Lý Sản Phẩm",
-      icon: <Package size={18} />,
+      name: "Quản lý Sản phẩm",
+      icon: IconPackage,
+      path: "/admin/products",
     },
     {
-      key: "/admin/orders",
-      label: "Quản Lý Đơn Hàng",
-      icon: <ShoppingBag size={18} />,
+      name: "Quản lý Danh mục",
+      icon: IconCategory,
+      path: "/admin/categories",
+    },
+    {
+      name: "Quản lý Đơn hàng",
+      icon: IconShoppingBag,
+      path: "/admin/orders",
+    },
+    {
+      name: "Quản lý Người dùng",
+      icon: IconUsers,
+      path: "/admin/users",
+    },
+    {
+      name: "Quản lý Banners",
+      icon: IconPhoto,
+      path: "/admin/banners",
+    },
+    {
+      name: "Mã Giảm Giá (Voucher)",
+      icon: IconTicket,
+      path: "/admin/vouchers",
+    },
+    {
+      name: "Đánh Giá Khách Hàng",
+      icon: IconStar,
+      path: "/admin/reviews",
+    },
+    {
+      name: "Cấu hình Thanh toán",
+      icon: IconCreditCard,
+      path: "/admin/payment-settings",
+    },
+    {
+      name: "Cấu hình Hotline & Zalo",
+      icon: IconPhoneCall,
+      path: "/admin/contact-settings",
     },
   ];
 
+  const profileContent = (
+    <div className="w-56 p-2 space-y-3">
+      <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
+        <UAvatar size={36} nickname={user?.name || "Admin"} src={user?.avatar} />
+        <div className="overflow-hidden">
+          <p className="text-sm font-semibold text-gray-800 truncate">{user?.name}</p>
+          <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+        </div>
+      </div>
+      <div className="space-y-1">
+        <Button
+          type="text"
+          className="w-full !flex !items-center !justify-start gap-2 text-xs text-gray-600 hover:text-gray-900"
+          icon={<IconArrowLeft size={16} />}
+          onClick={() => navigate("/")}
+        >
+          Trang khách hàng
+        </Button>
+        <Button
+          type="text"
+          danger
+          className="w-full !flex !items-center !justify-start gap-2 text-xs"
+          icon={<IconLogout size={16} />}
+          onClick={() => {
+            logout();
+            navigate("/admin/login");
+          }}
+        >
+          Đăng xuất quản trị
+        </Button>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen flex bg-stone-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-amber-950 text-stone-200 flex flex-col shrink-0">
-        <div className="p-6 border-b border-amber-900 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-amber-700 flex items-center justify-center text-amber-200">
-              <Sparkles size={18} />
+    <div className="h-screen w-screen overflow-hidden flex flex-col bg-slate-50 font-sans">
+      {/* Top Header - Fixed 56px */}
+      <header className="h-14 flex-none bg-white border-b border-brand-mint/40 px-5 flex items-center justify-between shadow-2xs z-30">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <div className="size-8 rounded-lg bg-brand-coral flex items-center justify-center text-white shadow-xs">
+              <IconShieldLock size={20} />
             </div>
-            <span className="font-bold text-white text-lg">
-              LuxAdmin
-            </span>
-          </Link>
-          <Tag color="gold" className="text-[10px] font-bold">
-            PRO
-          </Tag>
+            <span className="font-bold text-gray-900 text-base tracking-tight">LuxDecor Admin</span>
+          </div>
+          <span className="text-gray-300">/</span>
+          <span className="bg-brand-mint/30 text-stone-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-brand-mint">
+            Hệ thống Quản trị v2.0
+          </span>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
-          {menuItems.map((item) => {
-            const isActive = location.pathname === item.key;
-            return (
-              <Link
-                key={item.key}
-                to={item.key}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-colors ${
-                  isActive
-                    ? "bg-amber-800 text-white font-bold shadow-md"
-                    : "text-stone-300 hover:bg-amber-900/60 hover:text-white"
-                }`}
+        <div className="flex items-center gap-4">
+          <Popover content={profileContent} trigger="click" placement="bottomRight">
+            <div className="flex items-center gap-2 cursor-pointer p-1 rounded-md hover:bg-brand-cream/30 transition-colors">
+              <UAvatar size={32} nickname={user?.name || "Admin"} src={user?.avatar} />
+              <div className="hidden sm:block text-left">
+                <p className="text-xs font-semibold text-gray-800 leading-tight">{user?.name || "Quản trị viên"}</p>
+                <p className="text-[10px] text-brand-coral font-bold capitalize">{user?.role || "Admin"}</p>
+              </div>
+            </div>
+          </Popover>
+        </div>
+      </header>
+
+      {/* Main Body - Viewport Locked, Zero window scroll */}
+      <div className="flex flex-1 min-h-0 overflow-hidden">
+        {/* Sidebar Fixed 64px */}
+        <aside className="w-16 flex-none border-r border-brand-mint/40 bg-white flex flex-col justify-between py-4 px-2.5 z-20">
+          <div className="flex flex-col gap-2.5">
+            {menu.map((item, index) => {
+              const isActive = item.exact
+                ? pathname === item.path
+                : pathname.startsWith(item.path);
+
+              return (
+                <Tooltip key={index} title={item.name} placement="right">
+                  <div
+                    onClick={() => navigate(item.path)}
+                    className={cn(
+                      "flex items-center justify-center size-[44px] rounded-xl text-neutral-400 cursor-pointer transition-all border border-transparent hover:border-brand-coral hover:bg-brand-coral/10 hover:text-brand-coral",
+                      {
+                        "bg-brand-coral text-white border-brand-coral shadow-xs hover:bg-brand-coral hover:text-white": isActive,
+                      }
+                    )}
+                  >
+                    <item.icon size={22} />
+                  </div>
+                </Tooltip>
+              );
+            })}
+          </div>
+
+          <div className="flex flex-col items-center">
+            <Tooltip title="Về trang cửa hàng" placement="right">
+              <div
+                onClick={() => navigate("/")}
+                className="flex items-center justify-center size-[40px] text-neutral-400 rounded-lg hover:bg-gray-100 hover:text-gray-700 cursor-pointer transition-colors"
               >
-                {item.icon}
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="p-4 border-t border-amber-900 space-y-2">
-          <div className="flex items-center gap-3 px-3 py-2">
-            <img
-              src={user?.avatar}
-              alt="Admin Avatar"
-              className="w-9 h-9 rounded-full object-cover border border-amber-500"
-            />
-            <div className="text-xs overflow-hidden">
-              <p className="font-bold text-white truncate">{user?.name}</p>
-              <p className="text-stone-400 truncate">{user?.email}</p>
-            </div>
+                <IconArrowLeft size={20} />
+              </div>
+            </Tooltip>
           </div>
+        </aside>
 
-          <button
-            onClick={() => {
-              login("customer");
-              navigate("/");
-            }}
-            className="w-full flex items-center justify-center gap-2 py-2 text-xs font-semibold text-amber-200 hover:text-white bg-amber-900/50 hover:bg-amber-900 rounded-lg transition-colors"
-          >
-            <ArrowLeft size={14} /> Quay về Trang Khách Hàng
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Admin Content */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="bg-white px-8 py-4 border-b border-stone-200 flex items-center justify-between shadow-xs">
-          <div>
-            <h2 className="text-xl font-bold text-stone-900">
-              Quản Trị Hệ Thống LuxDecor
-            </h2>
-            <p className="text-xs text-stone-500">
-              Mô hình cấu trúc dự án mô phỏng tev-fe-admin
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Tag color="green">Hệ Thống Đang Trực Tuyến</Tag>
-          </div>
-        </header>
-
-        <main className="flex-1 p-8 overflow-y-auto">
+        {/* Content Pane - Inner Smooth Scrolling Only */}
+        <main className="flex-1 min-w-0 min-h-0 overflow-y-auto p-5">
           <Outlet />
         </main>
       </div>
     </div>
   );
 };
+
+export default AdminLayout;

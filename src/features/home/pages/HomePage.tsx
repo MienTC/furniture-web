@@ -1,6 +1,7 @@
 import React from 'react';
 import { HeroBanner } from '~/features/home/components/HeroBanner';
 import { VoucherSection } from '~/features/home/components/VoucherSection';
+import { FlashSaleSection } from '~/features/home/components/FlashSaleSection';
 import { CategoryGrid } from '~/features/home/components/CategoryGrid';
 import { FeaturedProducts } from '~/features/home/components/FeaturedProducts';
 import { ShowcaseSection } from '~/features/home/components/ShowcaseSection';
@@ -25,6 +26,7 @@ export const HomePage: React.FC = () => {
       <HeroBanner banners={banners} isLoading={isBannersLoading} />
       <HomeFeatures />
       <VoucherSection vouchers={vouchers} isLoading={isVouchersLoading} />
+      <FlashSaleSection />
       <CategoryGrid categories={categories} isLoading={isCategoriesLoading} />
       <FeaturedProducts products={featured} totalCount={totalProducts} isLoading={isProductsLoading} />
       <ShowcaseSection showcase={showcase} />

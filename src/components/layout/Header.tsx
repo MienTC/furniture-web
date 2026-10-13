@@ -4,16 +4,9 @@ import { useCart } from "~/contexts/CartContext";
 import { useWishlist } from "~/contexts/WishlistContext";
 import { useAuth } from "~/contexts/AuthContext";
 import { useCategories } from "~/features/products/hooks/useCategory";
+import { usePublicContactSettings } from "~/features/admin/hooks";
 import { APP_NAME } from "~/common/constants";
-import {
-  ShoppingBag,
-  Heart,
-  Search,
-  Menu,
-  PhoneCall,
-  ShieldCheck,
-  Truck,
-} from "lucide-react";
+import { CarOutlined, SafetyCertificateOutlined, SearchOutlined, MenuOutlined, PhoneOutlined, HeartOutlined, ShoppingOutlined } from '@ant-design/icons';
 import { Badge, Dropdown, MenuProps, Drawer, Input, Button } from "antd";
 import { CategoryNav } from "./CategoryNav";
 import { AuthModal } from "~/components/ui/AuthModal";
@@ -24,6 +17,7 @@ export const Header: React.FC = () => {
   const { wishlistIds } = useWishlist();
   const { user, logout, isAdmin } = useAuth();
   const { categories } = useCategories();
+  const { data: contactSettings } = usePublicContactSettings();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -48,7 +42,7 @@ export const Header: React.FC = () => {
         <div className="py-1 px-1">
           <p className="font-bold text-stone-800">{user.name}</p>
           <p className="text-xs text-stone-500">{user.email}</p>
-          <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-900 uppercase">
+          <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-brand-peach/30 text-brand-coral uppercase">
             {user.role}
           </span>
         </div>
@@ -72,7 +66,7 @@ export const Header: React.FC = () => {
   ] : [
     {
       key: "login",
-      label: <span onClick={() => openAuth('login')} className="font-bold text-amber-900">Đăng nhập tài khoản</span>,
+      label: <span onClick={() => openAuth('login')} className="font-bold text-brand-coral">Đăng nhập tài khoản</span>,
     },
     {
       key: "register",
@@ -83,24 +77,25 @@ export const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-xs">
       {/* Top Banner */}
-      <div className="bg-amber-950 text-amber-100 text-xs py-2 px-4">
+      <div className="bg-stone-900 text-brand-cream text-xs py-2 px-4 border-b border-brand-coral/30">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
-              <Truck size={14} className="text-amber-400" /> Miễn phí vận chuyển
-              đơn từ 15 triệu
+              <CarOutlined className="text-brand-peach" style={{ fontSize: 14 }} /> Miễn phí giao hàng & lắp đặt toàn quốc
             </span>
             <span className="hidden md:flex items-center gap-1.5">
-              <ShieldCheck size={14} className="text-amber-400" /> Bảo hành 5
+              <SafetyCertificateOutlined className="text-brand-mint" style={{ fontSize: 14 }} /> Bảo hành 5
               năm
             </span>
           </div>
-          <a
-            href="tel:0393241003"
-            className="hover:text-amber-300 flex items-center gap-1"
-          >
-            <PhoneCall size={12} /> Hotline: 0393.241003
-          </a>
+          {contactSettings?.hotline && (
+            <a
+              href={`tel:${contactSettings.hotline}`}
+              className="hover:text-brand-peach flex items-center gap-1 font-semibold"
+            >
+              <PhoneOutlined style={{ fontSize: 12 }} /> Hotline: {contactSettings.hotline}
+            </a>
+          )}
         </div>
       </div>
 
@@ -114,7 +109,7 @@ export const Header: React.FC = () => {
             <span className="text-2xl font-black text-stone-900 tracking-tight block leading-none">
               {APP_NAME}
             </span>
-            <span className="text-[10px] text-amber-800 tracking-widest uppercase font-semibold">
+            <span className="text-[10px] text-brand-coral tracking-widest uppercase font-bold">
               Interior Luxury
             </span>
           </div>
@@ -128,7 +123,7 @@ export const Header: React.FC = () => {
             placeholder="Nhập từ khóa, mở lối không gian!"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            prefix={<Search size={16} className="text-stone-400 mr-1" />}
+            prefix={<SearchOutlined className="text-stone-400 mr-1" style={{ fontSize: 16 }} />}
             className="w-full !rounded-full !bg-stone-100/80 hover:!bg-white focus:!bg-white !py-2 !border-stone-200"
           />
         </form>
@@ -136,35 +131,35 @@ export const Header: React.FC = () => {
         <div className="flex items-center gap-3 md:gap-5">
           <Link
             to="/wishlist"
-            className="relative p-2 text-stone-700 hover:text-amber-900 transition-colors"
+            className="relative p-2 text-stone-700 hover:text-brand-coral transition-colors"
           >
             <Badge
               count={wishlistIds.length}
               overflowCount={99}
               size="small"
-              color="#92400e"
+              color="#DE7272"
             >
-              <Heart size={22} />
+              <HeartOutlined style={{ fontSize: 22 }} />
             </Badge>
           </Link>
 
           <Link
             to="/cart"
-            className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-stone-100 hover:bg-amber-100/60 transition-colors text-stone-800 min-w-[120px]"
+            className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-stone-100 hover:bg-brand-peach/30 transition-colors text-stone-800 min-w-[120px] border border-stone-200"
           >
             <Badge
               count={itemCount}
               overflowCount={99}
               size="small"
-              color="#78350f"
+              color="#DE7272"
             >
-              <ShoppingBag size={22} className="text-amber-950" />
+              <ShoppingOutlined className="text-stone-800" style={{ fontSize: 22 }} />
             </Badge>
             <div className="flex flex-col text-left">
               <span className="text-[10px] text-stone-500 font-medium leading-none">
                 Giỏ hàng
               </span>
-              <span className="text-xs font-bold text-amber-950 leading-tight">
+              <span className="text-xs font-bold text-brand-coral leading-tight">
                 {subtotal.toLocaleString("vi-VN")}₫
               </span>
             </div>
@@ -183,7 +178,7 @@ export const Header: React.FC = () => {
                     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
                   }
                   alt={user.name || "User"}
-                  className="w-8 h-8 rounded-full object-cover border border-amber-800/20"
+                  className="w-8 h-8 rounded-full object-cover border border-brand-coral/40"
                 />
                 <span className="hidden md:inline text-xs font-semibold text-stone-800">
                   {user.name?.split(" ")[0]}
@@ -191,31 +186,29 @@ export const Header: React.FC = () => {
               </button>
             </Dropdown>
           ) : (
-            <div className="flex items-center gap-1.5">
-              <Button
-                type="text"
-                size="small"
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
                 onClick={() => openAuth('login')}
-                className="!text-xs font-semibold !text-stone-700 hover:!text-amber-900"
+                className="px-3.5 py-1.5 text-xs font-bold text-stone-800 hover:text-brand-coral rounded-lg hover:bg-stone-100 transition-colors cursor-pointer border border-stone-200"
               >
                 Đăng nhập
-              </Button>
-              <Button
-                type="primary"
-                size="small"
+              </button>
+              <button
+                type="button"
                 onClick={() => openAuth('register')}
-                className="!text-xs font-semibold !bg-amber-900 hover:!bg-amber-800 !rounded-lg"
+                className="px-3.5 py-1.5 text-xs font-bold text-white bg-brand-coral hover:bg-[#c95f5f] rounded-lg shadow-xs transition-colors cursor-pointer"
               >
                 Đăng ký
-              </Button>
+              </button>
             </div>
           )}
 
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="md:hidden p-2 text-stone-700"
+            className="md:hidden p-2 text-stone-700 cursor-pointer"
           >
-            <Menu size={24} />
+            <MenuOutlined style={{ fontSize: 22 }} />
           </button>
         </div>
       </div>
@@ -236,13 +229,13 @@ export const Header: React.FC = () => {
               placeholder="Tìm kiếm..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              prefix={<Search size={16} />}
+              prefix={<SearchOutlined style={{ fontSize: 16 }} />}
             />
           </form>
           <Link
             to="/products"
             onClick={() => setMobileMenuOpen(false)}
-            className="py-2 px-3 rounded-lg font-bold text-amber-900 bg-amber-50"
+            className="py-2 px-3 rounded-lg font-bold text-brand-coral bg-brand-peach/20"
           >
             Tất cả Sản Phẩm
           </Link>
@@ -266,7 +259,7 @@ export const Header: React.FC = () => {
                           key={sub.id}
                           to={`/products?category=${sub.id}`}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="block py-1 px-2 rounded text-xs text-stone-600 hover:text-amber-900 hover:bg-amber-50"
+                          className="block py-1 px-2 rounded text-xs text-stone-600 hover:text-brand-coral hover:bg-brand-peach/20"
                         >
                           {sub.name}
                         </Link>
@@ -286,7 +279,7 @@ export const Header: React.FC = () => {
                     setMobileMenuOpen(false);
                     openAuth('login');
                   }}
-                  className="!bg-amber-900 font-bold"
+                  className="!bg-brand-coral hover:!bg-[#c95f5f] font-bold"
                 >
                   Đăng Nhập
                 </Button>

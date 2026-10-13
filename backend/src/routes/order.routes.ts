@@ -9,7 +9,7 @@ router.post('/', OrderController.createOrder);
 
 // User orders
 router.get('/', verifyToken, OrderController.getMyOrders);
-router.get('/:id', verifyToken, OrderController.getOrderDetail);
+router.get('/:id', OrderController.getOrderDetail);
 router.patch('/:id/cancel', verifyToken, OrderController.cancelOrder);
 
 export default router;

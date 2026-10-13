@@ -1,13 +1,15 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller.js';
 import { verifyToken } from '../middleware/auth.middleware.js';
+import { validateBody } from '../middleware/validate.middleware.js';
+import { registerSchema, loginSchema, refreshTokenSchema } from '../dto/auth.dto.js';
 
 const router = Router();
 
-// Public routes
-router.post('/register', AuthController.register);
-router.post('/login', AuthController.login);
-router.post('/refresh', AuthController.refresh);
+// Public routes with DTO validation
+router.post('/register', validateBody(registerSchema), AuthController.register);
+router.post('/login', validateBody(loginSchema), AuthController.login);
+router.post('/refresh', validateBody(refreshTokenSchema), AuthController.refresh);
 
 // Protected routes (Requires Bearer token)
 router.post('/logout', verifyToken, AuthController.logout);

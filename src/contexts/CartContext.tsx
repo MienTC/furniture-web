@@ -45,10 +45,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     selectedVariant?: import('~/types').ProductVariant,
     priceOverride?: number
   ) => {
+    const effectiveColor = selectedColor || product.colorOptions?.[0] || 'Tiêu chuẩn';
+
     setCart((prev) => {
       const matchKey = (item: CartItem) =>
         item.product.id === product.id &&
-        item.selectedColor === (selectedColor || product.colorOptions[0]) &&
+        item.selectedColor === effectiveColor &&
         item.selectedVariant?.s_ID === selectedVariant?.s_ID;
 
       const existingIndex = prev.findIndex(matchKey);
@@ -62,7 +64,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           {
             product,
             quantity,
-            selectedColor: selectedColor || product.colorOptions[0],
+            selectedColor: effectiveColor,
             selectedVariant,
             selectedPrice: priceOverride ?? selectedVariant?.sale_price ?? product.price,
           },
@@ -118,7 +120,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const discountAmount = appliedVoucher ? orderService.calculateDiscount(appliedVoucher, subtotal) : 0;
-  const shippingFee = subtotal >= 15000000 || subtotal === 0 ? 0 : 300000;
+  const shippingFee = 0; // Miễn phí vận chuyển toàn quốc
   const totalAmount = Math.max(0, subtotal - discountAmount + shippingFee);
 
   return (

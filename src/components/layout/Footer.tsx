@@ -1,37 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCategories } from "~/features/products/hooks/useCategory";
+import { usePublicContactSettings } from "~/features/admin/hooks";
 import { APP_NAME, APP_SLOGAN } from "~/common/constants";
-import {
-  MapPin,
-  Phone,
-  Sparkles,
-  MessageSquareText,
-  QrCode,
-  X,
-} from "lucide-react";
+import { EnvironmentOutlined, PhoneOutlined, ThunderboltOutlined, MessageOutlined, QrcodeOutlined, CloseOutlined } from '@ant-design/icons';
 import { Input, Button, Modal } from "antd";
-
-const REGISTRATION_CONTACTS = [
-  {
-    id: 1,
-    name: "Zalo 1",
-    phone: "0999888777",
-    link: "https://zalo.me/0999888777",
-  },
-  {
-    id: 2,
-    name: "Zalo 2",
-    phone: "0777666555",
-    link: "https://zalo.me/0777666555",
-  },
-  {
-    id: 3,
-    name: "Zalo 3",
-    phone: "0555444333",
-    link: "https://zalo.me/0555444333",
-  },
-];
 
 const qrCodeUrl = (value: string) =>
   `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(value)}`;
@@ -39,10 +12,11 @@ const qrCodeUrl = (value: string) =>
 export const Footer: React.FC = () => {
   const [openRegister, setOpenRegister] = useState(false);
   const { categories } = useCategories();
+  const { data: contactSettings } = usePublicContactSettings();
 
   return (
     <>
-      <footer className="bg-stone-900 text-stone-300 pt-16 pb-8 border-t border-amber-950/30">
+      <footer className="bg-stone-900 text-stone-300 pt-16 pb-8 border-t border-brand-coral/20">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-2">
@@ -59,17 +33,21 @@ export const Footer: React.FC = () => {
             </p>
             <div className="space-y-2 text-xs text-stone-300">
               <p className="flex items-center gap-2">
-                <MapPin size={16} className="text-amber-500 shrink-0" />
-                Showroom 1: 88 Phố Lý Thường Kiệt, Q. Hoàn Kiếm, Hà Nội
+                <EnvironmentOutlined className="text-brand-coral shrink-0" style={{fontSize:16}} />
+                Showroom 1: {contactSettings?.address1 || '88 Phố Lý Thường Kiệt, Q. Hoàn Kiếm, Hà Nội'}
               </p>
-              <p className="flex items-center gap-2">
-                <MapPin size={16} className="text-amber-500 shrink-0" />
-                Showroom 2: 720A Điện Biên Phủ, P. 22, Q. Bình Thạnh, TP.HCM
-              </p>
-              <p className="flex items-center gap-2">
-                <Phone size={16} className="text-amber-500 shrink-0" />
-                Hotline: 1900 8888 - 0988 888 999
-              </p>
+              {contactSettings?.address2 && (
+                <p className="flex items-center gap-2">
+                  <EnvironmentOutlined className="text-brand-coral shrink-0" style={{fontSize:16}} />
+                  Showroom 2: {contactSettings.address2}
+                </p>
+              )}
+              {contactSettings?.hotline && (
+                <p className="flex items-center gap-2">
+                  <PhoneOutlined className="text-brand-peach shrink-0" style={{fontSize:16}} />
+                  Hotline: {contactSettings.hotline} {contactSettings.hotline2 ? `- ${contactSettings.hotline2}` : ''}
+                </p>
+              )}
             </div>
             <div className="rounded-xl overflow-hidden border border-stone-700 mt-2">
               <iframe
@@ -97,7 +75,7 @@ export const Footer: React.FC = () => {
                   <li key={cat.id}>
                     <Link
                       to={`/products?category=${cat.id}`}
-                      className="hover:text-amber-400 transition-colors"
+                      className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5"
                     >
                       {cat.name}
                     </Link>
@@ -114,28 +92,28 @@ export const Footer: React.FC = () => {
               <li>
                 <Link
                   to="/orders"
-                  className="hover:text-amber-400 transition-colors"
+                  className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5"
                 >
                   Tra cứu đơn hàng
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-amber-400 transition-colors">
+                <a href="#" className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5">
                   Chính sách bảo hành 5 năm
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-amber-400 transition-colors">
+                <a href="#" className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5">
                   Chính sách vận chuyển & lắp đặt
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-amber-400 transition-colors">
+                <a href="#" className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5">
                   Hướng dẫn thanh toán QR Bank
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-amber-400 transition-colors">
+                <a href="#" className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5">
                   Quy trình đổi trả sản phẩm
                 </a>
               </li>
@@ -157,7 +135,7 @@ export const Footer: React.FC = () => {
               <Button
                 type="primary"
                 onClick={() => setOpenRegister(true)}
-                className="!bg-amber-800 hover:!bg-amber-700 font-bold text-xs"
+                className="!bg-brand-coral hover:!brightness-95 font-bold text-xs !border-none"
               >
                 Đăng Ký Ngay
               </Button>
@@ -176,29 +154,29 @@ export const Footer: React.FC = () => {
         footer={null}
         centered
         width={760}
-        closeIcon={<X size={18} />}
+        closeIcon={<CloseOutlined style={{ fontSize: 18 }} />}
         className="register-modal"
       >
         <div className="grid gap-5 p-1 md:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-3xl bg-gradient-to-br from-amber-900 via-amber-800 to-stone-900 p-5 text-white">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-100">
-              <Sparkles size={12} /> Khuyến mãi đặc biệt
+          <div className="rounded-3xl bg-gradient-to-br from-[#DE7272] via-[#e58a8a] to-stone-900 p-5 text-white">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-cream">
+              <ThunderboltOutlined style={{ fontSize: 12 }} /> Khuyến mãi đặc biệt
             </div>
             <h3 className="text-2xl font-black leading-tight">
               Đăng ký nhận ưu đãi & tư vấn ngay
             </h3>
-            <p className="mt-3 text-sm text-amber-100/80">
+            <p className="mt-3 text-sm text-stone-100">
               Nhận ưu đãi lên đến 10% và được đội ngũ tư vấn hỗ trợ tìm giải
               pháp nội thất phù hợp với không gian của bạn.
             </p>
 
             <div className="mt-6 space-y-3 text-sm">
-              <div className="flex items-center gap-3 rounded-2xl bg-white/5 px-3 py-2.5">
-                <MessageSquareText size={16} className="text-amber-300" />
+              <div className="flex items-center gap-3 rounded-2xl bg-white/10 px-3 py-2.5">
+                <MessageOutlined className="text-brand-peach" style={{ fontSize: 16 }} />
                 <span>Hỗ trợ nhanh qua Zalo, WhatsApp và hotline.</span>
               </div>
-              <div className="flex items-center gap-3 rounded-2xl bg-white/5 px-3 py-2.5">
-                <QrCode size={16} className="text-amber-300" />
+              <div className="flex items-center gap-3 rounded-2xl bg-white/10 px-3 py-2.5">
+                <QrcodeOutlined className="text-brand-peach" style={{ fontSize: 16 }} />
                 <span>
                   Quét mã QR để liên hệ trực tiếp với nhân viên tư vấn.
                 </span>
@@ -235,32 +213,41 @@ export const Footer: React.FC = () => {
               />
             </div>
 
-            <div className="rounded-2xl border border-stone-200 bg-stone-50 p-3">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
-                Liên hệ nhanh qua Zalo
-              </p>
-              <div className="grid gap-3 sm:grid-cols-3">
-                {REGISTRATION_CONTACTS.map((item) => (
-                  <div
-                    key={item.id}
-                    className="rounded-2xl border border-stone-200 bg-white p-2 text-center shadow-sm"
-                  >
-                    <img
-                      src={qrCodeUrl(item.link)}
-                      alt={`QR Zalo ${item.phone}`}
-                      className="mx-auto h-20 w-20 rounded-xl object-cover"
-                    />
-                    <p className="mt-2 text-[11px] font-bold text-stone-800">
-                      {item.phone}
-                    </p>
-                  </div>
-                ))}
+            {contactSettings?.contacts && contactSettings.contacts.length > 0 && (
+              <div className="rounded-2xl border border-stone-200 bg-stone-50 p-3">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
+                  Liên hệ nhanh qua Zalo
+                </p>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {contactSettings.contacts.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-2xl border border-stone-200 bg-white p-2 text-center shadow-sm"
+                    >
+                      {item.zaloUrl && (
+                        <img
+                          src={qrCodeUrl(item.zaloUrl)}
+                          alt={`QR Zalo ${item.name}`}
+                          className="mx-auto h-20 w-20 rounded-xl object-cover"
+                        />
+                      )}
+                      <p className="mt-2 text-[11px] font-bold text-stone-800">
+                        {item.name}
+                      </p>
+                      {item.phone && (
+                        <p className="text-[10px] text-stone-500">
+                          {item.phone}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             <Button
               type="primary"
-              className="!h-11 !w-full !bg-amber-800 hover:!bg-amber-700 !font-bold"
+              className="!h-11 !w-full !bg-brand-coral hover:!bg-[#c95f5f] !font-bold cursor-pointer"
             >
               Đăng ký nhận ưu đãi
             </Button>

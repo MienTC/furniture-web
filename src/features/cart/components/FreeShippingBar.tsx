@@ -1,25 +1,20 @@
 import React from 'react';
-import { Truck } from 'lucide-react';
+import { CarOutlined } from '@ant-design/icons';
 import { Progress } from 'antd';
 import { formatVND } from '~/common/utils/formatters';
 import { FREE_SHIPPING_THRESHOLD } from '~/common/constants';
 
-export const FreeShippingBar: React.FC<{ subtotal: number }> = ({ subtotal }) => {
-  const progress  = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
-  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+export const FreeShippingBar: React.FC<{ subtotal: number }> = ({ subtotal: _ }) => {
   return (
-    <div className="p-4 rounded-2xl bg-amber-950/5 border border-amber-900/10 space-y-2">
+    <div className="p-4 rounded-2xl bg-brand-mint/20 border border-brand-mint/50 space-y-2">
       <div className="flex items-center justify-between text-xs font-semibold">
-        <span className="flex items-center gap-1.5 text-amber-950">
-          <Truck size={16} className="text-amber-800" />
-          {remaining === 0
-            ? <strong className="text-emerald-700">Chúc mừng! Bạn được MIỄN PHÍ VẬN CHUYỂN!</strong>
-            : <span>Mua thêm <strong className="text-amber-900">{formatVND(remaining)}</strong> để miễn phí vận chuyển</span>
-          }
+        <span className="flex items-center gap-1.5 text-stone-900">
+          <CarOutlined className="text-brand-coral" style={{ fontSize: 16 }} />
+          <strong className="text-stone-900 font-bold">ƯU ĐÃI: MIỄN PHÍ VẬN CHUYỂN & LẮP ĐẶT TOÀN QUỐC CHO MỌI ĐƠN HÀNG</strong>
         </span>
-        <span className="text-stone-500">{progress}%</span>
+        <span className="text-brand-coral font-bold">100%</span>
       </div>
-      <Progress percent={progress} showInfo={false} strokeColor="#78350f" size="small" />
+      <Progress percent={100} showInfo={false} strokeColor="#DE7272" size="small" />
     </div>
   );
 };

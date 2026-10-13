@@ -34,6 +34,38 @@ export class ReviewController {
   }
 
   /**
+   * GET /api/v1/reviews/featured
+   * Lấy các đánh giá nổi bật từ khách hàng thực tế (100% dữ liệu động)
+   */
+  static async getFeaturedReviews(_req: Request, res: Response): Promise<any> {
+    try {
+      const reviews = await ReviewModel.find({ is_approved: true })
+        .sort({ rating: -1, dt_create: -1 })
+        .limit(6)
+        .lean();
+
+      const productIds = reviews.map((r) => r.product_id);
+      const products = await ProductModel.find({ s_ID: { $in: productIds } }).lean();
+      const productMap = new Map<string, string>();
+      products.forEach((p) => productMap.set(p.s_ID, p.s_Name));
+
+      const formatted = reviews.map((r) => ({
+        id: r.s_ID,
+        name: r.user_name || '',
+        role: r.verified_purchase ? 'Đã mua hàng' : '',
+        avatar: r.user_avatar || '',
+        content: r.comment || '',
+        rating: r.rating || 5,
+        product: productMap.get(r.product_id) || '',
+      }));
+
+      return sendSuccess(res, 'Lấy đánh giá nổi bật thành công', formatted);
+    } catch (error: any) {
+      return sendError(res, error.message || 'Lỗi khi lấy đánh giá nổi bật', 500);
+    }
+  }
+
+  /**
    * POST /api/v1/reviews
    */
   static async createReview(req: AuthRequest, res: Response): Promise<any> {
@@ -57,7 +89,7 @@ export class ReviewController {
         s_ID: generateId('rev'),
         product_id: product.s_ID,
         user_id: userId,
-        user_name: user_name || req.user?.email?.split('@')[0] || 'Khách hàng',
+        user_name: user_name || req.user?.s_user || req.user?.email || '',
         user_avatar: user_avatar || '',
         rating: Math.min(5, Math.max(1, Number(rating))),
         comment: comment.trim(),

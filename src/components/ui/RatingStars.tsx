@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star } from 'lucide-react';
+import { StarFilled, StarOutlined } from '@ant-design/icons';
 
 interface RatingStarsProps {
   rating: number;
@@ -19,16 +19,20 @@ export const RatingStars: React.FC<RatingStarsProps> = ({
 
   return (
     <div className="flex items-center gap-1">
-      <div className="flex items-center text-amber-500">
+      <div className="flex items-center text-brand-peach">
         {Array.from({ length: 5 }).map((_, i) => {
           const isFilled = i < fullStars || (i === fullStars && hasHalf);
-          return (
-            <Star
+          return isFilled ? (
+            <StarFilled
               key={i}
-              size={size}
-              className={`${
-                isFilled ? 'fill-amber-400 text-amber-400' : 'text-stone-300'
-              }`}
+              className="text-brand-peach"
+              style={{ fontSize: size }}
+            />
+          ) : (
+            <StarOutlined
+              key={i}
+              className="text-stone-300"
+              style={{ fontSize: size }}
             />
           );
         })}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { orderService } from '~/services/orderService';
 import { OrderCard } from '~/features/orders/components/OrderCard';
-import { Package } from 'lucide-react';
+import { InboxOutlined } from '@ant-design/icons';
 import { Tabs } from 'antd';
 import type { Order } from '~/types';
 
@@ -26,9 +26,11 @@ export const OrderListPage: React.FC = () => {
       ]} />
       {filtered.length === 0 ? (
         <div className="bg-white rounded-2xl p-12 text-center border border-stone-200 space-y-4">
-          <div className="w-16 h-16 rounded-full bg-stone-100 mx-auto flex items-center justify-center text-stone-400"><Package size={32} /></div>
+          <div className="w-16 h-16 rounded-full bg-stone-100 mx-auto flex items-center justify-center text-stone-400">
+            <InboxOutlined style={{ fontSize: 32 }} />
+          </div>
           <h3 className="font-bold text-stone-800 text-lg">Chưa có đơn hàng nào trong mục này</h3>
-          <Link to="/products" className="inline-block bg-amber-950 text-white text-xs font-bold px-6 py-2.5 rounded-lg">Khám phá ngay</Link>
+          <Link to="/products" className="inline-block bg-brand-coral hover:bg-[#c95f5f] text-white text-xs font-bold px-6 py-2.5 rounded-lg shadow-sm">Khám phá ngay</Link>
         </div>
       ) : (
         <div className="space-y-4">{filtered.map(o => <OrderCard key={o.id} order={o} />)}</div>

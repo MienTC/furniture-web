@@ -12,6 +12,15 @@ export const orderService = {
     return storageService.getOrders().find(o => o.id === id);
   },
 
+  async fetchOrderById(id: string): Promise<Order | undefined> {
+    try {
+      const res: any = await instanceBE.get(`/orders/${id}`);
+      return res.data;
+    } catch {
+      return storageService.getOrders().find(o => o.id === id);
+    }
+  },
+
   async validateVoucher(code: string, subtotal: number): Promise<{ valid: boolean; voucher?: Voucher; error?: string }> {
     try {
       const res: any = await instanceBE.get(`/vouchers/${code}`);
@@ -79,6 +88,34 @@ export const orderService = {
     storageService.saveOrders(currentOrders);
 
     return newOrder;
+  },
+
+  async createOrderApi(
+    items: CartItem[],
+    customerInfo: OrderCustomerInfo,
+    voucherCode?: string
+  ): Promise<any> {
+    try {
+      const res: any = await instanceBE.post('/orders', {
+        items,
+        customerInfo,
+        voucherCode,
+      });
+      return res.data;
+    } catch (err: any) {
+      throw err;
+    }
+  },
+
+  async createVNPayPaymentUrl(orderId: string): Promise<string> {
+    try {
+      const res: any = await instanceBE.post('/payment/vnpay/create-url', {
+        orderId,
+      });
+      return res.data?.paymentUrl;
+    } catch (err: any) {
+      throw err;
+    }
   },
 
   updateOrderStatus(orderId: string, status: OrderStatus): boolean {

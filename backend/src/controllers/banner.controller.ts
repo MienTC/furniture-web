@@ -70,17 +70,26 @@ export class BannerController {
         title: showcase.title,
         description: showcase.subtitle,
         imageUrl: showcase.image_url,
-        badges: [
-          { id: 'bg1', label: 'Cam Kết Chất Lượng', colorClass: 'bg-amber-700/80' },
-          { id: 'bg2', label: 'Bảo Hành 5 Năm', colorClass: 'bg-stone-700' },
-          { id: 'bg3', label: 'Nhập Khẩu 100%', colorClass: 'bg-amber-900/80' },
-        ],
-        highlights: ['Gỗ Tự Nhiên Nhập Khẩu', 'Bảo Hành 5 Năm Gỗ', 'Sơn PU Chống Trầy', 'Lắp Đặt Tận Nơi'],
-        ctaLabel: 'Đặt Hàng Ngay',
-        ctaLink: showcase.link_url,
+        badgeText: showcase.badge_text || '',
+        highlights: Array.isArray(showcase.highlights) ? showcase.highlights : [],
+        ctaLabel: 'Khám Phá Bộ Sưu Tập',
+        ctaLink: showcase.link_url || '/products',
       });
     } catch (error: any) {
       return sendError(res, error.message || 'Lỗi khi lấy showcase', 500);
+    }
+  }
+
+  /**
+   * GET /api/v1/banners/promo-img4
+   * Lấy cấu hình ảnh ưu đãi img4 từ Admin
+   */
+  static async getPromoImg4(_req: Request, res: Response): Promise<any> {
+    try {
+      const banner = await BannerModel.findOne({ type: 'promo_img4', is_active: true }).lean();
+      return sendSuccess(res, 'Lấy ảnh ưu đãi thành công', banner || null);
+    } catch (error: any) {
+      return sendError(res, error.message || 'Lỗi khi lấy banner ưu đãi', 500);
     }
   }
 

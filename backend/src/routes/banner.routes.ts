@@ -8,6 +8,7 @@ const router = Router();
 router.get('/', BannerController.getBanners);
 router.get('/trustbar', BannerController.getTrustBar);
 router.get('/showcase', BannerController.getShowcase);
+router.get('/promo-img4', BannerController.getPromoImg4);
 
 // Admin
 router.post('/', verifyToken, requireAdmin, BannerController.createBanner);

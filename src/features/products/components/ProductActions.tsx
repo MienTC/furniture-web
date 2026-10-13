@@ -1,5 +1,5 @@
 import React from "react";
-import { ShoppingBag, Heart, Plus, Minus } from "lucide-react";
+import { ShoppingOutlined, HeartOutlined, HeartFilled, PlusOutlined, MinusOutlined } from "@ant-design/icons";
 import type { Product } from "~/types";
 
 interface Props {
@@ -27,9 +27,9 @@ export const ProductActions: React.FC<Props> = ({
       <div className="flex items-center border border-stone-300 rounded-lg overflow-hidden bg-white">
         <button
           onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
-          className="px-3 py-1.5 text-stone-600 hover:bg-stone-100"
+          className="px-3 py-1.5 text-stone-600 hover:bg-stone-100 cursor-pointer"
         >
-          <Minus size={14} />
+          <MinusOutlined style={{ fontSize: 13 }} />
         </button>
         <span className="px-4 font-bold text-xs text-stone-900">
           {quantity}
@@ -38,31 +38,40 @@ export const ProductActions: React.FC<Props> = ({
           onClick={() =>
             onQuantityChange(Math.min(product.stockQuantity, quantity + 1))
           }
-          className="px-3 py-1.5 text-stone-600 hover:bg-stone-100"
+          className="px-3 py-1.5 text-stone-600 hover:bg-stone-100 cursor-pointer"
         >
-          <Plus size={14} />
+          <PlusOutlined style={{ fontSize: 13 }} />
         </button>
       </div>
     </div>
     <div className="flex flex-col sm:flex-row gap-3">
-      <button
-        onClick={onAddToCart}
-        className="flex-1 bg-amber-950 hover:bg-amber-900 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all text-sm"
-      >
-        <ShoppingBag size={18} /> Thêm Vào Giỏ
-      </button>
-      <button
-        onClick={onBuyNow}
-        className="flex-1 bg-amber-700 hover:bg-amber-600 text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all text-sm"
-      >
-        Mua Ngay
-      </button>
-      <button
-        onClick={onToggleWishlist}
-        className={`p-3.5 rounded-xl border flex items-center justify-center transition-all ${liked ? "bg-rose-50 border-rose-200 text-rose-600" : "border-stone-300 text-stone-600 hover:bg-stone-100"}`}
-      >
-        <Heart size={20} className={liked ? "fill-current" : ""} />
-      </button>
+      <div className="flex-1">
+        <button
+          type="button"
+          onClick={onAddToCart}
+          className="w-full bg-white hover:bg-brand-peach/20 text-stone-900 border-2 border-brand-coral font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-xs transition-all text-sm cursor-pointer"
+        >
+          <ShoppingOutlined className="text-brand-coral" style={{ fontSize: 18 }} /> Thêm Vào Giỏ
+        </button>
+      </div>
+      <div className="flex-1">
+        <button
+          type="button"
+          onClick={onBuyNow}
+          className="w-full bg-brand-coral hover:bg-[#c95f5f] text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all text-sm cursor-pointer"
+        >
+          Mua Ngay
+        </button>
+      </div>
+      <div>
+        <button
+          type="button"
+          onClick={onToggleWishlist}
+          className={`h-full px-4 py-3.5 rounded-xl border flex items-center justify-center transition-all cursor-pointer ${liked ? "bg-brand-coral text-white border-brand-coral" : "border-stone-300 text-stone-600 hover:text-brand-coral hover:bg-stone-50"}`}
+        >
+          {liked ? <HeartFilled style={{ fontSize: 18 }} /> : <HeartOutlined style={{ fontSize: 18 }} />}
+        </button>
+      </div>
     </div>
   </div>
 );

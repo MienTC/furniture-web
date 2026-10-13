@@ -1,12 +1,12 @@
 import React from 'react';
-import { Truck } from 'lucide-react';
+import { CarOutlined } from '@ant-design/icons';
 import { Form, Input } from 'antd';
 import type { FormInstance } from 'antd';
 
 export const DeliveryForm: React.FC<{ form: FormInstance }> = ({ form: _ }) => (
   <div className="bg-white p-6 sm:p-8 rounded-2xl border border-stone-200 space-y-4 shadow-2xs">
     <h3 className="text-lg font-bold text-stone-900 border-b border-stone-100 pb-3 flex items-center gap-2">
-      <Truck size={20} className="text-amber-800" /> 1. Thông Tin Nhận Hàng & Lắp Đặt
+      <CarOutlined className="text-brand-coral" style={{ fontSize: 20 }} /> 1. Thông Tin Nhận Hàng & Lắp Đặt
     </h3>
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <Form.Item name="fullName" label={<span className="text-xs font-bold text-stone-700">Họ và tên</span>} rules={[{ required: true, message: 'Vui lòng nhập họ tên' }]}>

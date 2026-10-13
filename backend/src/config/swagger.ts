@@ -318,5 +318,135 @@ export const swaggerDocument = {
         },
       },
     },
+    '/admin/stats': {
+      get: {
+        tags: ['🔐 Admin - Dashboard'],
+        summary: 'Thống kê tổng quan Dashboard (Doanh thu, Đơn hàng, SP, Users)',
+        security: [{ BearerAuth: [] }],
+        responses: {
+          200: { description: 'Dữ liệu thống kê admin' },
+          401: { description: 'Chưa đăng nhập' },
+          403: { description: 'Không có quyền Admin' },
+        },
+      },
+    },
+    '/admin/products': {
+      get: {
+        tags: ['🔐 Admin - Products'],
+        summary: 'Danh sách sản phẩm (Admin quản lý có phân trang & filter)',
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          { name: 'page', in: 'query', schema: { type: 'number' } },
+          { name: 'limit', in: 'query', schema: { type: 'number' } },
+          { name: 'search', in: 'query', schema: { type: 'string' } },
+        ],
+        responses: { 200: { description: 'Danh sách sản phẩm admin' } },
+      },
+      post: {
+        tags: ['🔐 Admin - Products'],
+        summary: 'Thêm mới sản phẩm (Validate DTO)',
+        security: [{ BearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['name', 'categoryId', 'price', 'images'],
+                properties: {
+                  name: { type: 'string', example: 'Ghế Sofa Da Ý Cao Cấp' },
+                  categoryId: { type: 'string', example: 'cat_phong_khach' },
+                  price: { type: 'number', example: 12500000 },
+                  stockQuantity: { type: 'number', example: 15 },
+                  images: { type: 'array', items: { type: 'string' }, example: ['https://images.unsplash.com/photo-sofa.jpg'] },
+                },
+              },
+            },
+          },
+        },
+        responses: { 201: { description: 'Tạo sản phẩm thành công' } },
+      },
+    },
+    '/admin/products/{id}': {
+      put: {
+        tags: ['🔐 Admin - Products'],
+        summary: 'Cập nhật sản phẩm',
+        security: [{ BearerAuth: [] }],
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: { 200: { description: 'Cập nhật thành công' } },
+      },
+      delete: {
+        tags: ['🔐 Admin - Products'],
+        summary: 'Xóa sản phẩm',
+        security: [{ BearerAuth: [] }],
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        responses: { 200: { description: 'Xóa thành công' } },
+      },
+    },
+    '/admin/orders': {
+      get: {
+        tags: ['🔐 Admin - Orders'],
+        summary: 'Danh sách đơn hàng',
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          { name: 'status', in: 'query', schema: { type: 'string', enum: ['pending', 'processing', 'shipping', 'completed', 'cancelled'] } },
+        ],
+        responses: { 200: { description: 'Danh sách đơn hàng' } },
+      },
+    },
+    '/admin/orders/{id}/status': {
+      patch: {
+        tags: ['🔐 Admin - Orders'],
+        summary: 'Cập nhật trạng thái đơn hàng',
+        security: [{ BearerAuth: [] }],
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['status'],
+                properties: {
+                  status: { type: 'string', enum: ['pending', 'processing', 'shipping', 'completed', 'cancelled'] },
+                },
+              },
+            },
+          },
+        },
+        responses: { 200: { description: 'Cập nhật trạng thái thành công' } },
+      },
+    },
+    '/admin/users': {
+      get: {
+        tags: ['🔐 Admin - Users'],
+        summary: 'Danh sách người dùng hệ thống',
+        security: [{ BearerAuth: [] }],
+        responses: { 200: { description: 'Danh sách người dùng' } },
+      },
+    },
+    '/admin/users/{id}/status': {
+      patch: {
+        tags: ['🔐 Admin - Users'],
+        summary: 'Khóa hoặc mở khóa tài khoản người dùng',
+        security: [{ BearerAuth: [] }],
+        parameters: [{ name: 'id', in: 'path', required: true, schema: { type: 'string' } }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['status'],
+                properties: {
+                  status: { type: 'boolean', example: false },
+                },
+              },
+            },
+          },
+        },
+        responses: { 200: { description: 'Cập nhật thành công' } },
+      },
+    },
   },
 };

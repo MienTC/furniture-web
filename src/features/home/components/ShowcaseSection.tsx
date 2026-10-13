@@ -1,59 +1,76 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { RightOutlined } from '@ant-design/icons';
 import type { IFShowcaseSection } from '~/types';
 
-export const ShowcaseSection: React.FC<{ showcase?: IFShowcaseSection | null }> = ({ showcase: incoming }) => {
-  const showcase: IFShowcaseSection = incoming || {
-    title: 'Không Gian Sang Trọng Cho Căn Hộ Đương Đại',
-    subtitle: 'Khám phá giải pháp kiến tạo không gian sống với những bộ sưu tập nội thất thông minh, tối ưu diện tích và chuẩn gu thượng lưu.',
-    description: 'Khám phá giải pháp kiến tạo không gian sống với những bộ sưu tập nội thất thông minh, tối ưu diện tích và chuẩn gu thượng lưu.',
-    imageUrl: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80',
-    ctaLink: '/products',
-    ctaLabel: 'Khám Phá Bộ Sưu Tập',
-    badges: [
-      { id: '1', label: 'BỘ SƯU TẬP 2026', colorClass: 'bg-amber-800' },
-      { id: '2', label: 'THIẾT KẾ ĐỘC QUYỀN', colorClass: 'bg-stone-800' },
-    ],
-    highlights: [
-      'Gỗ tự nhiên nguyên khối',
-      'Động cơ tự động nhập khẩu',
-      'Giao lắp tận nhà 24/7',
-      'Bảo hành chính hãng 5 năm',
-    ],
-  };
-
-  const badges = showcase.badges || [];
-  const highlights = showcase.highlights || [];
+export const ShowcaseSection: React.FC<{ showcase?: IFShowcaseSection | null }> = ({ showcase }) => {
+  // 100% dữ liệu động từ Database: Nếu chưa có showcase trong DB hoặc bị tắt, không render khối này
+  if (!showcase || (!showcase.imageUrl && !showcase.title)) {
+    return null;
+  }
 
   const imageUrl = showcase.imageUrl || (showcase as any).image;
   const ctaLink = showcase.ctaLink || (showcase as any).linkUrl || '/products';
-  const ctaLabel = showcase.ctaLabel || (showcase as any).linkText || 'Đặt Hàng Ngay';
+  const ctaLabel = showcase.ctaLabel || (showcase as any).linkText || 'Khám Phá Bộ Sưu Tập';
+  const badgeText = (showcase as any).badgeText || (showcase.badges && showcase.badges[0]?.label);
 
   return (
     <section className="max-w-7xl mx-auto px-4">
-      <div className="bg-stone-900 rounded-3xl overflow-hidden border border-amber-900/30 text-white grid grid-cols-1 lg:grid-cols-2 items-center">
+      <div className="bg-stone-900 rounded-3xl overflow-hidden border border-brand-coral/30 text-white grid grid-cols-1 lg:grid-cols-2 items-center shadow-xl">
         <div className="p-8 sm:p-14 space-y-6">
-          <div className="flex flex-wrap gap-2">
-            {badges.map(b => (
-              <span key={b.id} className={`${b.colorClass} text-white text-[11px] font-bold px-3 py-1 rounded-full tracking-wide`}>{b.label}</span>
-            ))}
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold leading-snug">{showcase.title}</h2>
-          <p className="text-stone-300 text-sm leading-relaxed font-light">{showcase.description || (showcase as any).subtitle}</p>
-          <div className="flex flex-wrap gap-2">
-            {highlights.map(hl => (
-              <span key={hl} className="inline-flex items-center gap-1.5 bg-white/10 hover:bg-white/15 border border-white/15 text-stone-200 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors">
-                <CheckCircle2 size={13} className="text-amber-400 shrink-0" />{hl}
+          {badgeText && (
+            <div className="flex flex-wrap gap-2">
+              <span className="bg-brand-coral text-white text-[11px] font-bold px-3.5 py-1 rounded-full tracking-wide shadow-xs">
+                {badgeText}
               </span>
-            ))}
-          </div>
-          <Link to={ctaLink} className="bg-amber-700 hover:bg-amber-600 text-white font-bold px-6 py-3 rounded-full text-xs inline-flex items-center gap-2 transition-colors">
-            {ctaLabel} <ArrowRight size={14} />
-          </Link>
+            </div>
+          )}
+
+          {showcase.title && (
+            <h2 className="text-3xl sm:text-4xl font-bold leading-snug">{showcase.title}</h2>
+          )}
+
+          {(showcase.description || (showcase as any).subtitle) && (
+            <p className="text-stone-300 text-sm leading-relaxed font-light">
+              {showcase.description || (showcase as any).subtitle}
+            </p>
+          )}
+
+          {showcase.highlights && showcase.highlights.length > 0 && (
+            <div className="flex flex-wrap gap-2.5 pt-1">
+              {showcase.highlights.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs text-stone-200"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-coral" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {ctaLink && (
+            <div>
+              <Link
+                to={ctaLink}
+                className="bg-brand-coral hover:bg-[#c95f5f] text-white font-bold px-7 py-3.5 rounded-full text-xs inline-flex items-center gap-2 transition-all shadow-md hover:shadow-lg cursor-pointer"
+              >
+                <span>{ctaLabel}</span>
+                <RightOutlined style={{ fontSize: 12 }} />
+              </Link>
+            </div>
+          )}
         </div>
+
         <div className="relative h-80 lg:h-full min-h-[350px]">
-          {imageUrl && <img src={imageUrl} alt="Showroom LuxDecor" className="absolute inset-0 w-full h-full object-cover" />}
+          {imageUrl && (
+            <img
+              src={imageUrl}
+              alt={showcase.title || 'Bộ sưu tập'}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          )}
         </div>
       </div>
     </section>

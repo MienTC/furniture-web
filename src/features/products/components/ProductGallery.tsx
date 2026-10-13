@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Tag, Image } from "antd";
-import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
+import { LeftOutlined, RightOutlined, ExpandOutlined } from "@ant-design/icons";
 import type { Product } from "~/types";
 
 interface Props {
@@ -79,7 +79,7 @@ export const ProductGallery: React.FC<Props> = ({
         {/* Zoom Hint Overlay Icon in Center */}
         <div className="absolute inset-0 bg-stone-900/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
           <div className="bg-stone-900/70 text-white px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 shadow-lg backdrop-blur-xs">
-            <Maximize2 size={13} />
+            <ExpandOutlined style={{ fontSize: 13 }} />
             <span>Click để phóng to</span>
           </div>
         </div>
@@ -107,16 +107,16 @@ export const ProductGallery: React.FC<Props> = ({
             <button
               onClick={handlePrev}
               aria-label="Previous image"
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-stone-800 shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 z-10"
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-stone-800 shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 z-10 cursor-pointer"
             >
-              <ChevronLeft size={20} />
+              <LeftOutlined style={{ fontSize: 14 }} />
             </button>
             <button
               onClick={handleNext}
               aria-label="Next image"
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-stone-800 shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 z-10"
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-stone-800 shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 z-10 cursor-pointer"
             >
-              <ChevronRight size={20} />
+              <RightOutlined style={{ fontSize: 14 }} />
             </button>
           </>
         )}
@@ -154,9 +154,9 @@ export const ProductGallery: React.FC<Props> = ({
                 setCurrentIndex(idx);
                 onSelect(img);
               }}
-              className={`w-18 h-18 rounded-xl overflow-hidden border-2 transition-all shrink-0 bg-white p-1 ${
+              className={`w-18 h-18 rounded-xl overflow-hidden border-2 transition-all shrink-0 bg-white p-1 cursor-pointer ${
                 currentIndex === idx
-                  ? "border-amber-900 ring-2 ring-amber-800/30 shadow-xs"
+                  ? "border-brand-coral ring-2 ring-brand-coral/30 shadow-xs"
                   : "border-stone-200 opacity-60 hover:opacity-100"
               }`}
             >

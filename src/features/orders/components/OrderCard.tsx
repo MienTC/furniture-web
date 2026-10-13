@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, Eye } from 'lucide-react';
+import { ClockCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import { Tag } from 'antd';
 import { formatVND, formatDate } from '~/common/utils/formatters';
 import { ORDER_STATUS_LABEL } from '~/common/constants';
@@ -12,13 +12,13 @@ export const OrderCard: React.FC<{ order: Order }> = ({ order }) => {
     <div className="bg-white rounded-2xl border border-stone-200 p-6 space-y-4 shadow-2xs hover:shadow-md transition-shadow">
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-100 pb-3">
         <div className="flex items-center gap-3">
-          <span className="font-mono font-bold text-amber-950 text-sm">{order.id}</span>
+          <span className="font-mono font-bold text-stone-900 text-sm">{order.id}</span>
           <span className="text-stone-300">•</span>
-          <span className="text-xs text-stone-500 flex items-center gap-1"><Clock size={14} /> {formatDate(order.createdAt)}</span>
+          <span className="text-xs text-stone-500 flex items-center gap-1"><ClockCircleOutlined style={{ fontSize: 13 }} /> {formatDate(order.createdAt)}</span>
         </div>
         <div className="flex items-center gap-3">
           <Tag color={statusInfo.color} className="font-bold text-xs px-3 py-0.5 rounded-full">{statusInfo.label}</Tag>
-          <Link to={`/orders/${order.id}`} className="text-xs font-bold text-amber-900 hover:text-amber-700 flex items-center gap-1"><Eye size={14} /> Xem chi tiết</Link>
+          <Link to={`/orders/${order.id}`} className="text-xs font-bold text-brand-coral hover:text-[#c95f5f] flex items-center gap-1"><EyeOutlined style={{ fontSize: 13 }} /> Xem chi tiết</Link>
         </div>
       </div>
       <div className="space-y-3">
@@ -29,7 +29,7 @@ export const OrderCard: React.FC<{ order: Order }> = ({ order }) => {
               <h4 className="font-bold text-stone-900 line-clamp-1">{item.product.name}</h4>
               <p className="text-stone-500">Màu: {item.selectedColor ?? 'Chuẩn'} | SL: {item.quantity}</p>
             </div>
-            <span className="font-bold text-amber-950 text-xs">{formatVND(item.product.price * item.quantity)}</span>
+            <span className="font-bold text-stone-900 text-xs">{formatVND(item.product.price * item.quantity)}</span>
           </div>
         ))}
       </div>
@@ -37,7 +37,7 @@ export const OrderCard: React.FC<{ order: Order }> = ({ order }) => {
         <span className="text-stone-500">Người nhận: <strong>{order.customerInfo.fullName}</strong></span>
         <div className="text-right">
           <span className="text-stone-500 mr-2">Tổng:</span>
-          <strong className="text-lg font-bold text-amber-950">{formatVND(order.totalAmount)}</strong>
+          <strong className="text-lg font-bold text-brand-coral">{formatVND(order.totalAmount)}</strong>
         </div>
       </div>
     </div>

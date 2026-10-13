@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Tabs, Tag, Rate, Button } from "antd";
-import { MessageSquare } from "lucide-react";
+import { MessageOutlined } from "@ant-design/icons";
 import { RatingStars } from "~/components/ui/RatingStars";
 import { ReviewModal } from "./ReviewModal";
 import type { Product } from "~/types";
@@ -73,9 +73,9 @@ export const ProductTabs: React.FC<{ product: Product }> = ({ product }) => {
                     </div>
                     <Button
                       onClick={() => setReviewOpen(true)}
-                      icon={<MessageSquare size={14} />}
+                      icon={<MessageOutlined style={{ fontSize: 14 }} />}
                       type="primary"
-                      className="!bg-amber-900 font-bold text-xs"
+                      className="!bg-brand-coral hover:!bg-[#c95f5f] font-bold text-xs cursor-pointer"
                     >
                       Viết Đánh Giá
                     </Button>
@@ -107,7 +107,7 @@ export const ProductTabs: React.FC<{ product: Product }> = ({ product }) => {
                         <Rate
                           disabled
                           defaultValue={rev.rating}
-                          className="!text-amber-500 text-xs"
+                          className="!text-brand-coral text-xs"
                         />
                         <p className="text-xs text-stone-700 leading-relaxed">
                           {rev.comment}

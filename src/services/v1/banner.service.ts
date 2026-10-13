@@ -16,4 +16,10 @@ export class BannerService {
     const res = await instanceBE.get<any, ResponseAPI<IFShowcaseSection>>('/banners/showcase');
     return res.data;
   }
+
+  async fetchPromoImg4(): Promise<any> {
+    const res = await instanceBE.get<any, ResponseAPI<any>>('/banners/promo-img4');
+    return res.data;
+  }
 }
+

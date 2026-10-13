@@ -15,7 +15,7 @@ const BannerSchema = new Schema<IBannerDocument>(
     },
     title: {
       type: String,
-      required: true,
+      default: 'Banner',
       trim: true,
     },
     subtitle: {
@@ -34,9 +34,13 @@ const BannerSchema = new Schema<IBannerDocument>(
       type: String,
       default: '',
     },
+    highlights: {
+      type: [String],
+      default: [],
+    },
     type: {
       type: String,
-      enum: ['hero', 'showcase', 'trustbar'],
+      enum: ['hero', 'showcase', 'trustbar', 'promo_img4'],
       default: 'hero',
       index: true,
     },

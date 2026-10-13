@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ProductCard } from '~/components/ui/ProductCard';
 import { FilterPanel } from '~/features/products/components/FilterPanel';
-import { Search, Filter, Loader2 } from 'lucide-react';
+import { SearchOutlined, FilterOutlined } from '@ant-design/icons';
 import { Input, Select, Button, Drawer, Pagination } from 'antd';
 import type { ProductFilterParams } from '~/types';
 import { useProducts } from '../hooks/useProduct';
@@ -15,6 +15,8 @@ export const ProductListPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
+  const [searchInput, setSearchInput] = useState(searchParams.get('search') ?? '');
+
   const [filterParams, setFilterParams] = useState<ProductFilterParams>({
     categoryId: searchParams.get('category') ?? '',
     search: searchParams.get('search') ?? '',
@@ -26,14 +28,34 @@ export const ProductListPage: React.FC = () => {
     sortBy: 'featured',
   });
 
+  // Sync when searchParams changes (e.g. from Header or browser navigation)
   useEffect(() => {
+    const urlCategory = searchParams.get('category') ?? '';
+    const urlSearch = searchParams.get('search') ?? '';
+    setSearchInput(urlSearch);
     setFilterParams((p) => ({
       ...p,
-      categoryId: searchParams.get('category') ?? '',
-      search: searchParams.get('search') ?? '',
+      categoryId: urlCategory,
+      search: urlSearch,
     }));
     setCurrentPage(1);
   }, [searchParams]);
+
+  // Debounce search input (400ms) before updating filterParams and searchParams
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchInput !== filterParams.search) {
+        setFilterParams((p) => ({ ...p, search: searchInput }));
+        setCurrentPage(1);
+        const newParams: Record<string, string> = {};
+        if (filterParams.categoryId) newParams.category = filterParams.categoryId;
+        if (searchInput.trim()) newParams.search = searchInput.trim();
+        setSearchParams(newParams, { replace: true });
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchInput, filterParams.categoryId, filterParams.search, setSearchParams]);
 
   const { categories } = useCategories();
   const { products, pagination, totalCount, isProductsLoading } = useProducts({
@@ -46,11 +68,15 @@ export const ProductListPage: React.FC = () => {
     setFilterParams((p) => ({ ...p, ...partial }));
     setCurrentPage(1);
     if (partial.categoryId !== undefined) {
-      partial.categoryId ? setSearchParams({ category: partial.categoryId }) : setSearchParams({});
+      const newParams: Record<string, string> = {};
+      if (partial.categoryId) newParams.category = partial.categoryId;
+      if (searchInput.trim()) newParams.search = searchInput.trim();
+      setSearchParams(newParams);
     }
   };
 
   const handleReset = () => {
+    setSearchInput('');
     setFilterParams({
       categoryId: '',
       search: '',
@@ -74,9 +100,9 @@ export const ProductListPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
       {/* Page Header */}
-      <div className="bg-amber-950 text-white rounded-2xl p-8 shadow-sm overflow-hidden relative">
+      <div className="bg-stone-900 border border-brand-coral/30 text-white rounded-2xl p-8 shadow-sm overflow-hidden relative">
         <div className="max-w-xl space-y-2 relative z-10">
-          <span className="text-xs text-amber-400 font-bold uppercase tracking-widest">
+          <span className="text-xs text-brand-peach font-bold uppercase tracking-widest">
             LuxDecor Collections
           </span>
           <h1 className="text-3xl font-bold text-white">
@@ -93,16 +119,16 @@ export const ProductListPage: React.FC = () => {
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <Button
             onClick={() => setMobileFilterOpen(true)}
-            icon={<Filter size={14} />}
+            icon={<FilterOutlined style={{ fontSize: 13 }} />}
             className="lg:hidden !rounded-lg text-xs"
           >
             Bộ lọc
           </Button>
           <Input
             placeholder="Tìm theo tên sản phẩm..."
-            value={filterParams.search}
-            onChange={(e) => handleChange({ search: e.target.value })}
-            prefix={<Search size={14} className="text-stone-400" />}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            prefix={<SearchOutlined className="text-stone-400" style={{ fontSize: 13 }} />}
             allowClear
             className="!rounded-lg text-xs max-w-xs"
           />
@@ -174,20 +200,26 @@ export const ProductListPage: React.FC = () => {
         {/* Products Grid & Pagination */}
         <div className="lg:col-span-3 space-y-6">
           {isProductsLoading ? (
-            <div className="bg-white rounded-2xl p-16 text-center border border-stone-200 flex flex-col items-center justify-center space-y-3">
-              <Loader2 className="animate-spin text-amber-900" size={32} />
-              <p className="text-sm text-stone-500">Đang tải danh sách sản phẩm...</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="bg-white rounded-xl overflow-hidden border border-stone-200 p-4 space-y-4 animate-pulse">
+                  <div className="aspect-[4/5] bg-stone-200 rounded-lg" />
+                  <div className="h-4 bg-stone-200 rounded w-3/4 mx-auto" />
+                  <div className="h-3 bg-stone-100 rounded w-1/2 mx-auto" />
+                  <div className="h-5 bg-stone-200 rounded w-1/3 mx-auto" />
+                </div>
+              ))}
             </div>
           ) : products.length === 0 ? (
             <div className="bg-white rounded-2xl p-12 text-center border border-stone-200 space-y-4">
               <div className="w-16 h-16 rounded-full bg-stone-100 mx-auto flex items-center justify-center text-stone-400">
-                <Search size={32} />
+                <SearchOutlined style={{ fontSize: 32 }} />
               </div>
               <h3 className="font-bold text-stone-800 text-lg">Không tìm thấy sản phẩm nào</h3>
               <p className="text-xs text-stone-500 max-w-sm mx-auto">
                 Thử thay đổi từ khóa hoặc bấm đặt lại bộ lọc để xem các sản phẩm khác.
               </p>
-              <Button onClick={handleReset} type="primary" className="!bg-amber-900 font-bold text-xs">
+              <Button onClick={handleReset} type="primary" className="!bg-brand-coral hover:!bg-[#c95f5f] font-bold text-xs cursor-pointer">
                 Đặt lại bộ lọc
               </Button>
             </div>

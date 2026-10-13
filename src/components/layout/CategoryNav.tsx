@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { SlidersHorizontal, ChevronDown, ChevronRight } from "lucide-react";
+import { AppstoreOutlined, DownOutlined, RightOutlined } from "@ant-design/icons";
 import { useCategories } from "~/features/products/hooks/useCategory";
 import type { Category } from "~/types";
 
@@ -29,14 +29,14 @@ const RootNavItem: React.FC<{ root: Category; allCategories: Category[] }> = ({
     >
       <Link
         to={`/products?category=${root.id}`}
-        className="px-4 py-3 flex items-center gap-1.5 hover:text-amber-900 hover:bg-stone-100/70 rounded-md transition-all uppercase tracking-wider text-[11px] font-bold"
+        className="px-4 py-3 flex items-center gap-1.5 hover:text-brand-coral hover:bg-stone-100/70 rounded-md transition-all uppercase tracking-wider text-[11px] font-bold"
       >
         <span>{root.name}</span>
         {lv2List.length > 0 && (
-          <ChevronDown
-            size={13}
+          <DownOutlined
+            style={{ fontSize: 11 }}
             className={`text-stone-400 transition-transform duration-200 ${
-              isOpen ? "rotate-180 text-amber-900" : ""
+              isOpen ? "rotate-180 text-brand-coral" : ""
             }`}
           />
         )}
@@ -57,8 +57,8 @@ const RootNavItem: React.FC<{ root: Category; allCategories: Category[] }> = ({
                   onMouseEnter={() => setActiveLv2Id(lv2.id)}
                   className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold cursor-pointer transition-colors ${
                     isActive
-                      ? "bg-amber-900 text-white shadow-xs"
-                      : "text-stone-700 hover:bg-stone-200/60"
+                      ? "bg-brand-coral text-white shadow-xs"
+                      : "text-stone-700 hover:bg-brand-cream/40"
                   }`}
                 >
                   <Link
@@ -68,9 +68,9 @@ const RootNavItem: React.FC<{ root: Category; allCategories: Category[] }> = ({
                     {lv2.name}
                   </Link>
                   {hasLv3 && (
-                    <ChevronRight
-                      size={13}
-                      className={isActive ? "text-amber-200" : "text-stone-400"}
+                    <RightOutlined
+                      style={{ fontSize: 11 }}
+                      className={isActive ? "text-brand-cream" : "text-stone-400"}
                     />
                   )}
                 </div>
@@ -81,11 +81,11 @@ const RootNavItem: React.FC<{ root: Category; allCategories: Category[] }> = ({
           {/* Right panel: Level 3 items (flyout when hovered Lv2 has children) */}
           {lv3List.length > 0 && (
             <div className="w-64 p-3 bg-white flex flex-col gap-1">
-              <div className="text-[11px] font-bold text-amber-900 pb-1.5 mb-1 border-b border-stone-100 uppercase tracking-wider flex items-center justify-between">
+              <div className="text-[11px] font-bold text-brand-coral pb-1.5 mb-1 border-b border-stone-100 uppercase tracking-wider flex items-center justify-between">
                 <span className="truncate pr-2">{currentLv2?.name}</span>
                 <Link
                   to={`/products?category=${currentLv2?.id}`}
-                  className="text-[10px] text-stone-400 hover:text-amber-800 shrink-0 font-normal hover:underline"
+                  className="text-[10px] text-stone-400 hover:text-brand-coral shrink-0 font-normal hover:underline"
                 >
                   Tất cả
                 </Link>
@@ -94,7 +94,7 @@ const RootNavItem: React.FC<{ root: Category; allCategories: Category[] }> = ({
                 <Link
                   key={lv3.id}
                   to={`/products?category=${lv3.id}`}
-                  className="px-2.5 py-1.5 rounded-md text-xs text-stone-600 hover:text-amber-900 hover:bg-amber-50/80 transition-colors flex items-center justify-between group"
+                  className="px-2.5 py-1.5 rounded-md text-xs text-stone-600 hover:text-brand-coral hover:bg-brand-peach/15 transition-colors flex items-center justify-between group"
                 >
                   <span className="group-hover:translate-x-1 transition-transform font-medium truncate pr-2">
                     {lv3.name}
@@ -130,11 +130,11 @@ export const CategoryNav: React.FC = () => {
               to="/products"
               className={`px-4 py-3 flex items-center gap-2 transition-all rounded-md ${
                 location.pathname === "/products" && !location.search
-                  ? "text-amber-900 font-bold bg-amber-50"
-                  : "hover:text-amber-900 hover:bg-stone-100/70"
+                  ? "text-brand-coral font-bold bg-brand-cream/40"
+                  : "hover:text-brand-coral hover:bg-stone-100/70"
               }`}
             >
-              <SlidersHorizontal size={14} className="text-amber-800" />
+              <AppstoreOutlined className="text-brand-coral" style={{ fontSize: 14 }} />
               <span>TẤT CẢ SẢN PHẨM</span>
             </Link>
           </li>
@@ -149,7 +149,7 @@ export const CategoryNav: React.FC = () => {
         </ul>
 
         <div className="flex items-center gap-4 text-stone-500 font-medium text-xs">
-          <Link to="/orders" className="hover:text-amber-900 transition-colors">
+          <Link to="/orders" className="hover:text-brand-coral transition-colors">
             Theo dõi đơn hàng
           </Link>
         </div>

@@ -13,19 +13,24 @@ export class AuthController {
    */
   static async register(req: Request, res: Response): Promise<any> {
     try {
-      const { s_user, s_PWD, email, phone, avatar_url, role } = req.body;
+      const usernameInput = (req.body.s_user || req.body.name || req.body.username || '').toString().trim();
+      const passwordInput = req.body.s_PWD || req.body.password;
+      const emailInput = (req.body.email || '').toString().trim().toLowerCase();
+      const phoneInput = req.body.phone || '';
+      const avatarInput = req.body.avatar_url || '';
+      const roleInput = req.body.role === 'admin' ? 'admin' : 'customer';
 
-      if (!s_user || !s_PWD || !email) {
+      if (!usernameInput || !passwordInput || !emailInput) {
         return sendError(res, 'Vui lòng cung cấp đầy đủ tên đăng nhập, email và mật khẩu', 400);
       }
 
       // Check username or email existing
       const existingUser = await UserModel.findOne({
-        $or: [{ s_user: s_user.trim() }, { email: email.trim().toLowerCase() }],
+        $or: [{ s_user: usernameInput }, { email: emailInput }],
       });
 
       if (existingUser) {
-        if (existingUser.s_user === s_user.trim()) {
+        if (existingUser.s_user === usernameInput) {
           return sendError(res, 'Tên đăng nhập đã được sử dụng', 400);
         }
         return sendError(res, 'Email đã được đăng ký tài khoản khác', 400);
@@ -33,7 +38,7 @@ export class AuthController {
 
       // Hash password
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(s_PWD, salt);
+      const hashedPassword = await bcrypt.hash(passwordInput, salt);
 
       // Generate custom s_ID
       const s_ID = generateId('usr');
@@ -41,12 +46,12 @@ export class AuthController {
       // Create user
       const newUser = new UserModel({
         s_ID,
-        s_user: s_user.trim(),
+        s_user: usernameInput,
         s_PWD: hashedPassword,
-        email: email.trim().toLowerCase(),
-        phone: phone || '',
-        avatar_url: avatar_url || '',
-        role: role === 'admin' ? 'admin' : 'customer',
+        email: emailInput,
+        phone: phoneInput,
+        avatar_url: avatarInput,
+        role: roleInput,
         status: true,
       });
 

@@ -5,6 +5,7 @@ import { verifyToken } from '../middleware/auth.middleware.js';
 const router = Router();
 
 // Public
+router.get('/featured', ReviewController.getFeaturedReviews);
 router.get('/product/:productId', ReviewController.getProductReviews);
 
 // Write review

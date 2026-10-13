@@ -11,11 +11,19 @@ import orderRoutes from './order.routes.js';
 import reviewRoutes from './review.routes.js';
 import bannerRoutes from './banner.routes.js';
 import aiRoutes from './ai.routes.js';
+import adminRoutes from './admin.routes.js';
+import paymentRoutes from './payment.routes.js';
+import flashSaleRoutes from './flashsale.routes.js';
+import { AdminController } from '../controllers/admin.controller.js';
 
 const rootRouter = Router();
 
+rootRouter.get('/contact-settings', AdminController.getContactSettings);
 rootRouter.use('/', healthRoutes);
 rootRouter.use('/auth', authRoutes);
+rootRouter.use('/admin', adminRoutes);
+rootRouter.use('/payment', paymentRoutes);
+rootRouter.use('/flash-sale', flashSaleRoutes);
 rootRouter.use('/addresses', addressRoutes);
 rootRouter.use('/categories', categoryRoutes);
 rootRouter.use('/products', productRoutes);

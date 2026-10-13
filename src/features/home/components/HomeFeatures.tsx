@@ -1,26 +1,30 @@
 import React from 'react';
-import { ShieldCheck, Truck, Wrench, Award } from 'lucide-react';
+import { SafetyCertificateOutlined, CarOutlined, ToolOutlined, TrophyOutlined } from '@ant-design/icons';
 
 const POLICIES = [
   {
-    icon: <ShieldCheck size={28} className="text-amber-800" />,
+    icon: <SafetyCertificateOutlined className="text-brand-coral" style={{ fontSize: 28 }} />,
     title: 'Bảo Hành 5 Năm',
     desc: 'Cam kết chất lượng chuẩn xuất khẩu, bảo hành tận nhà trên toàn quốc.',
+    bg: 'bg-brand-coral/10 border-brand-coral/30',
   },
   {
-    icon: <Truck size={28} className="text-amber-800" />,
+    icon: <CarOutlined className="text-brand-coral" style={{ fontSize: 28 }} />,
     title: 'Miễn Phí Vận Chuyển',
-    desc: 'Giao hàng và lắp đặt tận nơi cho các đơn hàng từ 15 triệu đồng.',
+    desc: 'Giao hàng và lắp đặt tận nơi trên toàn quốc, không điều kiện tối thiểu.',
+    bg: 'bg-brand-peach/20 border-brand-peach/40',
   },
   {
-    icon: <Wrench size={28} className="text-amber-800" />,
+    icon: <ToolOutlined className="text-stone-800" style={{ fontSize: 28 }} />,
     title: 'Lắp Đặt Trọn Gói',
     desc: 'Đội ngũ kỹ thuật viên chuyên nghiệp hỗ trợ lắp ráp, setup hoàn thiện.',
+    bg: 'bg-brand-mint/30 border-brand-mint/50',
   },
   {
-    icon: <Award size={28} className="text-amber-800" />,
+    icon: <TrophyOutlined className="text-brand-coral" style={{ fontSize: 28 }} />,
     title: 'Vật Liệu Thượng Hạng',
     desc: 'Gỗ sồi, óc chó tự nhiên tuyển chọn và da bò Ý nhập khẩu 100%.',
+    bg: 'bg-brand-cream/50 border-brand-peach/30',
   },
 ];
 
@@ -33,7 +37,7 @@ export const HomeFeatures: React.FC = () => {
             key={idx}
             className="flex items-start gap-4 p-6 rounded-2xl bg-white border border-stone-200 shadow-2xs hover:shadow-md transition-shadow"
           >
-            <div className="w-14 h-14 rounded-2xl bg-amber-50 border border-amber-200/60 flex items-center justify-center shrink-0">
+            <div className={`w-14 h-14 rounded-2xl ${p.bg} border flex items-center justify-center shrink-0`}>
               {p.icon}
             </div>
             <div>

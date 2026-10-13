@@ -55,6 +55,10 @@ const ProductSchema = new Schema<IProductDocument>(
       type: String,
       default: '',
     },
+    video_url: {
+      type: String,
+      default: '',
+    },
     price: {
       type: Number,
       required: true,

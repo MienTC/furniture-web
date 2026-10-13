@@ -6,4 +6,6 @@ export const QUERY_KEYS = {
   banner:   { list: 'bannerList'                              },
   trustBar: { list: 'trustBarList'                            },
   showcase: { detail: 'showcaseDetail'                        },
+  payment:  { settings: 'paymentSettings'                     },
+  contact:  { settings: 'contactSettings'                     },
 } as const;

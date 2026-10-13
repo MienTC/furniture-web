@@ -1,6 +1,8 @@
 import React from 'react';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, App } from 'antd';
 import viVN from 'antd/locale/vi_VN';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { CartProvider } from '~/contexts/CartContext';
 import { WishlistProvider } from '~/contexts/WishlistContext';
 import { AuthProvider } from '~/contexts/AuthContext';
@@ -9,11 +11,11 @@ import AppRoutes from '~/routes';
 
 const antdTheme = {
   token: {
-    colorPrimary: '#78350f', colorPrimaryHover: '#92400e', colorPrimaryActive: '#451a03',
+    colorPrimary: '#DE7272', colorPrimaryHover: '#e58585', colorPrimaryActive: '#c95f5f',
     colorBgBase: '#fafaf9', colorText: '#1c1917',
     borderRadius: 10,
     fontFamily: "'Inter', sans-serif",
-    colorLink: '#92400e', colorLinkHover: '#78350f',
+    colorLink: '#DE7272', colorLinkHover: '#FFCA88',
   },
   components: {
     Button: { borderRadius: 10 }, Input: { borderRadius: 10 }, Select: { borderRadius: 10 },
@@ -24,14 +26,28 @@ const antdTheme = {
 
 const AppRoot: React.FC = () => (
   <QueryProvider>
+    <ToastContainer
+      position="top-right"
+      autoClose={3000}
+      hideProgressBar={false}
+      newestOnTop
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      theme="light"
+    />
     <ConfigProvider theme={antdTheme} locale={viVN}>
-      <AuthProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <AppRoutes />
-          </WishlistProvider>
-        </CartProvider>
-      </AuthProvider>
+      <App>
+        <AuthProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <AppRoutes />
+            </WishlistProvider>
+          </CartProvider>
+        </AuthProvider>
+      </App>
     </ConfigProvider>
   </QueryProvider>
 );

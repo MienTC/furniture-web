@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Flame, Clock, Tag as TagIcon, X } from 'lucide-react';
+import { ClockCircleOutlined, TagOutlined, CloseOutlined } from '@ant-design/icons';
 import { Skeleton, Modal } from 'antd';
 import { useAuth } from '~/contexts/AuthContext';
 import { VoucherSuccessPopup, LoginRequiredPopup } from './VoucherPopup';
@@ -13,15 +13,15 @@ const VoucherCard: React.FC<{ voucher: IFVoucher; onClaim: (v: IFVoucher) => voi
     <div className="flex-1 px-4 py-4 flex flex-col justify-between gap-3">
       <div>
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-xs font-bold text-stone-900 font-mono bg-amber-50 border border-amber-200 rounded-md px-2 py-0.5">{v.code}</span>
+          <span className="text-xs font-bold text-stone-900 font-mono bg-brand-cream/60 border border-brand-peach/40 rounded-md px-2 py-0.5">{v.code}</span>
           {v.discountType === 'percentage' && (
-            <span className="text-[10px] bg-rose-100 text-rose-700 font-bold px-1.5 py-0.5 rounded">-{v.discountValue}%</span>
+            <span className="text-[10px] bg-brand-coral/15 text-brand-coral font-bold px-1.5 py-0.5 rounded">-{v.discountValue}%</span>
           )}
         </div>
         <p className="text-xs text-stone-500 leading-relaxed line-clamp-2">{v.description}</p>
       </div>
-      <button onClick={() => onClaim(v)} className="self-start text-xs font-bold text-white bg-amber-800 hover:bg-amber-700 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5">
-        <TagIcon size={13} /> Nhận mã ngay
+      <button onClick={() => onClaim(v)} className="self-start text-xs font-bold text-white bg-brand-coral hover:brightness-95 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer">
+        <TagOutlined style={{ fontSize: 13 }} /> Nhận mã ngay
       </button>
     </div>
   </div>
@@ -43,7 +43,7 @@ export const VoucherSection: React.FC<Props> = ({ vouchers, isLoading }) => {
     <section className="max-w-7xl mx-auto px-4">
       <div className="flex items-center gap-3 mb-5">
         <h2 className="text-base font-bold text-stone-900">Mã Giảm Giá Hôm Nay</h2>
-        <span className="ml-auto text-xs text-stone-500 flex items-center gap-1"><Clock size={13} /> Cập nhật mỗi ngày</span>
+        <span className="ml-auto text-xs text-stone-500 flex items-center gap-1"><ClockCircleOutlined style={{ fontSize: 13 }} /> Cập nhật mỗi ngày</span>
       </div>
 
       {isLoading ? (
@@ -55,7 +55,7 @@ export const VoucherSection: React.FC<Props> = ({ vouchers, isLoading }) => {
       )}
 
       <Modal open={modalOpen} onCancel={() => setModalOpen(false)} footer={null} centered width={400}
-        closeIcon={<X size={18} />}
+        closeIcon={<CloseOutlined style={{ fontSize: 18 }} />}
         title={<span className="font-bold text-stone-900">{user ? 'Nhận mã thành công!' : 'Yêu cầu đăng nhập'}</span>}
       >
         {user && active
