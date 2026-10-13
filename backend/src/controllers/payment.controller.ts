@@ -390,22 +390,32 @@ export class PaymentController {
         return res.status(200).json({ success: true, message: 'Missing transaction content or amount' });
       }
 
-      // Trích xuất mã đơn hàng từ nội dung chuyển khoản (Hỗ trợ định dạng ORD... hoặc số ID đơn hàng)
+      // Trích xuất mã đơn hàng từ nội dung chuyển khoản (Hỗ trợ định dạng ORD... có hoặc không có gạch nối)
       const cleanContent = String(content).toUpperCase();
-      const orderMatches = cleanContent.match(/ORD[A-Z0-9_\-]+/i) || cleanContent.match(/LUX[A-Z0-9_\-]+/i) || cleanContent.match(/OD[0-9]+/i);
-      
-      let orderTargetId = orderMatches ? orderMatches[0] : '';
-      
-      // Nếu không khớp regex ORD, thử tìm tất cả từ trong content xem có từ nào khớp mã s_ID / s_order_id không
-      const contentTokens = cleanContent.split(/[\s,._\-]+/);
+
+      // 1. Nhận diện các tiền tố ORD, LUX, OD đi kèm số (ví dụ: ORD525867 hoặc ORD-525867)
+      const prefixMatch = cleanContent.match(/(?:ORD|LUX|OD)[-_]?([0-9]+)/i);
+      const orderDigits = prefixMatch ? prefixMatch[1] : '';
+
+      // 2. Tìm tất cả chuỗi số có độ dài >= 4 trong nội dung (ví dụ: '525867')
+      const numericSequences = cleanContent.match(/[0-9]{4,}/g) || [];
+
+      // 3. Tách các token từ
+      const contentTokens = cleanContent.split(/[\s,._\-+/]+/);
 
       const queryConditions: any[] = [];
-      if (orderTargetId) {
-        queryConditions.push({ s_ID: { $regex: new RegExp(orderTargetId, 'i') } });
-        queryConditions.push({ s_order_id: { $regex: new RegExp(orderTargetId, 'i') } });
+
+      if (orderDigits) {
+        queryConditions.push({ s_order_id: { $regex: new RegExp(`ORD[-_]?${orderDigits}`, 'i') } });
+        queryConditions.push({ s_order_id: { $regex: new RegExp(orderDigits, 'i') } });
+        queryConditions.push({ s_ID: { $regex: new RegExp(orderDigits, 'i') } });
       }
 
-      // Tìm qua tokens
+      for (const num of numericSequences) {
+        queryConditions.push({ s_order_id: { $regex: new RegExp(num, 'i') } });
+        queryConditions.push({ s_ID: { $regex: new RegExp(num, 'i') } });
+      }
+
       for (const token of contentTokens) {
         if (token.length >= 4) {
           queryConditions.push({ s_ID: { $regex: new RegExp(token, 'i') } });
