@@ -8,4 +8,5 @@ export * from './useAdminVouchers';
 export * from './useAdminReviews';
 export * from './useAdminPaymentSettings';
 export * from './useAdminContactSettings';
+export * from './useAdminFlashSale';
 export * from './useTableFilters';

@@ -15,6 +15,7 @@ import {
   IconShieldLock,
   IconCreditCard,
   IconPhoneCall,
+  IconFlame,
 } from "@tabler/icons-react";
 import { useAuth } from "~/contexts/AuthContext";
 import { cn } from "~/lib";
@@ -42,6 +43,11 @@ export const AdminLayout: React.FC = () => {
       name: "Quản lý Danh mục",
       icon: IconCategory,
       path: "/admin/categories",
+    },
+    {
+      name: "Flash Sale Hôm Nay",
+      icon: IconFlame,
+      path: "/admin/flash-sale",
     },
     {
       name: "Quản lý Đơn hàng",

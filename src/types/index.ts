@@ -2,6 +2,7 @@ export * from './filter.type';
 export * from './payment.type';
 export * from './order.type';
 export * from './admin.type';
+export * from './flashsale.type';
 
 export type CategoryId = string;
 

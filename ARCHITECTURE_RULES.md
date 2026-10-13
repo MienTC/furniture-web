@@ -62,25 +62,80 @@ Mỗi tầng có đúng một trách nhiệm duy nhất (Single Responsibility P
 
 ### 5. CHUẨN THIẾT KẾ CLEAN CODE, MODULAR & BÓC TÁCH (TEV-ADMIN & PETMANAGER PATTERN)
 
-1. **Tách biệt Modal Container & Form Component**:
-   - Với mọi nghiệp vụ Thêm / Sửa / Chi tiết:
-     - Component Modal (VD: `CreateVoucherModal.tsx`, `CreateOrderModal.tsx`): Chịu trách nhiệm hiển thị popup, layout container, modal footer, trigger submit/cancel.
-     - Component Form (VD: `CreateVoucherForm.tsx`, `CreateOrderForm.tsx`): Chịu trách nhiệm hoàn toàn về fields, schema, validation, inputs và emit dữ liệu hoàn chỉnh.
-     - Không nhồi nhét toàn bộ markup form, validation và modal header/footer vào chung 1 file 500 dòng.
+1. **Tách biệt Modal Container & Form Component (Single Responsibility Principle)**:
+   - Nghiêm cấm gộp Modal và Form nhập liệu vào chung 1 file hoặc viết trực tiếp inline trong Page.
+   - Bắt buộc tách thành cặp đôi độc lập:
+     - **`XModal.tsx`**: Chỉ đóng vai trò Container (quản lý `open`, `onClose`, title, footer buttons, loading).
+     - **`XForm.tsx`**: Độc lập 100%, quản lý schema, validation, fields, inputs, và emit `onSubmit(data)`. Form này có thể tái sử dụng cả ở trong Modal, Drawer hoặc Page riêng biệt mà không bị phụ thuộc vào Modal.
 
-2. **Hệ thống Filter Dùng Chung (Composable Filter Components)**:
-   - Các bộ lọc không viết lại code lặp ở từng Page:
-     - `FilterSearchInput`: Tìm kiếm từ khóa (mã, tên, số điện thoại...).
-     - `FilterSelect`: Dropdown chọn trạng thái (đơn hàng, thanh toán, hiển thị...).
+2. **Hệ thống Filter Dùng Chung (Composable Filter Components) & Quản lý bằng Hook**:
+   - Tuyệt đối không tự viết thẻ input tìm kiếm hay lặp lại 5–7 `useState` rải rác (`search`, `status`, `paymentStatus`, `dateRange`, `page`...) ở mỗi trang.
+   - Toàn bộ bộ lọc sử dụng Composable Filter Components đặt tại `src/components/common/filters/`:
+     - `FilterBar`: Container bọc các filter.
+     - `FilterSearch`: Ô tìm kiếm từ khóa có debounce tự động (500ms).
+     - `FilterSelect`: Dropdown chọn trạng thái (order, payment, stock, banner, general...).
      - `FilterCategory`: Dropdown chọn danh mục từ database.
      - `FilterDateRange`: Bộ chọn khoảng ngày bắt đầu - kết thúc.
-   - Tạo custom hook quản lý query/filter state (hoặc đồng bộ URL search params) để Page gọn nhẹ, sạch sẽ, dễ mở rộng.
+     - `FilterResetButton`: Nút đặt lại bộ lọc.
+   - Quản lý trạng thái bộ lọc và phân trang bằng 1 Hook duy nhất (`useTableFilters`). Page chỉ compose các filter component, không khai báo các `useState` vụn vặt.
 
-3. **Hạn chế `useState` rải rác - Ưu tiên React Hooks & React Hook Form**:
-   - Hạn chế tạo hàng loạt `useState` vụn vặt cho từng input.
-   - Form nhập liệu ưu tiên sử dụng `react-hook-form` (`useForm`, `Controller`) hoặc Custom Hooks quản lý trạng thái tập trung.
+3. **Hạn chế State Tự Do & Chuẩn Hóa Form Với React Hook Form**:
+   - Toàn bộ form nhập liệu/chỉnh sửa phức tạp được quản lý bằng `react-hook-form` (`useForm`, `Controller`), kết hợp `style={{ width: '100%' }}` đồng bộ.
+   - Không tạo các `useState` rời rạc cho từng input text, switch, select.
+   - Giúp cô lập re-render, validation chặt chẽ và code ngắn gọn, sạch sẽ, dễ bảo trì.
 
-4. **Quy tắc Comment & Cleanliness**:
+4. **Cấu Trúc Thư Mục Chuẩn Phân Hệ Admin**:
+   ```
+   src/
+   ├── types/                           # [TẦNG 1: TYPES] Bóc tách gọn gàng theo domain
+   │   ├── index.ts
+   │   ├── order.type.ts
+   │   ├── voucher.type.ts
+   │   ├── banner.type.ts
+   │   ├── product.type.ts
+   │   ├── flashsale.type.ts
+   │   └── filter.type.ts               # Type chuẩn cho mọi bộ lọc
+   │
+   ├── services/v1/                     # [TẦNG 2: SERVICE] Pure API callers
+   │   ├── instance.ts
+   │   ├── admin.service.ts
+   │   ├── payment.service.ts
+   │   ├── product.service.ts
+   │   └── flashsale.service.ts
+   │
+   ├── components/common/filters/       # [REUSABLE FILTERS] Dùng chung toàn hệ thống
+   │   ├── FilterBar.tsx                # Container bọc các filter
+   │   ├── FilterSearch.tsx             # Tìm kiếm debounce
+   │   ├── FilterSelect.tsx             # Select trạng thái dùng chung
+   │   ├── FilterCategory.tsx           # Select danh mục từ DB
+   │   ├── FilterDateRange.tsx          # Chọn khoảng ngày
+   │   └── FilterResetButton.tsx        # Nút đặt lại bộ lọc
+   │
+   ├── features/admin/
+   │   ├── hooks/                       # [TẦNG 3: HOOKS]
+   │   │   ├── useAdminOrders.ts
+   │   │   ├── useAdminVouchers.ts
+   │   │   ├── useAdminFlashSale.ts
+   │   │   ├── useAdminProducts.ts
+   │   │   └── useTableFilters.ts       # Hook dùng chung quản lý state bộ lọc
+   │   │
+   │   ├── components/                  # [TẦNG 4: UI COMPONENTS CON]
+   │   │   ├── flashsale/
+   │   │   │   └── FlashSaleConfigForm.tsx # React Hook Form: end_time, switch, badge, products
+   │   │   ├── orders/
+   │   │   │   ├── CreateOrderModal.tsx # Chỉ quản lý Modal frame
+   │   │   │   ├── CreateOrderForm.tsx  # React Hook Form
+   │   │   │   └── OrdersTable.tsx
+   │   │   └── products/
+   │   │       ├── ProductModal.tsx
+   │   │       └── ProductForm.tsx
+   │   │
+   │   └── pages/                       # [TẦNG 4: PAGES MỎNG ĐIỀU PHỐI]
+   │       ├── AdminFlashSalePage.tsx   # Compose form + breadcrumb
+   │       └── AdminOrdersPage.tsx
+   ```
+
+5. **Quy tắc Comment & Cleanliness**:
    - Chỉ comment ngắn gọn các quyết định kiến trúc hoặc logic nghiệp vụ cốt lõi.
    - Không comment rải rác từng dòng code hiển nhiên.
    - Xóa bỏ toàn bộ dead code, unused imports và mock/demo data.

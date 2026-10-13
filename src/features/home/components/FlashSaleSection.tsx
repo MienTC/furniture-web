@@ -7,28 +7,30 @@ import { useFlashSale } from '~/features/home/hooks/useFlashSale';
 export const FlashSaleSection: React.FC = () => {
   const { data: flashSale, isLoading } = useFlashSale();
 
-  const [timeLeft, setTimeLeft] = useState({
-    hours: 7,
-    minutes: 45,
-    seconds: 30,
-  });
+  const calculateTimeLeft = () => {
+    if (!flashSale?.config?.end_time) {
+      return { hours: 0, minutes: 0, seconds: 0 };
+    }
+    const diff = new Date(flashSale.config.end_time).getTime() - new Date().getTime();
+    if (diff <= 0) {
+      return { hours: 0, minutes: 0, seconds: 0 };
+    }
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    return { hours, minutes, seconds };
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
+    setTimeLeft(calculateTimeLeft());
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: 59, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        }
-        return { hours: 8, minutes: 0, seconds: 0 };
-      });
+      setTimeLeft(calculateTimeLeft());
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [flashSale?.config?.end_time]);
 
   // Chỉ hiển thị khi Admin BẬT Flash Sale và có sản phẩm được gán
   if (isLoading || !flashSale?.isActive || !flashSale?.products || flashSale.products.length === 0) {
@@ -52,15 +54,19 @@ export const FlashSaleSection: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">
-                  {config.title || 'Flash Sale Hôm Nay'}
+                  {config.title}
                 </h2>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#FFF6A9] text-[#DE7272] font-extrabold text-[11px] tracking-wide uppercase shadow-xs">
-                  {config.discount_badge || 'Giảm tới 45%'}
-                </span>
+                {config.discount_badge && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#FFF6A9] text-[#DE7272] font-extrabold text-[11px] tracking-wide uppercase shadow-xs">
+                    {config.discount_badge}
+                  </span>
+                )}
               </div>
-              <p className="text-xs text-white/90 mt-0.5 font-medium">
-                {config.description || 'Số lượng có hạn trong khung giờ vàng nội thất'}
-              </p>
+              {config.description && (
+                <p className="text-xs text-white/90 mt-0.5 font-medium">
+                  {config.description}
+                </p>
+              )}
             </div>
           </div>
 
@@ -107,7 +113,7 @@ export const FlashSaleSection: React.FC = () => {
                 {/* Product Image */}
                 <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-stone-100 mb-3">
                   <img
-                    src={p.images?.[0] || 'https://placehold.co/400x400?text=LuxDecor'}
+                    src={p.images?.[0] || ''}
                     alt={p.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"

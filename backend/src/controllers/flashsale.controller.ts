@@ -12,19 +12,19 @@ export class FlashSaleController {
   static async getFlashSale(_req: Request, res: Response): Promise<any> {
     try {
       const setting = await SettingModel.findOne({ key: 'flash_sale_config' });
-      const config = setting?.value || {
-        is_active: false,
-        title: 'Flash Sale Hôm Nay',
-        discount_badge: 'Giảm tới 45%',
-        description: 'Số lượng có hạn trong khung giờ vàng nội thất',
-        end_time: null,
-        product_ids: [],
-      };
+      const config = setting?.value || null;
 
-      if (!config.is_active || !Array.isArray(config.product_ids) || config.product_ids.length === 0) {
+      if (!config || !config.is_active || !Array.isArray(config.product_ids) || config.product_ids.length === 0) {
         return sendSuccess(res, 'Flash Sale hiện đang tắt', {
           isActive: false,
-          config,
+          config: config || {
+            is_active: false,
+            title: '',
+            discount_badge: '',
+            description: '',
+            end_time: null,
+            product_ids: [],
+          },
           products: [],
         });
       }
@@ -85,9 +85,9 @@ export class FlashSaleController {
           key: 'flash_sale_config',
           value: {
             is_active: Boolean(payload.is_active),
-            title: payload.title || 'Flash Sale Hôm Nay',
-            discount_badge: payload.discount_badge || 'Giảm tới 45%',
-            description: payload.description || 'Số lượng có hạn trong khung giờ vàng nội thất',
+            title: payload.title ? String(payload.title).trim() : '',
+            discount_badge: payload.discount_badge ? String(payload.discount_badge).trim() : '',
+            description: payload.description ? String(payload.description).trim() : '',
             end_time: payload.end_time || null,
             product_ids: Array.isArray(payload.product_ids) ? payload.product_ids : [],
           },
