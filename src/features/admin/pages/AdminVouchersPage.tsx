@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { Table, Button, Modal, Form, Input, InputNumber, Popconfirm, Select } from 'antd';
+import { Table, Button, Popconfirm } from 'antd';
 import { IconPlus, IconTrash, IconTicket } from '@tabler/icons-react';
 import { useAdminVouchers } from '~/features/admin/hooks';
 import UBreadcrumb from '~/components/ui/ubreadcrumb';
 import UTag from '~/components/ui/utag';
 import { formatVND } from '~/common/utils/formatters';
+import { CreateVoucherModal, type CreateVoucherFormValues } from '~/features/admin/components/vouchers';
 
 export const AdminVouchersPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [form] = Form.useForm();
 
-  // Hook tập trung quản lý vouchers
   const {
     vouchers,
     isLoading,
@@ -19,10 +18,9 @@ export const AdminVouchersPage: React.FC = () => {
     isCreating,
   } = useAdminVouchers();
 
-  const handleFinish = async (values: any) => {
+  const handleCreateSubmit = async (values: CreateVoucherFormValues) => {
     await createVoucher(values);
     setIsModalOpen(false);
-    form.resetFields();
   };
 
   const columns = [
@@ -82,25 +80,22 @@ export const AdminVouchersPage: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-5 font-sans">
+    <div className="flex flex-col gap-5 font-sans w-full min-h-full pb-16">
       <UBreadcrumb
         title="Quản Lý Voucher Giảm Giá"
         trailing={
           <Button
             type="primary"
             icon={<IconPlus size={16} />}
-            onClick={() => {
-              form.resetFields();
-              setIsModalOpen(true);
-            }}
-            className="!bg-sky-500 hover:!bg-sky-400 !font-semibold !shadow-xs"
+            onClick={() => setIsModalOpen(true)}
+            className="!bg-brand-coral hover:!bg-[#c95f5f] !font-bold !h-10 !px-5 !rounded-lg !shadow-xs cursor-pointer"
           >
             Tạo voucher mới
           </Button>
         }
       />
 
-      <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-5">
+      <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-5 w-full">
         <Table
           dataSource={vouchers}
           rowKey="s_ID"
@@ -111,47 +106,14 @@ export const AdminVouchersPage: React.FC = () => {
         />
       </div>
 
-      <Modal
-        title="Tạo Mới Voucher"
+      <CreateVoucherModal
         open={isModalOpen}
-        onOk={() => form.submit()}
         onCancel={() => setIsModalOpen(false)}
-        confirmLoading={isCreating}
-        okText="Tạo mới"
-        cancelText="Đóng"
-      >
-        <Form form={form} layout="vertical" onFinish={handleFinish} className="mt-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Form.Item name="code" label="Mã code (Viết hoa)" rules={[{ required: true, message: 'Nhập mã code' }]}>
-              <Input placeholder="VÍ DỤ: LUXDECOR20" />
-            </Form.Item>
-            <Form.Item name="name" label="Tên chương trình" rules={[{ required: true, message: 'Nhập tên' }]}>
-              <Input placeholder="Giảm giá khai trương" />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Form.Item name="discount_type" label="Loại giảm giá" initialValue="percentage">
-              <Select
-                options={[
-                  { value: 'percentage', label: 'Theo phần trăm (%)' },
-                  { value: 'fixed', label: 'Số tiền cố định (VNĐ)' },
-                ]}
-              />
-            </Form.Item>
-            <Form.Item name="discount_value" label="Giá trị giảm" rules={[{ required: true, message: 'Nhập mức giảm' }]}>
-              <InputNumber className="w-full" min={1} />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Form.Item name="min_order_value" label="Đơn tối thiểu (VNĐ)" initialValue={0}>
-              <InputNumber className="w-full" min={0} />
-            </Form.Item>
-            <Form.Item name="usage_limit" label="Giới hạn lượt dùng" initialValue={100}>
-              <InputNumber className="w-full" min={1} />
-            </Form.Item>
-          </div>
-        </Form>
-      </Modal>
+        onSubmit={handleCreateSubmit}
+        loading={isCreating}
+      />
     </div>
   );
 };
+
+export default AdminVouchersPage;

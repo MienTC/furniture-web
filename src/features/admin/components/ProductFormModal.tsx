@@ -229,7 +229,8 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                             <Input
                               {...field}
                               placeholder="Ví dụ: Ghế da thư giãn cao cấp LuxDecor..."
-                              className="!rounded-lg !py-2"
+                              className="!rounded-lg !py-2 !w-full"
+                              style={{ width: '100%' }}
                               status={errors.name ? 'error' : undefined}
                             />
                           </UWrapperInput>
@@ -248,6 +249,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                               {...field}
                               placeholder="Chọn danh mục"
                               className="w-full !h-10"
+                              style={{ width: '100%' }}
                               status={errors.categoryId ? 'error' : undefined}
                             >
                               {categories.map((c) => (
@@ -270,7 +272,8 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                           <UWrapperInput label="Giá bán (VND)" required error={errors.price?.message}>
                             <InputNumber
                               {...field}
-                              className="w-full !rounded-lg"
+                              className="!w-full !rounded-lg"
+                              style={{ width: '100%' }}
                               min={0}
                               formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                               status={errors.price ? 'error' : undefined}
@@ -288,7 +291,8 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                           <UWrapperInput label="Giá gốc niêm yết (nếu có giảm giá)">
                             <InputNumber
                               {...field}
-                              className="w-full !rounded-lg"
+                              className="!w-full !rounded-lg"
+                              style={{ width: '100%' }}
                               min={0}
                               formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                             />
@@ -303,7 +307,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                         control={control}
                         render={({ field }) => (
                           <UWrapperInput label="Số lượng trong kho">
-                            <InputNumber {...field} className="w-full !rounded-lg" min={0} />
+                            <InputNumber {...field} className="!w-full !rounded-lg" style={{ width: '100%' }} min={0} />
                           </UWrapperInput>
                         )}
                       />
@@ -315,7 +319,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                         control={control}
                         render={({ field }) => (
                           <UWrapperInput label="Chất liệu cấu tạo">
-                            <Input {...field} placeholder="Gỗ sồi, Da bọc cao cấp, Khung thép..." className="!rounded-lg" />
+                            <Input {...field} placeholder="Gỗ sồi, Da bọc cao cấp, Khung thép..." className="!rounded-lg !w-full" style={{ width: '100%' }} />
                           </UWrapperInput>
                         )}
                       />
@@ -327,7 +331,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                         control={control}
                         render={({ field }) => (
                           <UWrapperInput label="Kích thước tiêu chuẩn">
-                            <Input {...field} placeholder="D120 x R60 x C75 cm" className="!rounded-lg" />
+                            <Input {...field} placeholder="D120 x R60 x C75 cm" className="!rounded-lg !w-full" style={{ width: '100%' }} />
                           </UWrapperInput>
                         )}
                       />
@@ -339,7 +343,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                         control={control}
                         render={({ field }) => (
                           <UWrapperInput label="Xuất xứ">
-                            <Input {...field} placeholder="Việt Nam, Ý, Hàn Quốc..." className="!rounded-lg" />
+                            <Input {...field} placeholder="Việt Nam, Ý, Hàn Quốc..." className="!rounded-lg !w-full" style={{ width: '100%' }} />
                           </UWrapperInput>
                         )}
                       />
@@ -351,7 +355,7 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                         control={control}
                         render={({ field }) => (
                           <UWrapperInput label="Chế độ bảo hành">
-                            <Input {...field} placeholder="12 tháng chính hãng" className="!rounded-lg" />
+                            <Input {...field} placeholder="12 tháng chính hãng" className="!rounded-lg !w-full" style={{ width: '100%' }} />
                           </UWrapperInput>
                         )}
                       />
@@ -460,7 +464,8 @@ export const ProductFormModal: React.FC<ProductFormModalProps> = ({
                           <Input
                             {...field}
                             placeholder="Dán link video YouTube (VD: https://www.youtube.com/watch?v=... hoặc https://youtu.be/...)"
-                            className="!rounded-lg !py-2"
+                            className="!rounded-lg !py-2 !w-full"
+                            style={{ width: '100%' }}
                             allowClear
                           />
                         </UWrapperInput>

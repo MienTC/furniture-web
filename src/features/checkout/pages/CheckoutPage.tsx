@@ -42,12 +42,6 @@ export const CheckoutPage: React.FC = () => {
         clearCart();
       }
 
-      if (result.paymentUrl) {
-        message.loading('Đang chuyển hướng sang cổng thanh toán VNPay...', 1.5);
-        window.location.href = result.paymentUrl;
-        return;
-      }
-
       message.success(`Đặt hàng thành công! Mã đơn: ${result.orderId}`);
       navigate(`/orders/${result.orderId}`);
     } catch (err: any) {

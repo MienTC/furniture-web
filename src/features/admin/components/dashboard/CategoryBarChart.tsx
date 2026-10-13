@@ -1,4 +1,5 @@
 import React from 'react';
+import { Empty } from 'antd';
 import {
   BarChart,
   Bar,
@@ -16,17 +17,15 @@ interface CategoryBarChartProps {
 export const CategoryBarChart: React.FC<CategoryBarChartProps> = ({
   data = [],
 }) => {
-  const displayData =
-    data.length > 0
-      ? data
-      : [
-          { name: 'Sofa & Ghế', count: 28 },
-          { name: 'Bàn Ăn', count: 22 },
-          { name: 'Giường Ngủ', count: 19 },
-          { name: 'Tủ Quần Áo', count: 15 },
-          { name: 'Kệ Tivi', count: 12 },
-          { name: 'Đèn Trang Trí', count: 9 },
-        ];
+  if (!data || data.length === 0 || data.every(d => d.count === 0)) {
+    return (
+      <div className="h-[260px] w-full flex flex-col items-center justify-center font-sans bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+        <Empty description="Chưa có dữ liệu danh mục" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      </div>
+    );
+  }
+
+  const displayData = data;
 
   return (
     <div className="h-[260px] w-full font-sans">

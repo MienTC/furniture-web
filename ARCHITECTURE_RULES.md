@@ -57,3 +57,30 @@ Mỗi tầng có đúng một trách nhiệm duy nhất (Single Responsibility P
 4. **Tầng UI (`src/components/...`, `src/features/.../pages/...`, `src/features/.../components/...`)**:
    - Chỉ nhận dữ liệu từ Hook và Render JSX, bắt tương tác của người dùng.
    - TUYỆT ĐỐI KHÔNG gọi trực tiếp service hay axios trong UI, phải thông qua Custom Hook.
+
+---
+
+### 5. CHUẨN THIẾT KẾ CLEAN CODE, MODULAR & BÓC TÁCH (TEV-ADMIN & PETMANAGER PATTERN)
+
+1. **Tách biệt Modal Container & Form Component**:
+   - Với mọi nghiệp vụ Thêm / Sửa / Chi tiết:
+     - Component Modal (VD: `CreateVoucherModal.tsx`, `CreateOrderModal.tsx`): Chịu trách nhiệm hiển thị popup, layout container, modal footer, trigger submit/cancel.
+     - Component Form (VD: `CreateVoucherForm.tsx`, `CreateOrderForm.tsx`): Chịu trách nhiệm hoàn toàn về fields, schema, validation, inputs và emit dữ liệu hoàn chỉnh.
+     - Không nhồi nhét toàn bộ markup form, validation và modal header/footer vào chung 1 file 500 dòng.
+
+2. **Hệ thống Filter Dùng Chung (Composable Filter Components)**:
+   - Các bộ lọc không viết lại code lặp ở từng Page:
+     - `FilterSearchInput`: Tìm kiếm từ khóa (mã, tên, số điện thoại...).
+     - `FilterSelect`: Dropdown chọn trạng thái (đơn hàng, thanh toán, hiển thị...).
+     - `FilterCategory`: Dropdown chọn danh mục từ database.
+     - `FilterDateRange`: Bộ chọn khoảng ngày bắt đầu - kết thúc.
+   - Tạo custom hook quản lý query/filter state (hoặc đồng bộ URL search params) để Page gọn nhẹ, sạch sẽ, dễ mở rộng.
+
+3. **Hạn chế `useState` rải rác - Ưu tiên React Hooks & React Hook Form**:
+   - Hạn chế tạo hàng loạt `useState` vụn vặt cho từng input.
+   - Form nhập liệu ưu tiên sử dụng `react-hook-form` (`useForm`, `Controller`) hoặc Custom Hooks quản lý trạng thái tập trung.
+
+4. **Quy tắc Comment & Cleanliness**:
+   - Chỉ comment ngắn gọn các quyết định kiến trúc hoặc logic nghiệp vụ cốt lõi.
+   - Không comment rải rác từng dòng code hiển nhiên.
+   - Xóa bỏ toàn bộ dead code, unused imports và mock/demo data.

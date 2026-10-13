@@ -274,6 +274,7 @@ export const AdminBannersPage: React.FC = () => {
             <Form.Item name="type" label={<span className="font-semibold text-gray-700">Vị trí hiển thị</span>}>
               <Select
                 className="w-full !h-9"
+                style={{ width: '100%' }}
                 options={[
                   { value: 'hero', label: 'Hero Slider (Đầu trang)' },
                   { value: 'showcase', label: 'Showcase (Bộ Sưu Tập Nổi Bật)' },
@@ -296,14 +297,14 @@ export const AdminBannersPage: React.FC = () => {
             label={<span className="font-semibold text-gray-700">Tiêu đề (Title)</span>}
             help="Hiển thị nổi bật trên banner hoặc khối Showcase Bộ Sưu Tập"
           >
-            <Input placeholder="Ví dụ: Không Gian Sang Trọng Cho Căn Hộ Đương Đại" className="!rounded-lg !py-1.5" />
+            <Input placeholder="Ví dụ: Không Gian Sang Trọng Cho Căn Hộ Đương Đại" className="!rounded-lg !py-1.5 !w-full" style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item
             name="subtitle"
             label={<span className="font-semibold text-gray-700">Đoạn mô tả / Phụ đề (Description)</span>}
           >
-            <Input.TextArea rows={3} placeholder="Ví dụ: Khám phá giải pháp kiến tạo không gian sống với những bộ sưu tập nội thất thông minh..." className="!rounded-lg" />
+            <Input.TextArea rows={3} placeholder="Ví dụ: Khám phá giải pháp kiến tạo không gian sống với những bộ sưu tập nội thất thông minh..." className="!rounded-lg !w-full" style={{ width: '100%' }} />
           </Form.Item>
 
           <div className="grid grid-cols-2 gap-4">
@@ -311,14 +312,14 @@ export const AdminBannersPage: React.FC = () => {
               name="badge_text"
               label={<span className="font-semibold text-gray-700">Nhãn Badge (Huy hiệu)</span>}
             >
-              <Input placeholder="Ví dụ: BỘ SƯU TẬP 2026" className="!rounded-lg !py-1.5" />
+              <Input placeholder="Ví dụ: BỘ SƯU TẬP 2026" className="!rounded-lg !py-1.5 !w-full" style={{ width: '100%' }} />
             </Form.Item>
 
             <Form.Item
               name="link_url"
               label={<span className="font-semibold text-gray-700">Đường dẫn khi click (Link CTA)</span>}
             >
-              <Input placeholder="Ví dụ: /products" className="!rounded-lg !py-1.5" />
+              <Input placeholder="Ví dụ: /products" className="!rounded-lg !py-1.5 !w-full" style={{ width: '100%' }} />
             </Form.Item>
           </div>
 

@@ -13,9 +13,8 @@ export const PaymentSelector: React.FC<Props> = ({ value, onChange }) => (
     </h3>
     <div className="space-y-3">
       {[
-        { m: 'vnpay' as PayMethod, icon: <CreditCardOutlined className="text-sky-600 shrink-0" style={{ fontSize: 24 }} />, label: 'Cổng Thanh Toán VNPay (ATM / QR Pay / Visa)', desc: 'Thanh toán trực tuyến bảo mật qua cổng VNPay' },
-        { m: 'bank_transfer' as PayMethod, icon: <QrcodeOutlined className="text-brand-coral shrink-0" style={{ fontSize: 24 }} />, label: 'Chuyển Khoản Ngân Hàng Qua Mã QR', desc: 'Tự động xác nhận & xử lý đơn nhanh nhất' },
-        { m: 'cod' as PayMethod, icon: <DollarOutlined className="text-brand-coral shrink-0" style={{ fontSize: 24 }} />, label: 'Thanh Toán Tiền Mặt Khi Nhận Hàng (COD)', desc: 'Kiểm tra sản phẩm trước khi thanh toán' },
+        { m: 'bank_transfer' as PayMethod, icon: <QrcodeOutlined className="text-brand-coral shrink-0" style={{ fontSize: 24 }} />, label: 'Chuyển Khoản Ngân Hàng Qua Mã VietQR', desc: 'Quét mã VietQR tiện lợi - Tự động xác nhận giao dịch qua SePay' },
+        { m: 'cod' as PayMethod, icon: <DollarOutlined className="text-brand-coral shrink-0" style={{ fontSize: 24 }} />, label: 'Thanh Toán Tiền Mặt Khi Nhận Hàng (COD)', desc: 'Kiểm tra sản phẩm tận tay trước khi thanh toán' },
       ].map(({ m, icon, label, desc }) => (
         <label key={m} onClick={() => onChange(m)}
           className={`p-4 rounded-xl border flex items-center gap-4 cursor-pointer transition-all ${value === m ? 'border-brand-coral bg-brand-peach/10 ring-1 ring-brand-coral' : 'border-stone-200 hover:border-brand-peach/50'}`}>

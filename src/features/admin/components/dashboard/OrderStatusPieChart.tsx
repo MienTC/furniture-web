@@ -1,4 +1,5 @@
 import React from 'react';
+import { Empty } from 'antd';
 import {
   PieChart,
   Pie,
@@ -31,18 +32,15 @@ export const OrderStatusPieChart: React.FC<OrderStatusPieChartProps> = ({
     color: config.color,
   })).filter(item => item.value > 0);
 
-  // Fallback demo data if all values are 0
-  const displayData =
-    data.length > 0
-      ? data
-      : [
-          { name: 'Hoàn thành', value: 45, color: '#10b981' },
-          { name: 'Đang giao hàng', value: 18, color: '#0ea5e9' },
-          { name: 'Đang xử lý', value: 12, color: '#f59e0b' },
-          { name: 'Chờ xác nhận', value: 8, color: '#8b5cf6' },
-          { name: 'Đã hủy đơn', value: 3, color: '#ef4444' },
-        ];
+  if (data.length === 0) {
+    return (
+      <div className="h-[220px] w-full flex flex-col items-center justify-center font-sans bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+        <Empty description="Chưa có đơn hàng nào" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      </div>
+    );
+  }
 
+  const displayData = data;
   const total = displayData.reduce((sum, d) => sum + d.value, 0);
 
   return (

@@ -4,6 +4,8 @@ import type {
   AdminStats,
   AdminProductPayload,
   ContactSettingsData,
+  AdminOrderQueryParams,
+  AdminCreateOrderPayload,
 } from '~/types';
 
 export class AdminService {
@@ -32,8 +34,13 @@ export class AdminService {
     return res.data;
   }
 
-  async getOrders(params?: { page?: number; limit?: number; status?: string }): Promise<any> {
+  async getOrders(params?: AdminOrderQueryParams): Promise<any> {
     const res = await instanceBE.get<any, ResponseAPI<any>>('/admin/orders', { params });
+    return res.data;
+  }
+
+  async createOrder(data: AdminCreateOrderPayload): Promise<any> {
+    const res = await instanceBE.post<any, ResponseAPI<any>>('/admin/orders', data);
     return res.data;
   }
 

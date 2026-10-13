@@ -183,7 +183,7 @@ export const AdminCategoriesPage: React.FC = () => {
             label="Tên danh mục"
             rules={[{ required: true, message: 'Vui lòng nhập tên danh mục' }]}
           >
-            <Input placeholder="Ví dụ: Phòng Khách, Phòng Ngủ, Bếp..." className="!rounded-lg !py-1.5" />
+            <Input placeholder="Ví dụ: Phòng Khách, Phòng Ngủ, Bếp..." className="!rounded-lg !py-1.5 !w-full" style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item name="image_url" label="Ảnh minh họa danh mục">
@@ -191,7 +191,7 @@ export const AdminCategoriesPage: React.FC = () => {
           </Form.Item>
 
           <Form.Item name="description" label="Mô tả danh mục">
-            <Input.TextArea rows={2} placeholder="Mô tả ngắn gọn về danh mục..." className="!rounded-lg" />
+            <Input.TextArea rows={2} placeholder="Mô tả ngắn gọn về danh mục..." className="!rounded-lg !w-full" style={{ width: '100%' }} />
           </Form.Item>
         </Form>
       </Modal>

@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { paymentService } from '~/services/v1/payment.service';
 import { QUERY_KEYS } from '~/common/com-query-key';
 import type { IPaymentConfig } from '~/types';
@@ -11,8 +11,3 @@ export const usePaymentSettings = () => {
   });
 };
 
-export const useCreateVNPayUrl = () => {
-  return useMutation({
-    mutationFn: (orderId: string) => paymentService.createVNPayUrl(orderId),
-  });
-};

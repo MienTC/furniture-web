@@ -1,3 +1,8 @@
+export * from './filter.type';
+export * from './payment.type';
+export * from './order.type';
+export * from './admin.type';
+
 export type CategoryId = string;
 
 export interface Category {
@@ -93,7 +98,7 @@ export interface OrderCustomerInfo {
   city: string;
   district: string;
   note?: string;
-  paymentMethod: 'cod' | 'bank_transfer' | 'credit_card' | 'vnpay';
+  paymentMethod: 'cod' | 'bank_transfer';
 }
 
 export interface Order {

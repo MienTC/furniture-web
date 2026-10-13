@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import { ProductModel } from '../models/Product.model.js';
 import { ProductImageModel } from '../models/ProductImage.model.js';
 import { OrderModel } from '../models/Order.model.js';
+import { OrderDetailModel } from '../models/OrderDetail.model.js';
 import { UserModel } from '../models/User.model.js';
 import { CategoryModel } from '../models/Category.model.js';
 import { BannerModel } from '../models/Banner.model.js';
@@ -33,7 +34,7 @@ export class AdminController {
         UserModel.countDocuments(),
         CategoryModel.countDocuments({ is_active: true }),
         OrderModel.find().sort({ dt_created: -1 }).limit(5),
-        OrderModel.find({ payment_status: 'paid' }).select('total_amount'),
+        OrderModel.find({ status: { $ne: 'cancelled' } }).select('total_amount'),
       ]);
 
       const totalRevenue = ordersData.reduce((sum, ord) => sum + (ord.total_amount || 0), 0);
@@ -43,12 +44,12 @@ export class AdminController {
         { $group: { _id: '$status', count: { $sum: 1 } } },
       ]);
 
-      // Thống kê doanh thu theo 14 ngày gần nhất
+      // Thống kê doanh thu theo 14 ngày gần nhất (chỉ tính đơn hàng đã đặt, không tính đơn hủy)
       const fourteenDaysAgo = new Date();
       fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
 
       const revenueByDate = await OrderModel.aggregate([
-        { $match: { dt_created: { $gte: fourteenDaysAgo } } },
+        { $match: { dt_created: { $gte: fourteenDaysAgo }, status: { $ne: 'cancelled' } } },
         {
           $group: {
             _id: { $dateToString: { format: '%d/%m', date: '$dt_created' } },
@@ -326,9 +327,47 @@ export class AdminController {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 20;
       const status = req.query.status as string;
+      const startDate = req.query.startDate as string;
+      const endDate = req.query.endDate as string;
+      const urgentOnly = req.query.urgent === 'true' || req.query.urgentOnly === 'true';
+      const search = (req.query.search as string || '').trim();
+
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
       const query: any = {};
       if (status) query.status = status;
+
+      if (search) {
+        query.$or = [
+          { s_order_id: { $regex: search, $options: 'i' } },
+          { recipient_name: { $regex: search, $options: 'i' } },
+          { phone: { $regex: search, $options: 'i' } },
+        ];
+      }
+
+      // Filter theo ngày đặt
+      if (startDate || endDate) {
+        query.dt_created = {};
+        if (startDate) query.dt_created.$gte = new Date(startDate);
+        if (endDate) {
+          const end = new Date(endDate);
+          end.setHours(23, 59, 59, 999);
+          query.dt_created.$lte = end;
+        }
+      }
+
+      // Đơn cần xử lý gấp (> 3 ngày đặt hàng mà chưa chuyển trạng thái giao)
+      if (urgentOnly) {
+        query.dt_created = { ...(query.dt_created || {}), $lte: threeDaysAgo };
+        query.status = { $in: ['pending', 'processing'] };
+      }
+
+      // Đếm số đơn cần xử lý gấp (quá 3 ngày chưa giao: status là pending hoặc processing)
+      const urgentCount = await OrderModel.countDocuments({
+        dt_created: { $lte: threeDaysAgo },
+        status: { $in: ['pending', 'processing'] },
+      });
 
       const total = await OrderModel.countDocuments(query);
       const orders = await OrderModel.find(query)
@@ -338,6 +377,7 @@ export class AdminController {
 
       return sendSuccess(res, 'Lấy danh sách đơn hàng thành công', {
         items: orders,
+        urgentCount,
         pagination: {
           page,
           limit,
@@ -347,6 +387,112 @@ export class AdminController {
       });
     } catch (error: any) {
       return sendError(res, error.message || 'Lỗi lấy danh sách đơn hàng', 500);
+    }
+  }
+
+  /**
+   * POST /api/v1/admin/orders
+   * Admin tạo mới đơn hàng cho khách hàng
+   */
+  static async createOrder(req: AuthRequest, res: Response): Promise<any> {
+    try {
+      const {
+        customerInfo,
+        items,
+        paymentMethod = 'bank_transfer',
+        paymentStatus = 'unpaid',
+        status = 'pending',
+        voucherCode = '',
+        note = '',
+      } = req.body;
+
+      if (!items || !Array.isArray(items) || items.length === 0) {
+        return sendError(res, 'Vui lòng chọn ít nhất 1 sản phẩm cho đơn hàng', 400);
+      }
+
+      if (!customerInfo || !customerInfo.fullName || !customerInfo.phone || !customerInfo.address) {
+        return sendError(res, 'Vui lòng điền đủ Tên, Số điện thoại và Địa chỉ người nhận', 400);
+      }
+
+      let subtotal = 0;
+      const orderItemsDetail: any[] = [];
+
+      for (const item of items) {
+        const prodId = item.productId || item.product?.id || item.product?.s_ID;
+        const product = await ProductModel.findOne({ s_ID: prodId });
+        if (!product) {
+          return sendError(res, `Sản phẩm ${prodId} không tồn tại`, 400);
+        }
+
+        const qty = Number(item.quantity) || 1;
+        const unitPrice = item.unitPrice !== undefined ? Number(item.unitPrice) : product.price;
+        const lineTotal = unitPrice * qty;
+        subtotal += lineTotal;
+
+        const img = await ProductImageModel.findOne({ s_product_ID: product.s_ID, is_primary: true });
+
+        orderItemsDetail.push({
+          productId: product.s_ID,
+          productName: product.s_Name,
+          selectedColor: item.selectedColor || '',
+          imageUrl: img ? img.image_url : '',
+          unitPrice,
+          quantity: qty,
+          lineTotal,
+        });
+      }
+
+      const shippingFee = 0;
+      const totalAmount = subtotal;
+
+      const s_ID = generateId('ord');
+      const orderNumber = `ORD-${Date.now().toString().slice(-6)}`;
+
+      const newOrder = new OrderModel({
+        s_ID,
+        s_order_id: orderNumber,
+        s_user_id: 'guest',
+        status,
+        payment_method: paymentMethod,
+        payment_status: paymentStatus,
+        payment_transaction_id: paymentStatus === 'paid' ? `ADMIN_MANUAL_${Date.now()}` : '',
+        payment_paid_at: paymentStatus === 'paid' ? new Date() : null,
+        subtotal,
+        discount_amount: 0,
+        shipping_fee: shippingFee,
+        total_amount: totalAmount,
+        voucher_code: voucherCode || '',
+        note: note || customerInfo.note || '',
+        recipient_name: customerInfo.fullName,
+        phone: customerInfo.phone,
+        email: customerInfo.email || '',
+        address_line: customerInfo.address,
+        city: customerInfo.city || 'TP. Hà Nội',
+        district: customerInfo.district || '',
+        ward: customerInfo.ward || '',
+      });
+
+      await newOrder.save();
+
+      // Lưu chi tiết đơn hàng
+      for (const item of orderItemsDetail) {
+        const detail = new OrderDetailModel({
+          s_ID: generateId('ord_dt'),
+          s_order_id: newOrder.s_ID,
+          s_product_id: item.productId,
+          product_name: item.productName,
+          selected_color: item.selectedColor,
+          image_url: item.imageUrl,
+          unit_price: item.unitPrice,
+          quantity: item.quantity,
+          line_total: item.lineTotal,
+        });
+        await detail.save();
+      }
+
+      return sendSuccess(res, 'Tạo đơn hàng mới thành công', newOrder, 201);
+    } catch (error: any) {
+      return sendError(res, error.message || 'Lỗi khi tạo đơn hàng', 500);
     }
   }
 

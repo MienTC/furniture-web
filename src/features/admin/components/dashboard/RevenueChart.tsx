@@ -1,4 +1,5 @@
 import React from 'react';
+import { Empty } from 'antd';
 import {
   AreaChart,
   Area,
@@ -37,18 +38,15 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 export const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
-  // Dữ liệu mẫu nếu chưa có giao dịch phát sinh
-  const displayData =
-    data && data.length > 0
-      ? data
-      : [
-          { date: '01/10', revenue: 15400000, orders: 4 },
-          { date: '02/10', revenue: 23200000, orders: 7 },
-          { date: '03/10', revenue: 18900000, orders: 5 },
-          { date: '04/10', revenue: 32500000, orders: 9 },
-          { date: '05/10', revenue: 28400000, orders: 8 },
-          { date: '06/10', revenue: 41200000, orders: 12 },
-        ];
+  if (!data || data.length === 0 || data.every(d => d.revenue === 0 && d.orders === 0)) {
+    return (
+      <div className="h-[320px] w-full flex flex-col items-center justify-center font-sans bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+        <Empty description="Chưa có dữ liệu doanh thu trong khoảng thời gian này" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      </div>
+    );
+  }
+
+  const displayData = data;
 
   return (
     <div className="h-[320px] w-full font-sans">

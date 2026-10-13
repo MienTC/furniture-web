@@ -31,6 +31,7 @@ adminRouter.delete('/products/:id', AdminController.deleteProduct);
  * Quản lý Đơn hàng
  */
 adminRouter.get('/orders', AdminController.getOrders);
+adminRouter.post('/orders', AdminController.createOrder);
 adminRouter.patch('/orders/:id/status', validateBody(updateOrderStatusSchema), AdminController.updateOrderStatus);
 
 /**

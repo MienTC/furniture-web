@@ -107,16 +107,6 @@ export const orderService = {
     }
   },
 
-  async createVNPayPaymentUrl(orderId: string): Promise<string> {
-    try {
-      const res: any = await instanceBE.post('/payment/vnpay/create-url', {
-        orderId,
-      });
-      return res.data?.paymentUrl;
-    } catch (err: any) {
-      throw err;
-    }
-  },
 
   updateOrderStatus(orderId: string, status: OrderStatus): boolean {
     const orders = storageService.getOrders();

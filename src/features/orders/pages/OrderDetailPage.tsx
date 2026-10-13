@@ -6,8 +6,7 @@ import { OrderTimeline } from '~/features/orders/components/OrderTimeline';
 import { BankTransferBox } from '~/features/orders/components/BankTransferBox';
 import { OrderSummaryPanel } from '~/features/orders/components/OrderSummaryPanel';
 import { useOrderDetail, useCancelOrder } from '~/features/orders/hooks';
-import { useCreateVNPayUrl } from '~/features/checkout/hooks';
-import { ArrowLeftOutlined, CheckCircleOutlined, WarningOutlined, CloseCircleOutlined, CreditCardOutlined, StopOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, CheckCircleOutlined, WarningOutlined, CloseCircleOutlined, StopOutlined } from '@ant-design/icons';
 import { Tag, Spin, Button, Modal, message } from 'antd';
 
 export const OrderDetailPage: React.FC = () => {
@@ -17,7 +16,6 @@ export const OrderDetailPage: React.FC = () => {
 
   const { data: order, isLoading } = useOrderDetail(orderId);
   const { mutateAsync: cancelOrderMutation, isPending: isCancelling } = useCancelOrder();
-  const { mutateAsync: createVNPayUrlMutation, isPending: isPayingVNPay } = useCreateVNPayUrl();
 
   if (isLoading) {
     return (
@@ -58,62 +56,8 @@ export const OrderDetailPage: React.FC = () => {
     });
   };
 
-  const handleRetryVNPay = async () => {
-    try {
-      message.loading('Đang khởi tạo liên kết VNPay...', 1);
-      const res = await createVNPayUrlMutation(order.id);
-      if (res?.paymentUrl) {
-        window.location.href = res.paymentUrl;
-      }
-    } catch (err: any) {
-      message.error(err?.response?.data?.message || err?.message || 'Không thể tạo liên kết thanh toán');
-    }
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-      {/* Banner thông báo kết quả từ VNPay Callback nếu có */}
-      {paymentStatusParam === 'success' && (
-        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center gap-3 text-emerald-800">
-          <CheckCircleOutlined className="text-emerald-600 shrink-0" style={{ fontSize: 24 }} />
-          <div className="text-sm">
-            <p className="font-bold">Thanh toán trực tuyến thành công!</p>
-            <p className="text-xs text-emerald-700">Đơn hàng #{order.id} đã được xác nhận thanh toán qua VNPay.</p>
-          </div>
-        </div>
-      )}
-
-      {paymentStatusParam === 'failed' && (
-        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-between gap-3 text-rose-800">
-          <div className="flex items-center gap-3">
-            <CloseCircleOutlined className="text-rose-600 shrink-0" style={{ fontSize: 24 }} />
-            <div className="text-sm">
-              <p className="font-bold">Giao dịch thanh toán không thành công</p>
-              <p className="text-xs text-rose-700">Bạn đã hủy giao dịch hoặc thẻ không đủ điều kiện. Bạn có thể thanh toán lại bên dưới.</p>
-            </div>
-          </div>
-          <Button
-            type="primary"
-            danger
-            loading={isPayingVNPay}
-            icon={<CreditCardOutlined style={{ fontSize: 14 }} />}
-            onClick={handleRetryVNPay}
-            className="!rounded-lg text-xs font-semibold cursor-pointer"
-          >
-            Thử thanh toán lại
-          </Button>
-        </div>
-      )}
-
-      {paymentStatusParam === 'error' && (
-        <div className="p-4 rounded-2xl bg-brand-peach/20 border border-brand-peach/50 flex items-center gap-3 text-stone-800">
-          <WarningOutlined className="text-brand-coral shrink-0" style={{ fontSize: 24 }} />
-          <div className="text-sm">
-            <p className="font-bold">Có lỗi xảy ra khi xác thực giao dịch</p>
-            <p className="text-xs text-stone-600">Vui lòng kiểm tra lại đơn hàng hoặc liên hệ CSKH để được trợ giúp.</p>
-          </div>
-        </div>
-      )}
 
       <div>
         <Link to="/orders" className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-600 hover:text-brand-coral mb-2">
@@ -201,23 +145,6 @@ export const OrderDetailPage: React.FC = () => {
             <BankTransferBox orderId={order.id} totalAmount={order.totalAmount} />
           )}
 
-          {/* Nếu chọn VNPay nhưng chưa thanh toán hoặc thất bại */}
-          {order.customerInfo.paymentMethod === 'vnpay' && order.paymentStatus !== 'paid' && order.status !== 'cancelled' && (
-            <div className="p-6 rounded-2xl bg-sky-50 border border-sky-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div>
-                <h4 className="font-bold text-sky-950 text-base">Thanh toán trực tuyến qua VNPay</h4>
-                <p className="text-xs text-sky-800">Đơn hàng chưa hoàn tất thanh toán. Nhấp vào nút để tiếp tục giao dịch.</p>
-              </div>
-              <Button
-                type="primary"
-                loading={isPayingVNPay}
-                onClick={handleRetryVNPay}
-                className="!bg-sky-600 hover:!bg-sky-500 !rounded-xl font-bold !h-10 px-6 text-sm"
-              >
-                Tiếp tục thanh toán VNPay
-              </Button>
-            </div>
-          )}
         </div>
         <OrderSummaryPanel order={order} />
       </div>

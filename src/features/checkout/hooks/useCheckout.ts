@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { orderService } from '~/services/orderService';
-import { paymentService } from '~/services/v1/payment.service';
 import { QUERY_KEYS } from '~/common/com-query-key';
 import type { CartItem, OrderCustomerInfo } from '~/types';
 
@@ -23,16 +22,9 @@ export const useCheckout = () => {
         throw new Error('Không nhận được mã đơn hàng từ hệ thống');
       }
 
-      // Nếu chọn VNPay thì lấy URL thanh toán từ Payment Service
-      let paymentUrl: string | null = null;
-      if (customerInfo.paymentMethod === 'vnpay') {
-        const payRes = await paymentService.createVNPayUrl(effectiveOrderId);
-        paymentUrl = payRes?.paymentUrl || null;
-      }
-
       return {
         orderId: effectiveOrderId,
-        paymentUrl,
+        paymentUrl: null,
       };
     },
     onSuccess: () => {

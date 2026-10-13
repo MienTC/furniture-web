@@ -45,7 +45,7 @@ export const AdminContactSettingsPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 font-sans h-full overflow-hidden p-6 max-w-5xl mx-auto">
+    <div className="flex flex-col gap-5 font-sans w-full min-h-full pb-16">
       <UBreadcrumb
         title="Cấu hình Hotline, Địa chỉ & Danh sách Zalo"
         trailing={
@@ -70,7 +70,7 @@ export const AdminContactSettingsPage: React.FC = () => {
         onFinish={handleFinish}
         disabled={isLoading}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
           {/* Hotline & Địa chỉ */}
           <Card
             title={
@@ -86,14 +86,14 @@ export const AdminContactSettingsPage: React.FC = () => {
               name="hotline"
               rules={[{ required: true, message: 'Vui lòng nhập Hotline chính' }]}
             >
-              <Input placeholder="VD: 0393241003 hoặc 1900 8888" className="!h-10" />
+              <Input placeholder="VD: 0393241003 hoặc 1900 8888" className="!h-10 !w-full" style={{ width: '100%' }} />
             </Form.Item>
 
             <Form.Item
               label={<span className="font-semibold text-xs uppercase tracking-wider text-stone-700">Hotline phụ (Tùy chọn)</span>}
               name="hotline2"
             >
-              <Input placeholder="VD: 0988 888 999" className="!h-10" />
+              <Input placeholder="VD: 0988 888 999" className="!h-10 !w-full" style={{ width: '100%' }} />
             </Form.Item>
 
             <Divider className="!my-4" />
@@ -107,7 +107,7 @@ export const AdminContactSettingsPage: React.FC = () => {
               }
               name="address1"
             >
-              <Input placeholder="VD: 88 Phố Lý Thường Kiệt, Q. Hoàn Kiếm, Hà Nội" className="!h-10" />
+              <Input placeholder="VD: 88 Phố Lý Thường Kiệt, Q. Hoàn Kiếm, Hà Nội" className="!h-10 !w-full" style={{ width: '100%' }} />
             </Form.Item>
 
             <Form.Item
@@ -119,14 +119,14 @@ export const AdminContactSettingsPage: React.FC = () => {
               }
               name="address2"
             >
-              <Input placeholder="VD: 720A Điện Biên Phủ, P. 22, Q. Bình Thạnh, TP.HCM" className="!h-10" />
+              <Input placeholder="VD: 720A Điện Biên Phủ, P. 22, Q. Bình Thạnh, TP.HCM" className="!h-10 !w-full" style={{ width: '100%' }} />
             </Form.Item>
 
             <Form.Item
               label={<span className="font-semibold text-xs uppercase tracking-wider text-stone-700">Link Fanpage / Facebook</span>}
               name="fanpage_url"
             >
-              <Input placeholder="VD: https://facebook.com/luxdecor" className="!h-10" />
+              <Input placeholder="VD: https://facebook.com/luxdecor" className="!h-10 !w-full" style={{ width: '100%' }} />
             </Form.Item>
           </Card>
 
@@ -175,7 +175,7 @@ export const AdminContactSettingsPage: React.FC = () => {
                         rules={[{ required: true, message: 'Nhập tên chuyên viên' }]}
                         className="!mb-2"
                       >
-                        <Input placeholder="VD: Kinh doanh 1 / Em Trang Zalo" className="!h-9 text-xs" />
+                        <Input placeholder="VD: Kinh doanh 1 / Em Trang Zalo" className="!h-9 text-xs !w-full" style={{ width: '100%' }} />
                       </Form.Item>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -186,7 +186,7 @@ export const AdminContactSettingsPage: React.FC = () => {
                           rules={[{ required: true, message: 'Nhập SĐT' }]}
                           className="!mb-0"
                         >
-                          <Input placeholder="VD: 0912345678" className="!h-9 text-xs" />
+                          <Input placeholder="VD: 0912345678" className="!h-9 text-xs !w-full" style={{ width: '100%' }} />
                         </Form.Item>
 
                         <Form.Item
@@ -196,7 +196,7 @@ export const AdminContactSettingsPage: React.FC = () => {
                           rules={[{ required: true, message: 'Nhập link Zalo' }]}
                           className="!mb-0"
                         >
-                          <Input placeholder="VD: https://zalo.me/0912345678" className="!h-9 text-xs" />
+                          <Input placeholder="VD: https://zalo.me/0912345678" className="!h-9 text-xs !w-full" style={{ width: '100%' }} />
                         </Form.Item>
                       </div>
                     </div>

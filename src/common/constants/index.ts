@@ -21,3 +21,17 @@ export const ORDER_STATUS_LABEL: Record<string, { label: string; color: string }
   completed: { label: "Đã hoàn thành", color: "success" },
   cancelled: { label: "Đã hủy", color: "error" },
 };
+
+export const ORDER_STATUS_OPTIONS = [
+  { value: 'pending', label: 'Chờ xác nhận' },
+  { value: 'processing', label: 'Đang xử lý' },
+  { value: 'shipping', label: 'Đang giao hàng' },
+  { value: 'completed', label: 'Hoàn thành' },
+  { value: 'cancelled', label: 'Đã hủy' },
+];
+
+export const PAYMENT_STATUS_OPTIONS = [
+  { value: 'all', label: 'Tất cả thanh toán' },
+  { value: 'paid', label: 'Đã thanh toán' },
+  { value: 'unpaid', label: 'Chưa thanh toán' },
+];
