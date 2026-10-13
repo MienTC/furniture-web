@@ -30,10 +30,6 @@ export const AdminFlashSalePage: React.FC = () => {
     <div className="flex flex-col gap-5 font-sans max-w-4xl">
       <UBreadcrumb
         title="Quản Lý Module Flash Sale"
-        items={[
-          { title: 'Quản trị' },
-          { title: 'Flash Sale Hôm Nay' },
-        ]}
       />
 
       <FlashSaleConfigForm

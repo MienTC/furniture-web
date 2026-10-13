@@ -107,7 +107,7 @@ export const AdminOrdersPage: React.FC = () => {
         <FilterSelect
           value={filters.status}
           onChange={(val) => setFilter('status', val)}
-          options={STATUS_OPTIONS}
+          options={ORDER_STATUS_OPTIONS}
           placeholder="Trạng thái đơn hàng"
           width={160}
         />
