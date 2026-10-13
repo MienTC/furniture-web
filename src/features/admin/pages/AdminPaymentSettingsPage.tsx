@@ -293,7 +293,7 @@ export const AdminPaymentSettingsPage: React.FC = () => {
                       Tự Động Xác Nhận Đơn Hàng Qua Webhook SePay (Khuyên Dùng)
                     </span>
                     <p className="text-xs text-blue-800 m-0">
-                      Khách vừa quét VietQR chuyển tiền xong 1-3 giây -> Web tự động chuyển đơn sang <b>"Đã thanh toán"</b>.
+                      Khách vừa quét VietQR chuyển tiền xong 1-3 giây &rarr; Web tự động chuyển đơn sang <b>&quot;Đã thanh toán&quot;</b>.
                     </p>
                   </div>
                 </div>
