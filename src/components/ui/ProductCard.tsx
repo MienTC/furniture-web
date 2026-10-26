@@ -30,7 +30,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div
       onClick={handleCardClick}
-      className="product-card-container group relative bg-white rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-stone-200 hover:border-brand-peach cursor-pointer"
+      className="product-card-container group relative bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full border border-stone-200 hover:border-brand-coral/40 cursor-pointer"
     >
       {/* Full hover hit area */}
       <div className="relative w-full aspect-[4/5] overflow-hidden bg-stone-100">
@@ -40,17 +40,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           className="product-image-zoom w-full h-full object-cover transition-transform duration-500 ease-out"
         />
         {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-stone-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-stone-900/15 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 items-start z-10">
           {product.discountPercent && (
-            <span className="bg-brand-coral text-white font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider shadow-xs">
+            <span className="bg-brand-coral text-white font-extrabold px-2 py-0.5 rounded-md text-[10px] uppercase tracking-wider shadow-xs">
               -{product.discountPercent}%
             </span>
           )}
           {product.isNew && (
-            <span className="bg-brand-mint text-stone-900 font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider shadow-xs">
+            <span className="bg-stone-900 text-white font-bold px-2 py-0.5 rounded-md text-[10px] uppercase tracking-wider shadow-xs">
               MỚI
             </span>
           )}
@@ -71,7 +71,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           }`}
           title="Yêu thích"
         >
-          {liked ? <HeartFilled style={{fontSize:15}} /> : <HeartOutlined style={{fontSize:15}} />}
+          {liked ? <HeartFilled style={{ fontSize: 15 }} /> : <HeartOutlined style={{ fontSize: 15 }} />}
         </button>
 
         {/* Action Overlay */}
@@ -99,22 +99,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-5 flex-1 flex flex-col items-center text-center">
-        <span className="text-[10px] font-semibold text-stone-500 tracking-[0.2em] uppercase mb-2 block">
+      {/* Content: Clean Left-aligned layout */}
+      <div className="p-4 sm:p-5 flex-1 flex flex-col items-start text-left">
+        <span className="text-[10px] font-semibold text-stone-400 tracking-wider uppercase mb-1.5 block">
           {product.categoryName}
         </span>
         <Link
           to={`/products/${product.slug}`}
-          className="font-bold text-stone-900 hover:!text-brand-coral transition-colors line-clamp-2 text-base leading-snug mb-3 px-2"
+          className="font-bold text-stone-900 hover:!text-brand-coral transition-colors line-clamp-2 text-sm sm:text-base leading-snug mb-2"
         >
           {product.name}
         </Link>
-        
-        <RatingStars rating={product.rating} count={product.reviewCount} />
 
-        <div className="mt-auto pt-4 flex flex-col items-center gap-1">
-          <span className="text-lg font-bold text-brand-coral tabular-nums">
+        <div className="mb-3">
+          <RatingStars rating={product.rating} count={product.reviewCount} />
+        </div>
+
+        <div className="mt-auto pt-2 flex items-baseline gap-2 flex-wrap">
+          <span className="text-base sm:text-lg font-bold text-brand-coral tabular-nums">
             {formatVND(finalPrice)}
           </span>
           {product.discountPercent && (

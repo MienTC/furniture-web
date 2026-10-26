@@ -3,28 +3,24 @@ import { SafetyCertificateOutlined, CarOutlined, ToolOutlined, TrophyOutlined } 
 
 const POLICIES = [
   {
-    icon: <SafetyCertificateOutlined className="text-brand-coral" style={{ fontSize: 28 }} />,
+    icon: <SafetyCertificateOutlined className="text-brand-coral" style={{ fontSize: 26 }} />,
     title: 'Bảo Hành 5 Năm',
     desc: 'Cam kết chất lượng chuẩn xuất khẩu, bảo hành tận nhà trên toàn quốc.',
-    bg: 'bg-brand-coral/10 border-brand-coral/30',
   },
   {
-    icon: <CarOutlined className="text-brand-coral" style={{ fontSize: 28 }} />,
+    icon: <CarOutlined className="text-brand-coral" style={{ fontSize: 26 }} />,
     title: 'Miễn Phí Vận Chuyển',
     desc: 'Giao hàng và lắp đặt tận nơi trên toàn quốc, không điều kiện tối thiểu.',
-    bg: 'bg-brand-peach/20 border-brand-peach/40',
   },
   {
-    icon: <ToolOutlined className="text-stone-800" style={{ fontSize: 28 }} />,
+    icon: <ToolOutlined className="text-brand-coral" style={{ fontSize: 26 }} />,
     title: 'Lắp Đặt Trọn Gói',
     desc: 'Đội ngũ kỹ thuật viên chuyên nghiệp hỗ trợ lắp ráp, setup hoàn thiện.',
-    bg: 'bg-brand-mint/30 border-brand-mint/50',
   },
   {
-    icon: <TrophyOutlined className="text-brand-coral" style={{ fontSize: 28 }} />,
+    icon: <TrophyOutlined className="text-brand-coral" style={{ fontSize: 26 }} />,
     title: 'Vật Liệu Thượng Hạng',
     desc: 'Gỗ sồi, óc chó tự nhiên tuyển chọn và da bò Ý nhập khẩu 100%.',
-    bg: 'bg-brand-cream/50 border-brand-peach/30',
   },
 ];
 
@@ -35,14 +31,18 @@ export const HomeFeatures: React.FC = () => {
         {POLICIES.map((p, idx) => (
           <div
             key={idx}
-            className="flex items-start gap-4 p-6 rounded-2xl bg-white border border-stone-200 shadow-2xs hover:shadow-md transition-shadow"
+            className="group flex items-start gap-4 p-5 sm:p-6 rounded-2xl bg-white border border-stone-200 hover:border-brand-coral/40 shadow-xs hover:shadow-md transition-all duration-300"
           >
-            <div className={`w-14 h-14 rounded-2xl ${p.bg} border flex items-center justify-center shrink-0`}>
+            <div className="w-13 h-13 rounded-2xl bg-stone-50 border border-stone-200/80 group-hover:bg-brand-coral/10 group-hover:border-brand-coral/30 flex items-center justify-center shrink-0 transition-colors duration-300">
               {p.icon}
             </div>
             <div>
-              <h3 className="font-bold text-stone-900 text-sm mb-1">{p.title}</h3>
-              <p className="text-xs text-stone-500 leading-relaxed">{p.desc}</p>
+              <h3 className="font-bold text-stone-900 text-sm mb-1 group-hover:text-brand-coral transition-colors">
+                {p.title}
+              </h3>
+              <p className="text-xs text-stone-500 leading-relaxed">
+                {p.desc}
+              </p>
             </div>
           </div>
         ))}
