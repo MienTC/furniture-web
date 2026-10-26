@@ -41,31 +41,31 @@ export const FlashSaleSection: React.FC = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Container phong cách Charcoal Dark Luxury cao cấp */}
-      <div className="rounded-3xl bg-stone-900 text-white p-6 sm:p-8 shadow-2xl relative overflow-hidden border border-stone-800">
-        {/* Subtle glow effect */}
-        <div className="absolute -right-24 -top-24 w-96 h-96 bg-brand-coral/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-stone-800/40 rounded-full blur-2xl pointer-events-none" />
+      {/* Container phong cách Tone sáng ấm cao cấp, hài hòa với tổng thể website */}
+      <div className="rounded-3xl bg-linear-to-br from-[#FFF5F3] via-[#FFF9F6] to-[#FFF1EC] p-6 sm:p-8 text-stone-900 shadow-md relative overflow-hidden border border-[#DE7272]/20">
+        {/* Subtle warm glow background */}
+        <div className="absolute -right-24 -top-24 w-96 h-96 bg-[#DE7272]/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-[#FFCA88]/10 rounded-full blur-2xl pointer-events-none" />
 
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 relative z-10">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-brand-coral/15 border border-brand-coral/30 flex items-center justify-center text-brand-coral shadow-inner">
+            <div className="w-12 h-12 rounded-2xl bg-[#DE7272]/10 border border-[#DE7272]/25 flex items-center justify-center text-[#DE7272] shadow-xs">
               <IconFlame size={26} className="animate-pulse" />
             </div>
             <div>
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h2 className="text-xl sm:text-2xl font-black uppercase tracking-wider text-white">
+                <h2 className="text-xl sm:text-2xl font-black uppercase tracking-wider text-stone-900">
                   {config.title}
                 </h2>
                 {config.discount_badge && (
-                  <span className="px-2.5 py-0.5 rounded-full bg-brand-coral text-white font-extrabold text-[11px] tracking-wide uppercase shadow-xs">
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#DE7272] text-white font-extrabold text-[11px] tracking-wide uppercase shadow-xs">
                     {config.discount_badge}
                   </span>
                 )}
               </div>
               {config.description && (
-                <p className="text-xs text-stone-400 mt-0.5 font-medium">
+                <p className="text-xs text-stone-500 mt-0.5 font-medium">
                   {config.description}
                 </p>
               )}
@@ -73,19 +73,19 @@ export const FlashSaleSection: React.FC = () => {
           </div>
 
           {/* Countdown Clock */}
-          <div className="flex items-center gap-2.5 bg-stone-800/90 border border-stone-700/80 px-4 py-2 rounded-2xl self-start sm:self-auto shadow-xs">
-            <IconClock size={16} className="text-brand-coral" />
-            <span className="text-xs font-semibold uppercase tracking-wider text-stone-300">Kết thúc sau:</span>
+          <div className="flex items-center gap-2.5 bg-white/90 border border-stone-200/80 px-4 py-2 rounded-2xl self-start sm:self-auto shadow-xs backdrop-blur-xs">
+            <IconClock size={16} className="text-[#DE7272]" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-stone-600">Kết thúc sau:</span>
             <div className="flex items-center gap-1.5 font-mono font-bold text-xs">
-              <span className="bg-stone-950 px-2 py-1 rounded-lg text-white border border-stone-800 min-w-[28px] text-center">
+              <span className="bg-stone-900 px-2 py-1 rounded-lg text-white min-w-[28px] text-center shadow-xs">
                 {String(timeLeft.hours).padStart(2, '0')}
               </span>
-              <span className="text-stone-500 font-bold">:</span>
-              <span className="bg-stone-950 px-2 py-1 rounded-lg text-white border border-stone-800 min-w-[28px] text-center">
+              <span className="text-stone-400 font-bold">:</span>
+              <span className="bg-stone-900 px-2 py-1 rounded-lg text-white min-w-[28px] text-center shadow-xs">
                 {String(timeLeft.minutes).padStart(2, '0')}
               </span>
-              <span className="text-stone-500 font-bold">:</span>
-              <span className="bg-brand-coral px-2 py-1 rounded-lg text-white font-black min-w-[28px] text-center shadow-xs">
+              <span className="text-stone-400 font-bold">:</span>
+              <span className="bg-[#DE7272] px-2 py-1 rounded-lg text-white font-black min-w-[28px] text-center shadow-xs">
                 {String(timeLeft.seconds).padStart(2, '0')}
               </span>
             </div>
@@ -107,18 +107,17 @@ export const FlashSaleSection: React.FC = () => {
               <Link
                 key={p.id}
                 to={`/products/${p.slug}`}
-                style={{ backgroundColor: '#ffffff', color: '#1c1917' }}
-                className="group rounded-2xl p-3 sm:p-4 flex flex-col justify-between hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 relative border border-stone-100 cursor-pointer shadow-sm"
+                className="group bg-white rounded-2xl p-3 sm:p-4 flex flex-col justify-between hover:shadow-xl transition-all duration-300 hover:-translate-y-1 relative border border-stone-200/80 hover:border-[#DE7272]/50 cursor-pointer shadow-xs"
               >
                 {/* Discount Badge */}
                 {p.discountPercent ? (
-                  <span className="absolute top-4 left-4 z-10 px-2 py-0.5 rounded-md bg-brand-coral text-white font-extrabold text-[10px] shadow-xs">
+                  <span className="absolute top-4 left-4 z-10 px-2 py-0.5 rounded-md bg-[#DE7272] text-white font-extrabold text-[10px] shadow-xs">
                     -{p.discountPercent}%
                   </span>
                 ) : null}
 
                 {/* Product Image */}
-                <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-stone-100 mb-3">
+                <div className="relative aspect-square w-full rounded-xl overflow-hidden bg-stone-50 mb-3 border border-stone-100">
                   <img
                     src={p.images?.[0] || ''}
                     alt={p.name}
@@ -129,12 +128,12 @@ export const FlashSaleSection: React.FC = () => {
 
                 {/* Details */}
                 <div className="space-y-1.5 flex-1 flex flex-col justify-end text-left">
-                  <h3 className="font-semibold text-xs sm:text-sm text-stone-900 line-clamp-2 group-hover:!text-brand-coral transition-colors leading-snug">
+                  <h3 className="font-semibold text-xs sm:text-sm text-stone-900 line-clamp-2 group-hover:text-[#DE7272] transition-colors leading-snug">
                     {p.name}
                   </h3>
 
                   <div className="flex items-baseline gap-2 pt-1">
-                    <span className="font-bold text-brand-coral text-sm sm:text-base tabular-nums">
+                    <span className="font-bold text-[#DE7272] text-sm sm:text-base tabular-nums">
                       {formatVND(finalPrice)}
                     </span>
                     {p.discountPercent ? (
@@ -147,7 +146,7 @@ export const FlashSaleSection: React.FC = () => {
                   {/* Stock progress bar */}
                   <div className="space-y-1 pt-1.5">
                     <div className="w-full bg-stone-100 h-1.5 rounded-full overflow-hidden">
-                      <div className="bg-brand-coral h-full rounded-full w-3/4" />
+                      <div className="bg-[#DE7272] h-full rounded-full w-3/4" />
                     </div>
                     <span className="text-[10px] text-stone-400 block text-right font-medium">
                       Còn {p.stockQuantity || 12} cái
@@ -163,10 +162,10 @@ export const FlashSaleSection: React.FC = () => {
         <div className="mt-8 text-center relative z-10">
           <Link
             to="/products"
-            className="inline-flex items-center gap-2 text-xs font-bold text-stone-300 hover:text-white transition-colors uppercase tracking-widest bg-stone-800/80 hover:bg-stone-700/80 px-6 py-2.5 rounded-full border border-stone-700"
+            className="inline-flex items-center gap-2 text-xs font-bold text-stone-700 hover:text-[#DE7272] bg-white hover:bg-stone-50 px-6 py-2.5 rounded-full border border-stone-200/90 shadow-xs transition-all uppercase tracking-wider"
           >
             <span>Xem tất cả ưu đãi Flash Sale</span>
-            <IconArrowRight size={14} className="text-brand-coral" />
+            <IconArrowRight size={14} className="text-[#DE7272]" />
           </Link>
         </div>
       </div>
