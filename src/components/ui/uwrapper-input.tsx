@@ -1,9 +1,10 @@
 import React from "react";
 import { Flex, Tooltip, type FlexProps } from "antd";
 
-interface UTextInputProps extends FlexProps {
+export interface UTextInputProps extends FlexProps {
   label?: React.ReactNode;
   error?: string;
+  help?: React.ReactNode;
   required?: boolean;
   children: React.ReactNode;
   htmlFor?: string;
@@ -13,6 +14,7 @@ interface UTextInputProps extends FlexProps {
 export default function UWrapperInput({
   label,
   error,
+  help,
   children,
   required,
   htmlFor,
@@ -27,6 +29,9 @@ export default function UWrapperInput({
             {label}
             {required && <span className="text-rose-500 ml-0.5">*</span>}
           </label>
+          {help && !error && (
+            <span className="text-[11px] text-gray-400 font-normal">({help})</span>
+          )}
           {error && (
             <Tooltip color="red" title={error}>
               <p className="text-rose-500 text-[11px] line-clamp-1 font-normal">{error}</p>

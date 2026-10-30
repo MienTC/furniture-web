@@ -47,7 +47,11 @@ export class ReviewController {
       const productIds = reviews.map((r) => r.product_id);
       const products = await ProductModel.find({ s_ID: { $in: productIds } }).lean();
       const productMap = new Map<string, string>();
-      products.forEach((p) => productMap.set(p.s_ID, p.s_Name));
+      const productSlugMap = new Map<string, string>();
+      products.forEach((p) => {
+        productMap.set(p.s_ID, p.s_Name);
+        if (p.slug) productSlugMap.set(p.s_ID, p.slug);
+      });
 
       const formatted = reviews.map((r) => ({
         id: r.s_ID,
@@ -57,6 +61,8 @@ export class ReviewController {
         content: r.comment || '',
         rating: r.rating || 5,
         product: productMap.get(r.product_id) || '',
+        productId: r.product_id,
+        productSlug: productSlugMap.get(r.product_id) || r.product_id,
       }));
 
       return sendSuccess(res, 'Lấy đánh giá nổi bật thành công', formatted);

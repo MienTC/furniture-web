@@ -15,15 +15,12 @@ import {
   DeleteOutlined,
   AppstoreAddOutlined,
 } from '@ant-design/icons';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useAdminProducts } from '~/features/admin/hooks';
-import { adminService } from '~/services/v1/admin.service';
-import { ADMIN_QUERY_KEYS } from '~/common/admin-query-key';
 import { formatVND } from '~/common/utils/formatters';
 import UBadge from '~/components/ui/ubadge';
-import ProductFormModal from './ProductFormModal';
+import { ProductModal } from '~/features/admin/components/products';
 import SelectProductsModal from './SelectProductsModal';
-import type { AdminProductDto } from '~/types/admin.type';
+import type { AdminProductDto } from '~/types';
 
 interface CategoryDetailDrawerProps {
   open: boolean;
@@ -38,7 +35,6 @@ export const CategoryDetailDrawer: React.FC<CategoryDetailDrawerProps> = ({
   category,
   categories,
 }) => {
-  const queryClient = useQueryClient();
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isSelectModalOpen, setIsSelectModalOpen] = useState(false);
@@ -54,24 +50,22 @@ export const CategoryDetailDrawer: React.FC<CategoryDetailDrawerProps> = ({
     createProduct,
     updateProduct,
     deleteProduct,
+    removeProductsFromCategory,
+    isRemoving,
     isSubmitting,
   } = useAdminProducts({
     categoryId,
     limit: 100,
   });
 
-  const removeBatchMutation = useMutation({
-    mutationFn: (ids: string[]) => adminService.removeProductsFromCategory(categoryId, ids),
-    onSuccess: (res) => {
-      message.success(res || `Đã gỡ ${selectedRowKeys.length} sản phẩm khỏi danh mục`);
-      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.products] });
-      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.categories] });
+  const handleRemoveBatch = async (ids: string[]) => {
+    try {
+      await removeProductsFromCategory({ categoryId, productIds: ids });
       setSelectedRowKeys([]);
-    },
-    onError: (err: any) => {
-      message.error(err.message || 'Lỗi khi gỡ sản phẩm khỏi danh mục');
-    },
-  });
+    } catch (err: any) {
+      // Toast error handled in hook
+    }
+  };
 
   const handleOpenEditProduct = (prod: any) => {
     setSelectedProduct(prod);
@@ -94,12 +88,12 @@ export const CategoryDetailDrawer: React.FC<CategoryDetailDrawerProps> = ({
   };
 
   const handleRemoveSingle = (productId: string) => {
-    removeBatchMutation.mutate([productId]);
+    handleRemoveBatch([productId]);
   };
 
   const handleRemoveMultiple = () => {
     if (selectedRowKeys.length === 0) return;
-    removeBatchMutation.mutate(selectedRowKeys as string[]);
+    handleRemoveBatch(selectedRowKeys as string[]);
   };
 
   const columns = [
@@ -107,13 +101,18 @@ export const CategoryDetailDrawer: React.FC<CategoryDetailDrawerProps> = ({
       title: 'Ảnh',
       dataIndex: 'images',
       width: 55,
-      render: (imgs: string[]) => (
-        <img
-          src={imgs?.[0] || 'https://via.placeholder.com/80'}
-          alt=""
-          className="size-9 rounded-lg object-cover border border-gray-200"
-        />
-      ),
+      render: (imgs: string[]) =>
+        imgs?.[0] ? (
+          <img
+            src={imgs[0]}
+            alt=""
+            className="size-9 rounded-lg object-cover border border-gray-200"
+          />
+        ) : (
+          <div className="size-9 rounded-lg bg-stone-100 border border-gray-200 flex items-center justify-center text-[10px] text-stone-400">
+            -
+          </div>
+        ),
     },
     {
       title: 'Tên Sản Phẩm',
@@ -277,7 +276,7 @@ export const CategoryDetailDrawer: React.FC<CategoryDetailDrawerProps> = ({
                     danger
                     type="primary"
                     icon={<DeleteOutlined />}
-                    loading={removeBatchMutation.isPending}
+                    loading={isRemoving}
                   >
                     Gỡ {selectedRowKeys.length} sản phẩm đã chọn
                   </Button>
@@ -339,7 +338,7 @@ export const CategoryDetailDrawer: React.FC<CategoryDetailDrawerProps> = ({
       />
 
       {/* Modal Chỉnh Sửa / Tạo Mới Sản Phẩm */}
-      <ProductFormModal
+      <ProductModal
         open={isProductModalOpen}
         onClose={() => {
           setIsProductModalOpen(false);

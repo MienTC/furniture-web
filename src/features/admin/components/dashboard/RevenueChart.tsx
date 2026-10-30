@@ -53,7 +53,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={displayData}
-          margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
+          margin={{ top: 20, right: 15, left: -10, bottom: 0 }}
         >
           <defs>
             <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
@@ -72,6 +72,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
             axisLine={false}
             tickLine={false}
             tick={{ fill: '#94a3b8', fontSize: 11 }}
+            domain={[0, (dataMax: number) => (dataMax ? Math.ceil((dataMax * 1.25) / 10000000) * 10000000 : 10000000)]}
             tickFormatter={(val) =>
               val >= 1000000 ? `${(val / 1000000).toFixed(0)}tr` : `${val}`
             }

@@ -75,7 +75,7 @@ export const ProductTabs: React.FC<{ product: Product }> = ({ product }) => {
                       onClick={() => setReviewOpen(true)}
                       icon={<MessageOutlined style={{ fontSize: 14 }} />}
                       type="primary"
-                      className="!bg-brand-coral hover:!bg-[#c95f5f] font-bold text-xs cursor-pointer"
+                      className="!bg-[#2B5A50] hover:!bg-[#20453D] font-bold text-xs cursor-pointer"
                     >
                       Viết Đánh Giá
                     </Button>

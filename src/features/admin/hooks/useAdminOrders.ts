@@ -28,7 +28,7 @@ export const useAdminOrders = (params?: AdminOrderQueryParams) => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.orders.list] });
     },
     onError: (err: any) => {
-      toast.error(err?.response?.data?.message || err.message || 'Lỗi tạo đơn hàng');
+      toast.error(err?.response?.data?.message || err?.message);
     },
   });
 
@@ -40,7 +40,20 @@ export const useAdminOrders = (params?: AdminOrderQueryParams) => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.orders.list] });
     },
     onError: (err: any) => {
-      toast.error(err.message || 'Lỗi cập nhật trạng thái đơn hàng');
+      toast.error(err?.response?.data?.message || err?.message);
+    },
+  });
+
+  const { mutateAsync: updateOrder, isPending: isUpdatingOrder } = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { shippingFee?: number; items?: any[]; note?: string } }) =>
+      adminService.updateOrder(id, data),
+    onSuccess: () => {
+      toast.success('Cập nhật chi tiết đơn hàng thành công');
+      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.orders.list] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'orders'] });
+    },
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.message || err?.message);
     },
   });
 
@@ -55,5 +68,7 @@ export const useAdminOrders = (params?: AdminOrderQueryParams) => {
     isCreatingOrder,
     updateOrderStatus,
     isUpdatingStatus,
+    updateOrder,
+    isUpdatingOrder,
   };
 };

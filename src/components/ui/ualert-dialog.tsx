@@ -4,38 +4,59 @@ import { Button, Modal, Tooltip } from 'antd';
 interface UAlertDialogProps {
   children?: React.ReactNode;
   onConfirm?: () => void;
+  onDelete?: () => void;
   title?: React.ReactNode;
   icon?: React.ReactNode;
+  iconChildren?: React.ReactNode;
   description?: string;
   okText?: string;
   cancelText?: string;
   okType?: 'primary' | 'danger';
   tooltip?: string;
+  titleTooltip?: string | null;
   buttonProps?: any;
+  loading?: boolean;
 }
 
 export const UAlertDialog: React.FC<UAlertDialogProps> = ({
   children,
   icon,
+  iconChildren,
   onConfirm,
+  onDelete,
   title = 'Xác nhận hành động',
   description = 'Bạn có chắc chắn muốn thực hiện hành động này? Thao tác không thể hoàn tác.',
   okText = 'Xác nhận',
   cancelText = 'Hủy',
   okType = 'danger',
   tooltip,
+  titleTooltip,
   buttonProps,
+  loading = false,
 }) => {
   const [open, setOpen] = useState(false);
 
+  const handleAction = () => {
+    if (onDelete) {
+      onDelete();
+    } else if (onConfirm) {
+      onConfirm();
+    }
+    setOpen(false);
+  };
+
+  const displayIcon = iconChildren ? <div>{iconChildren}</div> : icon;
+  const displayTooltip = titleTooltip || tooltip;
+
   return (
     <>
-      <Tooltip title={tooltip}>
+      <Tooltip title={displayTooltip}>
         <Button
           type="text"
           {...buttonProps}
-          icon={icon}
+          icon={displayIcon}
           onClick={() => setOpen(true)}
+          loading={loading}
         >
           {children}
         </Button>
@@ -45,17 +66,18 @@ export const UAlertDialog: React.FC<UAlertDialogProps> = ({
         <Modal
           title={title}
           open={open}
-          onOk={() => {
-            onConfirm?.();
-            setOpen(false);
-          }}
+          onOk={handleAction}
           onCancel={() => setOpen(false)}
           okText={okText}
           cancelText={cancelText}
-          okButtonProps={{ danger: okType === 'danger' }}
-          centered
+          okButtonProps={{ danger: okType === 'danger', loading }}
+          cancelButtonProps={{
+            variant: "filled",
+            color: "default",
+          }}
+          destroyOnClose
         >
-          <p className="text-stone-600 text-sm m-0 py-2">{description}</p>
+          <p className="text-sm text-gray-600 m-0">{description}</p>
         </Modal>
       )}
     </>

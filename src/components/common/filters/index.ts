@@ -1,5 +1,6 @@
-export { FilterBar } from './FilterBar';
-export { FilterSearch } from './FilterSearch';
-export { FilterSelect } from './FilterSelect';
-export { FilterDateRange } from './FilterDateRange';
-export { FilterResetButton } from './FilterResetButton';
+export * from './FilterBar';
+export * from './FilterSearch';
+export * from './FilterSelect';
+export * from './FilterCategory';
+export * from './FilterDateRange';
+export * from './FilterResetButton';

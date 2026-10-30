@@ -18,6 +18,8 @@ export interface AdminStats {
   totalCategories: number;
   orderStatusCounts: Record<string, number>;
   revenueByDate?: Array<{ date: string; revenue: number; orders: number }>;
+  topProducts?: Array<{ name: string; revenue: number; quantity?: number }>;
+  categoryRevenue?: Array<{ name: string; revenue: number; count?: number }>;
   categoryDistribution?: Array<{ name: string; count: number }>;
   recentOrders: any[];
 }

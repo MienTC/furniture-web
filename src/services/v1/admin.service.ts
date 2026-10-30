@@ -6,6 +6,8 @@ import type {
   ContactSettingsData,
   AdminOrderQueryParams,
   AdminCreateOrderPayload,
+  AdminOrderDetail,
+  AdminUpdateOrderPayload,
 } from '~/types';
 
 export class AdminService {
@@ -39,6 +41,11 @@ export class AdminService {
     return res.data;
   }
 
+  async getOrderDetail(id: string): Promise<AdminOrderDetail> {
+    const res = await instanceBE.get<any, ResponseAPI<AdminOrderDetail>>(`/admin/orders/${id}`);
+    return res.data;
+  }
+
   async createOrder(data: AdminCreateOrderPayload): Promise<any> {
     const res = await instanceBE.post<any, ResponseAPI<any>>('/admin/orders', data);
     return res.data;
@@ -46,6 +53,11 @@ export class AdminService {
 
   async updateOrderStatus(id: string, status: string): Promise<any> {
     const res = await instanceBE.patch<any, ResponseAPI<any>>(`/admin/orders/${id}/status`, { status });
+    return res.data;
+  }
+
+  async updateOrder(id: string, data: AdminUpdateOrderPayload): Promise<AdminOrderDetail> {
+    const res = await instanceBE.put<any, ResponseAPI<AdminOrderDetail>>(`/admin/orders/${id}`, data);
     return res.data;
   }
 
@@ -99,6 +111,10 @@ export class AdminService {
     return res.data;
   }
 
+  async assignProductsToCategory(categoryId: string, productIds: string[]): Promise<any> {
+    return this.addProductsToCategory(categoryId, productIds);
+  }
+
   async removeProductsFromCategory(categoryId: string, productIds: string[]): Promise<any> {
     const res = await instanceBE.delete<any, ResponseAPI<any>>(`/admin/categories/${categoryId}/products`, { data: { productIds } });
     return res.data;
@@ -134,6 +150,11 @@ export class AdminService {
     return res.data;
   }
 
+  async updateVoucher(id: string, data: any): Promise<any> {
+    const res = await instanceBE.put<any, ResponseAPI<any>>(`/admin/vouchers/${id}`, data);
+    return res.data;
+  }
+
   async deleteVoucher(id: string): Promise<any> {
     const res = await instanceBE.delete<any, ResponseAPI<any>>(`/admin/vouchers/${id}`);
     return res.data;
@@ -146,6 +167,11 @@ export class AdminService {
 
   async replyReview(id: string, reply: string): Promise<any> {
     const res = await instanceBE.patch<any, ResponseAPI<any>>(`/admin/reviews/${id}/reply`, { reply });
+    return res.data;
+  }
+
+  async toggleReviewStatus(id: string): Promise<any> {
+    const res = await instanceBE.patch<any, ResponseAPI<any>>(`/admin/reviews/${id}/toggle-status`);
     return res.data;
   }
 
@@ -176,6 +202,16 @@ export class AdminService {
 
   async getPublicContactSettings(): Promise<ContactSettingsData | null> {
     const res = await instanceBE.get<any, ResponseAPI<ContactSettingsData | null>>('/contact-settings');
+    return res.data;
+  }
+
+  async getInvoiceSettings(): Promise<any> {
+    const res = await instanceBE.get<any, ResponseAPI<any>>('/admin/invoice-settings');
+    return res.data;
+  }
+
+  async updateInvoiceSettings(data: any): Promise<any> {
+    const res = await instanceBE.put<any, ResponseAPI<any>>('/admin/invoice-settings', data);
     return res.data;
   }
 }

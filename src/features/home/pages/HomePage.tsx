@@ -23,6 +23,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="space-y-16 pb-16">
+      <h1 className="sr-only">LuxDecor Furniture - Nội Thất Cao Cấp & Không Gian Sống Thượng Lưu</h1>
       <HeroBanner banners={banners} isLoading={isBannersLoading} />
       <HomeFeatures />
       <VoucherSection vouchers={vouchers} isLoading={isVouchersLoading} />

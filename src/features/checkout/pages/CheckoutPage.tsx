@@ -23,7 +23,7 @@ export const CheckoutPage: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center space-y-4">
         <h2 className="text-2xl font-bold text-stone-800">Không có sản phẩm nào để thanh toán</h2>
-        <Link to="/products" className="inline-block bg-brand-coral hover:bg-[#c95f5f] text-white text-xs font-bold px-6 py-2.5 rounded-lg shadow-sm">
+        <Link to="/products" className="inline-block bg-[#2B5A50] hover:bg-[#20453D] text-white text-xs font-bold px-6 py-2.5 rounded-lg shadow-sm">
           Quay lại cửa hàng
         </Link>
       </div>
@@ -56,6 +56,35 @@ export const CheckoutPage: React.FC = () => {
           <ArrowLeftOutlined style={{ fontSize: 13 }} /> Quay lại Giỏ hàng
         </Link>
         <h1 className="text-2xl sm:text-3xl font-bold text-stone-900">Thanh Toán Đơn Hàng</h1>
+      </div>
+
+      {/* Checkout Steps Progress Indicator */}
+      <div className="flex items-center justify-center max-w-md mx-auto py-1">
+        {[
+          { num: 1, label: 'Giỏ hàng', done: true },
+          { num: 2, label: 'Giao hàng & Thanh toán', active: true },
+          { num: 3, label: 'Hoàn tất', done: false },
+        ].map((s, idx) => (
+          <React.Fragment key={s.num}>
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-7 h-7 rounded-full text-xs font-bold flex items-center justify-center shrink-0 ${
+                  s.active
+                    ? 'bg-brand-coral text-white shadow-xs'
+                    : s.done
+                    ? 'bg-brand-mint/60 text-stone-800'
+                    : 'bg-stone-200 text-stone-500'
+                }`}
+              >
+                {s.done ? '✓' : s.num}
+              </div>
+              <span className={`text-xs font-semibold hidden sm:inline ${s.active ? 'text-stone-900 font-bold' : 'text-stone-500'}`}>
+                {s.label}
+              </span>
+            </div>
+            {idx < 2 && <div className="flex-1 h-0.5 bg-stone-200 mx-3 max-w-[60px]" />}
+          </React.Fragment>
+        ))}
       </div>
       <Form
         form={form}

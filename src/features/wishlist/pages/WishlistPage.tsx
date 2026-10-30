@@ -28,7 +28,7 @@ export const WishlistPage: React.FC = () => {
           </div>
           <h3 className="font-bold text-stone-800 text-lg">Chưa có sản phẩm yêu thích</h3>
           <p className="text-xs text-stone-500 max-w-sm mx-auto">Nhấn vào biểu tượng trái tim để lưu sản phẩm lại xem sau.</p>
-          <Link to="/products" className="inline-flex items-center gap-2 bg-brand-coral hover:bg-[#c95f5f] text-white font-bold px-6 py-3 rounded-full text-xs transition-all shadow-sm">
+          <Link to="/products" className="inline-flex items-center gap-2 bg-[#2B5A50] hover:bg-[#20453D] text-white font-bold px-6 py-3 rounded-full text-xs transition-all shadow-sm">
             Khám Phá Cửa Hàng <RightOutlined style={{ fontSize: 12 }} />
           </Link>
         </div>

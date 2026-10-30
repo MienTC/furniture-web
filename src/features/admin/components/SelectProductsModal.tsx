@@ -16,10 +16,8 @@ import {
   BorderOutlined,
   ClearOutlined,
 } from '@ant-design/icons';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { adminService } from '~/services/v1/admin.service';
-import { ADMIN_QUERY_KEYS } from '~/common/admin-query-key';
+import { useAdminProducts } from '~/features/admin/hooks';
 import { formatVND } from '~/common/utils/formatters';
 
 interface SelectProductsModalProps {
@@ -35,7 +33,6 @@ export const SelectProductsModal: React.FC<SelectProductsModalProps> = ({
   categoryId,
   categoryName,
 }) => {
-  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [catStatusFilter, setCatStatusFilter] = useState<'all' | 'uncategorized' | 'other' | 'current'>('all');
   const [priceFilter, setPriceFilter] = useState<string>('all');
@@ -43,14 +40,10 @@ export const SelectProductsModal: React.FC<SelectProductsModalProps> = ({
   const [sortBy, setSortBy] = useState<string>('newest');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-  // Lấy danh sách sản phẩm để chọn
-  const { data, isLoading } = useQuery({
-    queryKey: ['admin-all-products-for-select'],
-    queryFn: () => adminService.getProducts({ limit: 500 }),
-    enabled: open,
+  // Lấy danh sách sản phẩm để chọn qua hook
+  const { products: allProducts, isLoading, assignProductsToCategory, isAssigning } = useAdminProducts({
+    limit: 500,
   });
-
-  const allProducts = data?.items || [];
 
   // Lọc sản phẩm chi tiết theo các tiêu chí
   const filteredProducts = useMemo(() => {
@@ -106,26 +99,18 @@ export const SelectProductsModal: React.FC<SelectProductsModalProps> = ({
     return result;
   }, [allProducts, search, catStatusFilter, priceFilter, stockFilter, sortBy, categoryId]);
 
-  const addMutation = useMutation({
-    mutationFn: (ids: string[]) => adminService.addProductsToCategory(categoryId, ids),
-    onSuccess: (res) => {
-      toast.success(res || `Đã thêm ${selectedRowKeys.length} sản phẩm vào danh mục`);
-      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.products.list] });
-      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.categories.list] });
-      setSelectedRowKeys([]);
-      onClose();
-    },
-    onError: (err: any) => {
-      toast.error(err.message || 'Lỗi khi thêm sản phẩm vào danh mục');
-    },
-  });
-
-  const handleConfirmAdd = () => {
+  const handleConfirmAdd = async () => {
     if (selectedRowKeys.length === 0) {
       toast.warning('Vui lòng chọn ít nhất 1 sản phẩm');
       return;
     }
-    addMutation.mutate(selectedRowKeys as string[]);
+    try {
+      await assignProductsToCategory({ categoryId, productIds: selectedRowKeys as string[] });
+      setSelectedRowKeys([]);
+      onClose();
+    } catch {
+      // Error is toasted inside useAdminProducts hook
+    }
   };
 
   const handleSelectAllFiltered = () => {
@@ -150,13 +135,18 @@ export const SelectProductsModal: React.FC<SelectProductsModalProps> = ({
       title: 'Ảnh',
       dataIndex: 'images',
       width: 56,
-      render: (imgs: string[]) => (
-        <img
-          src={imgs?.[0] || 'https://via.placeholder.com/60'}
-          alt=""
-          className="size-9 rounded-lg object-cover border border-gray-200"
-        />
-      ),
+      render: (imgs: string[]) =>
+        imgs?.[0] ? (
+          <img
+            src={imgs[0]}
+            alt=""
+            className="size-9 rounded-lg object-cover border border-gray-200"
+          />
+        ) : (
+          <div className="size-9 rounded-lg bg-stone-100 border border-gray-200 flex items-center justify-center text-[10px] text-stone-400">
+            -
+          </div>
+        ),
     },
     {
       title: 'Tên Sản Phẩm & Mã',
@@ -256,9 +246,9 @@ export const SelectProductsModal: React.FC<SelectProductsModalProps> = ({
               type="primary"
               icon={<PlusOutlined />}
               onClick={handleConfirmAdd}
-              loading={addMutation.isPending}
+              loading={isAssigning}
               disabled={selectedRowKeys.length === 0}
-              className="!bg-sky-500 hover:!bg-sky-400 !font-semibold"
+              className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-semibold"
             >
               Gán {selectedRowKeys.length > 0 ? `(${selectedRowKeys.length}) sản phẩm` : ''} vào danh mục
             </Button>

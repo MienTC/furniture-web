@@ -19,7 +19,7 @@ export const useAdminBanners = () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.banners.list] });
     },
     onError: (e: any) => {
-      toast.error(e.message || 'Lỗi khi tạo banner');
+      toast.error(e?.response?.data?.message || e?.message);
     },
   });
 
@@ -30,7 +30,7 @@ export const useAdminBanners = () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.banners.list] });
     },
     onError: (e: any) => {
-      toast.error(e.message || 'Lỗi khi cập nhật banner');
+      toast.error(e?.response?.data?.message || e?.message);
     },
   });
 
@@ -41,7 +41,7 @@ export const useAdminBanners = () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.banners.list] });
     },
     onError: (e: any) => {
-      toast.error(e.message || 'Lỗi khi xóa banner');
+      toast.error(e?.response?.data?.message || e?.message);
     },
   });
 

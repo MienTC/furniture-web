@@ -4,6 +4,7 @@ import { ProductImageModel } from '../models/ProductImage.model.js';
 import { ProductVariantModel } from '../models/ProductVariant.model.js';
 import { ReviewModel } from '../models/Review.model.js';
 import { CategoryModel } from '../models/Category.model.js';
+import { SettingModel } from '../models/Setting.model.js';
 import { generateId } from '../utils/generateId.js';
 import { sendSuccess, sendError } from '../utils/response.js';
 
@@ -22,8 +23,8 @@ export class ProductController {
       price: p.price,
       originalPrice: p.original_price || undefined,
       discountPercent: p.discount_percent || undefined,
-      rating: p.avg_rating || 5.0,
-      reviewCount: p.review_count || 0,
+      rating: reviews && reviews.length > 0 ? Number((reviews.reduce((s, r) => s + (r.rating || 5), 0) / reviews.length).toFixed(1)) : (p.avg_rating || 5.0),
+      reviewCount: reviews && reviews.length > 0 ? reviews.length : (p.review_count || 0),
       inStock: p.in_stock !== false,
       stockQuantity: p.stock_quantity || 0,
       isNew: p.is_new || false,
@@ -54,6 +55,8 @@ export class ProductController {
         materials,
         inStockOnly,
         onSaleOnly,
+        flashsale,
+        ids,
         sortBy,
         page = 1,
         limit = 12,

@@ -7,7 +7,7 @@ import { ProductInfo } from '~/features/products/components/ProductInfo';
 import { ProductActions } from '~/features/products/components/ProductActions';
 import { ProductTabs } from '~/features/products/components/ProductTabs';
 import { ProductCard } from '~/components/ui/ProductCard';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { formatVND } from '~/common/utils/formatters';
 import { useProductDetail, useProducts } from '../hooks/useProduct';
 
 export const ProductDetailPage: React.FC = () => {
@@ -66,7 +66,7 @@ export const ProductDetailPage: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center space-y-4">
         <h2 className="text-2xl font-bold text-stone-800">Không tìm thấy sản phẩm</h2>
-        <Link to="/products" className="inline-block bg-brand-coral hover:bg-[#c95f5f] text-white text-xs font-bold px-6 py-2.5 rounded-lg shadow-sm">Quay lại cửa hàng</Link>
+        <Link to="/products" className="inline-block bg-[#2B5A50] hover:bg-[#20453D] text-white text-xs font-bold px-6 py-2.5 rounded-lg shadow-sm">Quay lại cửa hàng</Link>
       </div>
     );
   }
@@ -76,11 +76,23 @@ export const ProductDetailPage: React.FC = () => {
   const liked       = isWishlisted(product.id);
   const related     = relatedProducts.filter(p => p.id !== product.id).slice(0, 4);
 
+  const finalPrice = selectedVariant?.sale_price || (product.discountPercent ? Math.round(product.price * (1 - product.discountPercent / 100)) : product.price);
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-12">
-      <Link to="/products" className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-600 hover:text-brand-coral">
-        <ArrowLeftOutlined style={{ fontSize: 14 }} /> Quay lại danh sách sản phẩm
-      </Link>
+    <div className="max-w-7xl mx-auto px-4 py-8 space-y-10 pb-20 lg:pb-8">
+      {/* Breadcrumb Navigation */}
+      <nav className="flex items-center gap-2 text-xs text-stone-500 flex-wrap">
+        <Link to="/" className="hover:text-brand-coral transition-colors">Trang chủ</Link>
+        <span>/</span>
+        <Link to="/products" className="hover:text-brand-coral transition-colors">Sản phẩm</Link>
+        <span>/</span>
+        <Link to={`/products?category=${product.categoryId}`} className="hover:text-brand-coral transition-colors font-medium">
+          {product.categoryName}
+        </Link>
+        <span>/</span>
+        <span className="text-stone-900 font-bold truncate max-w-xs">{product.name}</span>
+      </nav>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
         <ProductGallery product={product} activeImage={activeImage} onSelect={setSelectedImage} />
         <div className="space-y-6">
@@ -112,6 +124,35 @@ export const ProductDetailPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Mobile Sticky Action Bar */}
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-stone-200 px-4 py-3 flex items-center justify-between gap-3 lg:hidden shadow-2xl">
+        <div className="min-w-0">
+          <p className="text-xs font-bold text-stone-900 truncate">{product.name}</p>
+          <p className="text-base font-black text-brand-coral tabular-nums">
+            {formatVND(finalPrice)}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => addToCart(product, 1, activeColor, selectedVariant || undefined, selectedVariant?.sale_price)}
+            className="px-3.5 py-2 rounded-xl border border-brand-coral text-brand-coral font-bold text-xs bg-brand-peach/10 cursor-pointer"
+          >
+            Thêm giỏ
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              addToCart(product, 1, activeColor, selectedVariant || undefined, selectedVariant?.sale_price);
+              navigate('/checkout');
+            }}
+            className="px-4 py-2 rounded-xl bg-[#2B5A50] text-white font-bold text-xs shadow-sm hover:bg-[#20453D] cursor-pointer"
+          >
+            Mua ngay
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

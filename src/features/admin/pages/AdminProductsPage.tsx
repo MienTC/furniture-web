@@ -1,50 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Table,
-  Button,
-  Select,
-  Space,
-  Pagination,
-  Popconfirm,
-  Tag,
-  Tooltip,
-} from 'antd';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Table, Button, Space, Tooltip } from 'antd';
 import { useSearchParams } from 'react-router-dom';
 import {
   IconPlus,
   IconEdit,
   IconTrash,
-  IconFilter,
-  IconRotateClockwise,
   IconVideo,
 } from '@tabler/icons-react';
-import { useAdminProducts } from '~/features/admin/hooks';
+import { useAdminProducts, useTableFilters } from '~/features/admin/hooks';
 import { useCategories } from '~/features/products/hooks/useCategory';
 import { formatVND } from '~/common/utils/formatters';
 import UBreadcrumb from '~/components/ui/ubreadcrumb';
-import USearchInput from '~/components/ui/usearch-input';
 import UTag from '~/components/ui/utag';
 import UBadge from '~/components/ui/ubadge';
-import ProductFormModal from '~/features/admin/components/ProductFormModal';
-import type { AdminProductDto } from '~/types/admin.type';
+import UButtonCopy from '~/components/ui/ubutton-copy';
+import UAlertDialog from '~/components/ui/ualert-dialog';
+import {
+  FilterBar,
+  FilterSearch,
+  FilterCategory,
+  FilterSelect,
+  FilterResetButton,
+} from '~/components/common/filters';
+import { ProductModal } from '~/features/admin/components/products';
+import type { AdminProductDto } from '~/types';
+
+const STOCK_OPTIONS = [
+  { value: 'all', label: 'Tất cả kho hàng' },
+  { value: 'in_stock', label: 'Còn hàng' },
+  { value: 'out_of_stock', label: 'Hết hàng' },
+];
+
+const PRICE_OPTIONS = [
+  { value: 'all', label: 'Tất cả mức giá' },
+  { value: 'under_2m', label: 'Dưới 2.000.000₫' },
+  { value: '2m_5m', label: '2.000.000₫ - 5.000.000₫' },
+  { value: '5m_10m', label: '5.000.000₫ - 10.000.000₫' },
+  { value: 'above_10m', label: 'Trên 10.000.000₫' },
+];
 
 export const AdminProductsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlCategoryId = searchParams.get('categoryId') || '';
   const urlEditId = searchParams.get('editId') || '';
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>(urlCategoryId);
-  const [stockFilter, setStockFilter] = useState<string>('all');
-  const [priceFilter, setPriceFilter] = useState<string>('all');
+  const { filters, setFilter, resetFilters, hasActiveFilters } = useTableFilters({
+    categoryId: urlCategoryId,
+    stock: 'all',
+    price: 'all',
+    limit: 8,
+  });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
 
   const { categories } = useCategories();
 
-  // Gọi Hook tập trung
   const {
     products,
     total,
@@ -53,11 +64,12 @@ export const AdminProductsPage: React.FC = () => {
     updateProduct,
     deleteProduct,
     isSubmitting,
+    isDeleting,
   } = useAdminProducts({
-    page: currentPage,
-    limit: 10,
-    search: search || undefined,
-    categoryId: selectedCategory || undefined,
+    page: filters.page,
+    limit: filters.limit,
+    search: filters.search,
+    categoryId: filters.categoryId || undefined,
   });
 
   // Tự động mở modal chỉnh sửa nếu URL có ?editId=...
@@ -95,27 +107,20 @@ export const AdminProductsPage: React.FC = () => {
     }
   };
 
-  const handleResetFilters = () => {
-    setSearch('');
-    setSelectedCategory('');
-    setStockFilter('all');
-    setPriceFilter('all');
-    setCurrentPage(1);
-    setSearchParams({});
-  };
+  // Lọc client-side cho các tiêu chí phụ nếu API backend chưa lọc
+  const filteredProducts = useMemo(() => {
+    return products.filter((p: any) => {
+      if (filters.stock === 'in_stock' && (!p.inStock || p.stockQuantity <= 0)) return false;
+      if (filters.stock === 'out_of_stock' && (p.inStock && p.stockQuantity > 0)) return false;
 
-  // Client-side filtering cho các tiêu chí bổ sung (stock & price)
-  const filteredProducts = products.filter((p: any) => {
-    if (stockFilter === 'in_stock' && (!p.inStock || p.stockQuantity <= 0)) return false;
-    if (stockFilter === 'out_of_stock' && (p.inStock && p.stockQuantity > 0)) return false;
+      if (filters.price === 'under_2m' && p.price >= 2000000) return false;
+      if (filters.price === '2m_5m' && (p.price < 2000000 || p.price > 5000000)) return false;
+      if (filters.price === '5m_10m' && (p.price < 5000000 || p.price > 10000000)) return false;
+      if (filters.price === 'above_10m' && p.price <= 10000000) return false;
 
-    if (priceFilter === 'under_2m' && p.price >= 2000000) return false;
-    if (priceFilter === '2m_5m' && (p.price < 2000000 || p.price > 5000000)) return false;
-    if (priceFilter === '5m_10m' && (p.price < 5000000 || p.price > 10000000)) return false;
-    if (priceFilter === 'above_10m' && p.price <= 10000000) return false;
-
-    return true;
-  });
+      return true;
+    });
+  }, [products, filters.stock, filters.price]);
 
   const columns = [
     {
@@ -123,7 +128,7 @@ export const AdminProductsPage: React.FC = () => {
       dataIndex: 'images',
       width: 75,
       render: (imgs: string[], row: any) => (
-        <div className="relative size-12 rounded-xl overflow-hidden border border-gray-200">
+        <div className="relative size-10 rounded-lg overflow-hidden border border-gray-200">
           {imgs?.[0] ? (
             <img
               src={imgs[0]}
@@ -154,16 +159,19 @@ export const AdminProductsPage: React.FC = () => {
           <button
             type="button"
             onClick={() => handleOpenEdit(row)}
-            className="font-semibold text-gray-900 text-xs hover:text-sky-600 hover:underline text-left cursor-pointer"
+            className="font-semibold text-gray-900 text-xs hover:text-[#2B5A50] hover:underline text-left cursor-pointer"
           >
             {name}
           </button>
-          <div className="flex items-center gap-2 mt-0.5">
+          <div className="flex items-center gap-1.5 mt-0.5">
             <span className="text-[11px] text-gray-400 font-mono">{row.s_ID}</span>
+            <UButtonCopy copyValue={row.s_ID} />
             {row.material && (
-              <span className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.2 rounded">
-                {row.material}
-              </span>
+              <Tooltip title={`Chất liệu: ${row.material}`} placement="topLeft">
+                <span className="text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded ml-1 max-w-[220px] truncate inline-block align-middle cursor-default">
+                  {row.material}
+                </span>
+              </Tooltip>
             )}
           </div>
         </div>
@@ -173,20 +181,20 @@ export const AdminProductsPage: React.FC = () => {
       title: 'Danh Mục',
       dataIndex: 'categoryName',
       width: 140,
-      render: (cat: string) => cat ? <UTag color="sky">{cat}</UTag> : <span className="text-gray-300 text-xs">—</span>,
+      render: (cat: string) => cat ? <UBadge color="blue">{cat}</UBadge> : <span className="text-slate-400 text-xs">-</span>,
     },
     {
       title: 'Giá Bán',
       dataIndex: 'price',
       width: 120,
       render: (price: number) => (
-        <span className="font-bold text-sky-600 text-xs">{formatVND(price)}</span>
+        <span className="font-bold text-[#2B5A50] text-xs">{formatVND(price)}</span>
       ),
     },
     {
       title: 'Tồn Kho',
       dataIndex: 'stockQuantity',
-      width: 85,
+      width: 90,
       render: (qty: number) => (
         <span className="font-semibold text-gray-700 text-xs">{qty} cái</span>
       ),
@@ -194,7 +202,7 @@ export const AdminProductsPage: React.FC = () => {
     {
       title: 'Tình Trạng',
       dataIndex: 'inStock',
-      width: 105,
+      width: 110,
       render: (inStock: boolean, row: any) => (
         <UBadge color={inStock && row.stockQuantity > 0 ? 'green' : 'red'}>
           {inStock && row.stockQuantity > 0 ? 'Còn hàng' : 'Hết hàng'}
@@ -210,34 +218,25 @@ export const AdminProductsPage: React.FC = () => {
             <Button
               size="small"
               type="text"
-              icon={<IconEdit size={16} className="text-gray-500 hover:text-sky-500" />}
+              icon={<IconEdit size={16} className="text-gray-500 hover:text-[#2B5A50]" />}
               onClick={() => handleOpenEdit(record)}
             />
           </Tooltip>
-          <Popconfirm
+          <UAlertDialog
             title="Xác nhận xóa sản phẩm này?"
-            okText="Xóa"
-            cancelText="Hủy"
-            okButtonProps={{ danger: true }}
-            onConfirm={() => deleteProduct(record.id)}
-          >
-            <Tooltip title="Xóa">
-              <Button size="small" type="text" danger icon={<IconTrash size={16} />} />
-            </Tooltip>
-          </Popconfirm>
+            description={`Bạn có chắc chắn muốn xóa sản phẩm "${record.name}" không?`}
+            onDelete={() => deleteProduct(record.id)}
+            loading={isDeleting}
+            iconChildren={<IconTrash size={16} className="text-rose-500" />}
+            titleTooltip="Xóa sản phẩm"
+          />
         </Space>
       ),
     },
   ];
 
-  const hasActiveFilters =
-    Boolean(search) ||
-    Boolean(selectedCategory) ||
-    stockFilter !== 'all' ||
-    priceFilter !== 'all';
-
   return (
-    <div className="flex flex-col gap-5 font-sans">
+    <div className="flex flex-col gap-4 font-sans">
       <UBreadcrumb
         title="Quản Lý Sản Phẩm"
         trailing={
@@ -245,108 +244,77 @@ export const AdminProductsPage: React.FC = () => {
             type="primary"
             icon={<IconPlus size={16} />}
             onClick={handleOpenCreate}
-            className="!bg-sky-500 hover:!bg-sky-400 !font-semibold !shadow-xs"
+            className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-semibold !shadow-xs !h-9 !px-4 !rounded-lg cursor-pointer"
           >
             Thêm sản phẩm mới
           </Button>
         }
       />
 
-      {/* Thanh Bộ Lọc Toàn Diện (Full Filters Bar) */}
-      <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-4 space-y-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="w-64">
-            <USearchInput
-              placeholder="Tìm theo tên sản phẩm..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1);
-              }}
-            />
-          </div>
-
-          <Select
-            placeholder="Lọc theo Danh mục"
-            value={selectedCategory || undefined}
-            onChange={(val) => {
-              setSelectedCategory(val || '');
-              setCurrentPage(1);
-            }}
-            allowClear
-            className="w-48 !h-9"
-          >
-            {categories.map((c) => (
-              <Select.Option key={c.id} value={c.id}>
-                {c.name}
-              </Select.Option>
-            ))}
-          </Select>
-
-          <Select
-            value={stockFilter}
-            onChange={(val) => setStockFilter(val)}
-            className="w-36 !h-9"
-          >
-            <Select.Option value="all">Tất cả kho</Select.Option>
-            <Select.Option value="in_stock">Còn hàng</Select.Option>
-            <Select.Option value="out_of_stock">Hết hàng</Select.Option>
-          </Select>
-
-          <Select
-            value={priceFilter}
-            onChange={(val) => setPriceFilter(val)}
-            className="w-40 !h-9"
-          >
-            <Select.Option value="all">Tất cả mức giá</Select.Option>
-            <Select.Option value="under_2m">Dưới 2.000.000đ</Select.Option>
-            <Select.Option value="2m_5m">2.000.000đ - 5.000.000đ</Select.Option>
-            <Select.Option value="5m_10m">5.000.000đ - 10.000.000đ</Select.Option>
-            <Select.Option value="above_10m">Trên 10.000.000đ</Select.Option>
-          </Select>
-
-          {hasActiveFilters && (
-            <Button
-              type="dashed"
-              icon={<IconRotateClockwise size={14} />}
-              onClick={handleResetFilters}
-              className="!text-xs text-gray-500"
-            >
-              Đặt lại bộ lọc
-            </Button>
-          )}
-
-          <div className="ml-auto text-xs text-gray-400 font-medium">
+      <FilterBar
+        trailing={
+          <div className="text-xs text-gray-400 font-medium">
             Hiển thị <strong>{filteredProducts.length}</strong> / <strong>{total}</strong> sản phẩm
           </div>
-        </div>
-      </div>
+        }
+      >
+        <FilterSearch
+          value={filters.search || ''}
+          onChange={(val) => setFilter('search', val)}
+          placeholder="Tìm theo tên sản phẩm..."
+          className="w-64"
+        />
 
-      {/* Bảng Danh Sách Sản Phẩm */}
-      <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-5">
+        <FilterCategory
+          value={filters.categoryId}
+          onChange={(val) => setFilter('categoryId', val)}
+          className="w-48"
+        />
+
+        <FilterSelect
+          value={filters.stock}
+          onChange={(val) => setFilter('stock', val)}
+          options={STOCK_OPTIONS}
+          className="w-36"
+        />
+
+        <FilterSelect
+          value={filters.price}
+          onChange={(val) => setFilter('price', val)}
+          options={PRICE_OPTIONS}
+          className="w-44"
+        />
+
+        {hasActiveFilters && (
+          <FilterResetButton onReset={resetFilters} />
+        )}
+      </FilterBar>
+
+      <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-4 flex flex-col">
         <Table
           dataSource={filteredProducts}
           rowKey="id"
           columns={columns}
           loading={isLoading}
-          pagination={false}
           size="middle"
+          pagination={{
+            current: filters.page || 1,
+            pageSize: filters.limit || 8,
+            total: total,
+            showSizeChanger: true,
+            pageSizeOptions: ['8', '15', '30'],
+            showTotal: (t) => `Tổng số ${t.toLocaleString()} sản phẩm`,
+            onChange: (page, pageSize) => {
+              setFilter('page', page);
+              if (pageSize && pageSize !== filters.limit) {
+                setFilter('limit', pageSize);
+              }
+            },
+          }}
         />
-
-        <div className="flex justify-end mt-4 pt-4 border-t border-gray-100">
-          <Pagination
-            current={currentPage}
-            pageSize={10}
-            total={total}
-            onChange={setCurrentPage}
-            showSizeChanger={false}
-            showTotal={(t) => `Tổng số ${t} sản phẩm`}
-          />
-        </div>
       </div>
 
-      {/* Modal Chỉnh Sửa / Tạo Mới Chuẩn Phong Cách Tev Admin & Phaoloweb */}
-      <ProductFormModal
+      <ProductModal
         open={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
@@ -364,3 +332,5 @@ export const AdminProductsPage: React.FC = () => {
     </div>
   );
 };
+
+export default AdminProductsPage;

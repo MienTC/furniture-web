@@ -14,10 +14,10 @@ import { useAdminStats } from '~/features/admin/hooks';
 import { formatVND } from '~/common/utils/formatters';
 import UBreadcrumb from '~/components/ui/ubreadcrumb';
 import UBadge from '~/components/ui/ubadge';
-import UTag from '~/components/ui/utag';
+import UButtonCopy from '~/components/ui/ubutton-copy';
 import RevenueChart from '~/features/admin/components/dashboard/RevenueChart';
 import OrderStatusPieChart from '~/features/admin/components/dashboard/OrderStatusPieChart';
-import CategoryBarChart from '~/features/admin/components/dashboard/CategoryBarChart';
+import TopProductsChart from '~/features/admin/components/dashboard/TopProductsChart';
 
 export const AdminDashboardPage: React.FC = () => {
   const { stats, isLoading } = useAdminStats();
@@ -117,12 +117,12 @@ export const AdminDashboardPage: React.FC = () => {
           <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-5 h-full">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <IconPackage size={18} className="text-sky-500" />
-                <h3 className="font-semibold text-gray-800 text-sm">Phân bổ Sản phẩm theo Danh mục</h3>
+                <IconPackage size={18} className="text-[#2B5A50]" />
+                <h3 className="font-semibold text-gray-800 text-sm">Top Sản Phẩm Bán Chạy Nhất</h3>
               </div>
-              <UBadge color="orange">Danh mục hàng</UBadge>
+              <UBadge color="green">Doanh số cao</UBadge>
             </div>
-            <CategoryBarChart data={stats?.categoryDistribution || []} />
+            <TopProductsChart data={stats?.topProducts || []} />
           </div>
         </Col>
 
@@ -145,7 +145,12 @@ export const AdminDashboardPage: React.FC = () => {
                 {
                   title: 'Mã đơn',
                   dataIndex: 's_order_id',
-                  render: (id: string) => <span className="font-mono text-xs font-semibold text-gray-700">{id}</span>,
+                  render: (id: string) => (
+                    <div className="flex items-center gap-1.5 font-mono text-xs font-semibold text-gray-700">
+                      <span>{id}</span>
+                      <UButtonCopy copyValue={id} />
+                    </div>
+                  ),
                 },
                 {
                   title: 'Khách hàng',
@@ -168,13 +173,13 @@ export const AdminDashboardPage: React.FC = () => {
                   render: (status: string) => {
                     const statusMap: Record<string, { label: string; color: any }> = {
                       pending: { label: 'Chờ duyệt', color: 'orange' },
-                      processing: { label: 'Đang xử lý', color: 'blue' },
-                      shipping: { label: 'Đang giao', color: 'cyan' },
+                      processing: { label: 'Đang xử lý', color: 'indigo' },
+                      shipping: { label: 'Đang giao', color: 'blue' },
                       completed: { label: 'Hoàn thành', color: 'green' },
                       cancelled: { label: 'Đã hủy', color: 'red' },
                     };
-                    const cur = statusMap[status] || { label: status, color: 'default' };
-                    return <UTag color={cur.color}>{cur.label}</UTag>;
+                    const cur = statusMap[status] || { label: status, color: 'gray' };
+                    return <UBadge color={cur.color}>{cur.label}</UBadge>;
                   },
                 },
               ]}

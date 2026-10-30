@@ -58,7 +58,7 @@ export const ProductActions: React.FC<Props> = ({
         <button
           type="button"
           onClick={onBuyNow}
-          className="w-full bg-brand-coral hover:bg-[#c95f5f] text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all text-sm cursor-pointer"
+          className="w-full bg-[#2B5A50] hover:bg-[#20453D] text-white font-bold py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all text-sm cursor-pointer"
         >
           Mua Ngay
         </button>

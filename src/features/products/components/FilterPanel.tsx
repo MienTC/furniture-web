@@ -65,13 +65,13 @@ export const FilterPanel: React.FC<Props> = ({
       {/* Category Section */}
       <div>
         <div className="flex items-center justify-between mb-3 pb-2 border-b border-stone-200">
-          <h4 className="font-bold text-stone-900 text-sm tracking-wide">
+          <h2 className="font-bold text-stone-900 text-sm tracking-wide">
             Danh Mục Sản Phẩm
-          </h4>
+          </h2>
           {filterParams.categoryId && (
             <button
               onClick={() => onChange({ categoryId: '' })}
-              className="text-[11px] text-brand-coral hover:underline font-medium cursor-pointer"
+              className="text-xs text-brand-coral hover:underline font-semibold cursor-pointer"
             >
               Xem tất cả
             </button>
@@ -82,18 +82,18 @@ export const FilterPanel: React.FC<Props> = ({
           {/* All products button */}
           <button
             onClick={() => onChange({ categoryId: '' })}
-            className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all flex items-center justify-between cursor-pointer ${
+            className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition-colors flex items-center justify-between cursor-pointer ${
               !filterParams.categoryId
                 ? 'bg-brand-coral text-white shadow-xs'
-                : 'text-stone-700 hover:bg-stone-100'
+                : 'text-stone-700 hover:bg-stone-100 hover:text-brand-coral'
             }`}
           >
             <span>Tất cả sản phẩm</span>
             <span
-              className={`text-[10px] px-2 py-0.5 rounded-full ${
+              className={`text-xs px-2 py-0.5 rounded-full ${
                 !filterParams.categoryId
-                  ? 'bg-brand-peach text-stone-900 font-bold'
-                  : 'bg-stone-200 text-stone-600'
+                  ? 'bg-white/25 text-white font-bold'
+                  : 'bg-stone-100 text-stone-600 font-medium'
               }`}
             >
               {totalCount}
@@ -111,10 +111,10 @@ export const FilterPanel: React.FC<Props> = ({
               <div key={root.id} className="rounded-lg overflow-hidden">
                 <div
                   onClick={() => onChange({ categoryId: root.id })}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
+                  className={`w-full text-left px-3 py-2 rounded-lg text-xs font-bold transition-colors flex items-center justify-between cursor-pointer ${
                     isRootSelected
                       ? 'bg-brand-coral text-white shadow-xs'
-                      : 'text-stone-800 hover:bg-stone-100'
+                      : 'text-stone-800 hover:bg-stone-100 hover:text-brand-coral'
                   }`}
                 >
                   <div className="flex items-center gap-1.5 truncate pr-2">
@@ -132,10 +132,10 @@ export const FilterPanel: React.FC<Props> = ({
                   </div>
                   {rootCount > 0 && (
                     <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded shrink-0 font-mono ${
+                      className={`text-xs px-2 py-0.5 rounded shrink-0 font-mono ${
                         isRootSelected
-                          ? 'bg-brand-peach text-stone-900 font-bold'
-                          : 'bg-stone-100 text-stone-500'
+                          ? 'bg-white/25 text-white font-bold'
+                          : 'bg-stone-100 text-stone-600 font-medium'
                       }`}
                     >
                       {rootCount}
@@ -156,7 +156,7 @@ export const FilterPanel: React.FC<Props> = ({
                         <div key={sub.id}>
                           <div
                             onClick={() => onChange({ categoryId: sub.id })}
-                            className={`w-full text-left px-2.5 py-1.5 rounded-md text-[11px] font-medium transition-all flex items-center justify-between cursor-pointer ${
+                            className={`w-full text-left px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center justify-between cursor-pointer ${
                               isSubSelected
                                 ? 'bg-brand-coral text-white font-bold shadow-2xs'
                                 : 'text-stone-700 hover:bg-stone-100'
@@ -177,10 +177,10 @@ export const FilterPanel: React.FC<Props> = ({
                             </div>
                             {subCount > 0 && (
                               <span
-                                className={`text-[9px] px-1.5 py-0.2 rounded font-mono shrink-0 ${
+                                className={`text-xs px-1.5 py-0.5 rounded font-mono shrink-0 ${
                                   isSubSelected
-                                    ? 'bg-brand-peach text-stone-900 font-bold'
-                                    : 'bg-stone-100 text-stone-500'
+                                    ? 'bg-white/25 text-white font-bold'
+                                    : 'bg-stone-100 text-stone-600'
                                 }`}
                               >
                                 {subCount}
@@ -198,15 +198,15 @@ export const FilterPanel: React.FC<Props> = ({
                                   <button
                                     key={lv3.id}
                                     onClick={() => onChange({ categoryId: lv3.id })}
-                                    className={`w-full text-left px-2 py-1 rounded text-[10px] transition-all flex items-center justify-between cursor-pointer ${
+                                    className={`w-full text-left px-2 py-1 rounded text-xs transition-colors flex items-center justify-between cursor-pointer ${
                                       isLv3Selected
-                                        ? 'bg-brand-peach/80 text-stone-900 font-bold'
-                                        : 'text-stone-600 hover:text-brand-coral hover:bg-brand-peach/20'
+                                        ? 'bg-[#EDF5F2] text-brand-coral font-bold'
+                                        : 'text-stone-700 hover:text-brand-coral hover:bg-[#EDF5F2]'
                                     }`}
                                   >
                                     <span className="truncate">{lv3.name}</span>
                                     {lv3Count > 0 && (
-                                      <span className="font-mono text-[9px] opacity-75">
+                                      <span className="font-mono text-xs opacity-85">
                                         {lv3Count}
                                       </span>
                                     )}
@@ -228,7 +228,7 @@ export const FilterPanel: React.FC<Props> = ({
 
       {/* Price Slider */}
       <div className="pt-4 border-t border-stone-200">
-        <h4 className="font-bold text-stone-900 text-sm mb-2">Khoảng Giá (VND)</h4>
+        <h2 className="font-bold text-stone-900 text-sm mb-2">Khoảng Giá (VND)</h2>
         <div className="px-2">
           <Slider
             range
@@ -248,7 +248,7 @@ export const FilterPanel: React.FC<Props> = ({
 
       {/* Material Options */}
       <div className="pt-4 border-t border-stone-200">
-        <h4 className="font-bold text-stone-900 text-sm mb-3">Chất Liệu</h4>
+        <h2 className="font-bold text-stone-900 text-sm mb-3">Chất Liệu</h2>
         <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
           {MATERIAL_OPTIONS.map((mat) => (
             <label

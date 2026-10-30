@@ -15,10 +15,21 @@ interface UAvatarProps extends AvatarProps {
   src?: string;
 }
 
-function UAvatar({ nickname = "Unknown", src, ...props }: UAvatarProps) {
+function UAvatar({ nickname = "", src, style, ...props }: UAvatarProps) {
+  const initials = getInitials(nickname);
   return (
-    <Avatar alt={`@${nickname}`} src={src} {...props}>
-      {getInitials(nickname)}
+    <Avatar
+      src={src || undefined}
+      style={{
+        backgroundColor: src ? undefined : '#2B5A50',
+        color: '#ffffff',
+        fontWeight: 600,
+        fontSize: typeof props.size === 'number' ? Math.max(11, Math.round(props.size / 2.6)) : 12,
+        ...style,
+      }}
+      {...props}
+    >
+      {initials}
     </Avatar>
   );
 }

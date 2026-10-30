@@ -32,7 +32,10 @@ adminRouter.delete('/products/:id', AdminController.deleteProduct);
  */
 adminRouter.get('/orders', AdminController.getOrders);
 adminRouter.post('/orders', AdminController.createOrder);
+adminRouter.get('/orders/:id', AdminController.getOrderDetail);
+adminRouter.put('/orders/:id', AdminController.updateOrder);
 adminRouter.patch('/orders/:id/status', validateBody(updateOrderStatusSchema), AdminController.updateOrderStatus);
+adminRouter.post('/mock-orders', AdminController.seedMockOrders);
 
 /**
  * Quản lý Danh mục
@@ -66,6 +69,7 @@ adminRouter.get('/users/:id/orders', AdminController.getUserOrders);
  */
 adminRouter.get('/vouchers', AdminController.getVouchers);
 adminRouter.post('/vouchers', AdminController.createVoucher);
+adminRouter.put('/vouchers/:id', AdminController.updateVoucher);
 adminRouter.delete('/vouchers/:id', AdminController.deleteVoucher);
 
 /**
@@ -73,6 +77,7 @@ adminRouter.delete('/vouchers/:id', AdminController.deleteVoucher);
  */
 adminRouter.get('/reviews', AdminController.getReviews);
 adminRouter.patch('/reviews/:id/reply', AdminController.replyReview);
+adminRouter.patch('/reviews/:id/toggle-status', AdminController.toggleReviewStatus);
 adminRouter.delete('/reviews/:id', AdminController.deleteReview);
 
 /**
@@ -80,5 +85,11 @@ adminRouter.delete('/reviews/:id', AdminController.deleteReview);
  */
 adminRouter.get('/contact-settings', AdminController.getContactSettings);
 adminRouter.put('/contact-settings', AdminController.updateContactSettings);
+
+/**
+ * Quản lý Mẫu hóa đơn in ấn A4
+ */
+adminRouter.get('/invoice-settings', AdminController.getInvoiceSettings);
+adminRouter.put('/invoice-settings', AdminController.updateInvoiceSettings);
 
 export default adminRouter;

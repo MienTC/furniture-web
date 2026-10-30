@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { RightOutlined } from '@ant-design/icons';
+import { RightOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import type { IFShowcaseSection } from '~/types';
 
 export const ShowcaseSection: React.FC<{ showcase?: IFShowcaseSection | null }> = ({ showcase }) => {
@@ -16,22 +16,28 @@ export const ShowcaseSection: React.FC<{ showcase?: IFShowcaseSection | null }> 
 
   return (
     <section className="max-w-7xl mx-auto px-4">
-      <div className="bg-stone-900 rounded-3xl overflow-hidden border border-brand-coral/30 text-white grid grid-cols-1 lg:grid-cols-2 items-center shadow-xl">
+      {/* Banner phong cách Nordic Warm Sand & Emerald Luxury (Không dùng khối đen/rêu xì tối tăm) */}
+      <div className="bg-gradient-to-br from-[#F6F1E9] via-[#EFE8DC] to-[#E6DC Flora, #E5DAC8] rounded-3xl overflow-hidden border border-[#E2D7C7] text-[#1A2421] grid grid-cols-1 lg:grid-cols-2 items-center shadow-lg">
         <div className="p-8 sm:p-14 space-y-6">
           {badgeText && (
             <div className="flex flex-wrap gap-2">
-              <span className="bg-brand-coral text-white text-[11px] font-bold px-3.5 py-1 rounded-full tracking-wide shadow-xs">
+              <span
+                style={{ backgroundColor: '#C88A58', color: '#ffffff' }}
+                className="text-[11px] font-bold px-3.5 py-1 rounded-full tracking-wider shadow-xs uppercase inline-block"
+              >
                 {badgeText}
               </span>
             </div>
           )}
 
           {showcase.title && (
-            <h2 className="text-3xl sm:text-4xl font-bold leading-snug">{showcase.title}</h2>
+            <h2 className="text-2xl sm:text-4xl font-extrabold leading-tight text-[#1A2421] tracking-tight">
+              {showcase.title}
+            </h2>
           )}
 
           {(showcase.description || (showcase as any).subtitle) && (
-            <p className="text-stone-300 text-sm leading-relaxed font-light">
+            <p className="text-[#55605B] text-xs sm:text-sm leading-relaxed font-normal">
               {showcase.description || (showcase as any).subtitle}
             </p>
           )}
@@ -41,9 +47,9 @@ export const ShowcaseSection: React.FC<{ showcase?: IFShowcaseSection | null }> 
               {showcase.highlights.map((item, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs text-stone-200"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 border border-[#DCD1C0] text-xs font-medium text-[#2B3832] shadow-2xs"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-coral" />
+                  <CheckCircleOutlined className="text-[#C88A58]" style={{ fontSize: 13, color: '#C88A58' }} />
                   <span>{item}</span>
                 </div>
               ))}
@@ -51,19 +57,20 @@ export const ShowcaseSection: React.FC<{ showcase?: IFShowcaseSection | null }> 
           )}
 
           {ctaLink && (
-            <div>
+            <div className="pt-2">
               <Link
                 to={ctaLink}
-                className="bg-brand-coral hover:bg-[#c95f5f] text-white font-bold px-7 py-3.5 rounded-full text-xs inline-flex items-center gap-2 transition-all shadow-md hover:shadow-lg cursor-pointer"
+                style={{ backgroundColor: '#2B5A50', color: '#ffffff' }}
+                className="hover:!bg-[#1E433B] font-bold px-8 py-3.5 rounded-full text-xs inline-flex items-center gap-2.5 transition-all shadow-md hover:shadow-lg cursor-pointer text-white no-underline group"
               >
-                <span>{ctaLabel}</span>
-                <RightOutlined style={{ fontSize: 12 }} />
+                <span className="text-white font-bold text-xs tracking-wide">{ctaLabel}</span>
+                <RightOutlined style={{ fontSize: 11, color: '#ffffff' }} className="transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
           )}
         </div>
 
-        <div className="relative h-80 lg:h-full min-h-[350px]">
+        <div className="relative h-80 lg:h-full min-h-[380px] bg-stone-100">
           {imageUrl && (
             <img
               src={imageUrl}

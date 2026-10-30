@@ -123,7 +123,7 @@ export const BankTransferBox: React.FC<Props> = ({ orderId, totalAmount }) => {
             </div>
             <button
               onClick={() => copyToClipboard(accountNumber, 'Số tài khoản')}
-              className="px-2.5 py-1 text-xs font-semibold bg-brand-coral text-white rounded-lg hover:bg-[#c95f5f] flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1 text-xs font-semibold bg-[#2B5A50] text-white rounded-lg hover:bg-[#20453D] flex items-center gap-1 cursor-pointer"
             >
               {copiedField === 'Số tài khoản' ? <CheckOutlined style={{ fontSize: 13 }} /> : <CopyOutlined style={{ fontSize: 13 }} />}
               <span>{copiedField === 'Số tài khoản' ? 'Đã chép' : 'Sao chép'}</span>

@@ -2,9 +2,9 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { adminService } from '~/services/v1/admin.service';
 import { ADMIN_QUERY_KEYS } from '~/common/admin-query-key';
-import type { AdminProductDto } from '~/types/admin.type';
+import type { AdminProductDto } from '~/types';
 
-interface UseAdminProductsParams {
+export interface UseAdminProductsParams {
   page?: number;
   limit?: number;
   search?: string;
@@ -26,7 +26,7 @@ export const useAdminProducts = (params?: UseAdminProductsParams) => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.products.list] });
     },
     onError: (err: any) => {
-      toast.error(err.message || 'Lỗi khi tạo sản phẩm');
+      toast.error(err?.response?.data?.message || err?.message);
     },
   });
 
@@ -38,7 +38,7 @@ export const useAdminProducts = (params?: UseAdminProductsParams) => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.products.list] });
     },
     onError: (err: any) => {
-      toast.error(err.message || 'Lỗi khi cập nhật sản phẩm');
+      toast.error(err?.response?.data?.message || err?.message);
     },
   });
 
@@ -49,7 +49,33 @@ export const useAdminProducts = (params?: UseAdminProductsParams) => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.products.list] });
     },
     onError: (err: any) => {
-      toast.error(err.message || 'Lỗi khi xóa sản phẩm');
+      toast.error(err?.response?.data?.message || err?.message);
+    },
+  });
+
+  const { mutateAsync: assignProductsToCategory, isPending: isAssigning } = useMutation({
+    mutationFn: ({ categoryId, productIds }: { categoryId: string; productIds: string[] }) =>
+      adminService.assignProductsToCategory(categoryId, productIds),
+    onSuccess: () => {
+      toast.success('Đã thêm sản phẩm vào danh mục');
+      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.products.list] });
+      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.categories.list] });
+    },
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.message || err?.message);
+    },
+  });
+
+  const { mutateAsync: removeProductsFromCategory, isPending: isRemoving } = useMutation({
+    mutationFn: ({ categoryId, productIds }: { categoryId: string; productIds: string[] }) =>
+      adminService.removeProductsFromCategory(categoryId, productIds),
+    onSuccess: () => {
+      toast.success('Đã gỡ sản phẩm khỏi danh mục');
+      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.products.list] });
+      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.categories.list] });
+    },
+    onError: (err: any) => {
+      toast.error(err?.response?.data?.message || err?.message);
     },
   });
 
@@ -62,6 +88,10 @@ export const useAdminProducts = (params?: UseAdminProductsParams) => {
     createProduct,
     updateProduct,
     deleteProduct,
+    assignProductsToCategory,
+    isAssigning,
+    removeProductsFromCategory,
+    isRemoving,
     isSubmitting: isCreating || isUpdating,
     isDeleting,
   };

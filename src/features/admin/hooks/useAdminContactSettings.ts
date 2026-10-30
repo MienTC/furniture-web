@@ -21,7 +21,7 @@ export const useAdminContactSettings = () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.contact.settings] });
     },
     onError: (e: any) => {
-      toast.error(e.message || 'Lỗi khi lưu cấu hình liên hệ');
+      toast.error(e?.response?.data?.message || e?.message);
     },
   });
 

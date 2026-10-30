@@ -25,14 +25,14 @@ export const OrderPreview: React.FC<Props> = ({ cart, subtotal, discountAmount, 
     </div>
     <div className="pt-4 border-t border-stone-200 space-y-2 text-xs text-stone-700">
       <div className="flex justify-between"><span>Tạm tính:</span><span>{formatVND(subtotal)}</span></div>
-      {discountAmount > 0 && <div className="flex justify-between text-brand-coral"><span>Giảm giá:</span><span className="font-bold">-{formatVND(discountAmount)}</span></div>}
+      {discountAmount > 0 && <div className="flex justify-between text-[#C88A58]"><span>Giảm giá:</span><span className="font-bold">-{formatVND(discountAmount)}</span></div>}
       <div className="flex justify-between"><span>Phí vận chuyển:</span><span><strong className="text-emerald-600 font-bold">MIỄN PHÍ TOÀN QUỐC</strong></span></div>
       <div className="pt-3 border-t border-stone-200 flex justify-between items-baseline">
         <span className="font-bold text-stone-900 text-sm">Tổng cộng:</span>
-        <span className="text-2xl font-bold text-brand-coral">{formatVND(totalAmount)}</span>
+        <span className="text-2xl font-bold text-[#2B5A50]">{formatVND(totalAmount)}</span>
       </div>
     </div>
-    <Button type="primary" htmlType="submit" loading={submitting} block size="large" className="!bg-brand-coral hover:!bg-[#c95f5f] font-bold text-xs !rounded-xl !h-12 uppercase tracking-wider cursor-pointer">
+    <Button type="primary" htmlType="submit" loading={submitting} block size="large" className="!bg-[#2B5A50] hover:!bg-[#20453D] font-bold text-xs !rounded-xl !h-12 uppercase tracking-wider cursor-pointer">
       Xác Nhận Đặt Hàng Ngay
     </Button>
   </div>

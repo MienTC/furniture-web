@@ -6,12 +6,25 @@ import { FreeShippingBar } from '~/features/cart/components/FreeShippingBar';
 import { VoucherBox } from '~/features/cart/components/VoucherBox';
 import { CartOrderSummary } from '~/features/cart/components/CartOrderSummary';
 import { ShoppingOutlined, DeleteOutlined, RightOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { Modal } from 'antd';
 import { useVouchers } from '~/features/vouchers/hooks/useVoucher';
 
 export const CartPage: React.FC = () => {
   const navigate = useNavigate();
   const { vouchers } = useVouchers();
   const { cart, removeFromCart, updateQuantity, clearCart, subtotal, appliedVoucher, discountAmount, applyVoucher, removeVoucher, shippingFee, totalAmount } = useCart();
+
+  const handleClearAll = () => {
+    Modal.confirm({
+      title: 'Xóa toàn bộ giỏ hàng?',
+      content: 'Tất cả sản phẩm đã chọn sẽ bị xóa khỏi giỏ hàng. Bạn có chắc chắn muốn tiếp tục?',
+      okText: 'Xác nhận xóa',
+      okType: 'danger',
+      cancelText: 'Hủy bỏ',
+      centered: true,
+      onOk: () => clearCart(),
+    });
+  };
 
   if (cart.length === 0) {
     return (
@@ -23,7 +36,7 @@ export const CartPage: React.FC = () => {
           <h2 className="text-2xl font-bold text-stone-900">Giỏ hàng của bạn đang trống</h2>
           <p className="text-xs text-stone-500 max-w-sm mx-auto">Chưa có sản phẩm nào. Hãy khám phá bộ sưu tập của chúng tôi!</p>
         </div>
-        <Link to="/products" className="inline-flex items-center gap-2 bg-brand-coral hover:bg-[#c95f5f] text-white font-bold px-8 py-3.5 rounded-full text-xs shadow-md transition-all">
+        <Link to="/products" className="inline-flex items-center gap-2 bg-[#2B5A50] hover:bg-[#20453D] text-white font-bold px-8 py-3.5 rounded-full text-xs shadow-md transition-colors">
           Khám Phá Cửa Hàng <RightOutlined style={{ fontSize: 13 }} />
         </Link>
       </div>
@@ -34,10 +47,10 @@ export const CartPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
       <div className="flex items-center justify-between border-b border-stone-200 pb-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-stone-900">Giỏ Hàng Của Bạn</h1>
+          <h1 className="text-2xl sm:text-3xl font-black text-stone-900">Giỏ Hàng Của Bạn</h1>
           <p className="text-xs text-stone-500">Đang có {cart.length} sản phẩm được chọn</p>
         </div>
-        <button onClick={clearCart} className="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1 cursor-pointer">
+        <button onClick={handleClearAll} className="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1 cursor-pointer">
           <DeleteOutlined style={{ fontSize: 14 }} /> Xóa toàn bộ
         </button>
       </div>

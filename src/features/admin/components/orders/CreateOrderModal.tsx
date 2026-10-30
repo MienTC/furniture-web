@@ -25,7 +25,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
       onCancel={onCancel}
       title={
         <div className="flex items-center gap-2 text-stone-800 text-base font-bold pb-2 border-b border-stone-100">
-          <ShoppingOutlined className="text-brand-coral" />
+          <ShoppingOutlined className="text-[#2B5A50]" />
           <span>Tạo Đơn Hàng Mới (Cho Khách Quen / Đặt Ngoại Tuyến)</span>
         </div>
       }
@@ -40,7 +40,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
           form={formId}
           htmlType="submit"
           loading={loading}
-          className="!bg-brand-coral hover:!bg-[#c95f5f] !rounded-lg !font-semibold cursor-pointer"
+          className="!bg-[#2B5A50] hover:!bg-[#20453D] !rounded-lg !font-semibold cursor-pointer"
         >
           Xác Nhận Tạo Đơn
         </Button>,
@@ -48,7 +48,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
       centered
       destroyOnClose
     >
-      <div className="pt-3 max-h-[75vh] overflow-y-auto pr-1">
+      <div className="pt-3 max-h-[68vh] overflow-y-auto pr-1 custom-scrollbar">
         <CreateOrderForm id={formId} onSubmit={onSubmit} />
       </div>
     </Modal>

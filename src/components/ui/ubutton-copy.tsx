@@ -3,17 +3,19 @@ import { Button, Tooltip } from "antd";
 import { useState } from "react";
 
 type Props = {
-  value: string;
+  value?: string;
+  copyValue?: string;
   timeout?: number;
   size?: number;
 };
 
-const UCopyButton = ({ value, timeout = 2000, size = 20 }: Props) => {
+const UCopyButton = ({ value, copyValue, timeout = 2000, size = 16 }: Props) => {
   const [copied, setCopied] = useState(false);
+  const textToCopy = copyValue || value || "";
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(value);
+      await navigator.clipboard.writeText(textToCopy);
       setCopied(true);
       setTimeout(() => setCopied(false), timeout);
     } catch (err) {

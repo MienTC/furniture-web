@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from 'antd';
 import { PlusOutlined, AlertOutlined } from '@ant-design/icons';
 import { useAdminOrders, useTableFilters } from '~/features/admin/hooks';
@@ -14,7 +14,6 @@ import {
   FilterDateRange,
   FilterResetButton,
 } from '~/components/common/filters';
-import { TablePagination } from '~/components/shared/TablePagination';
 import {
   OrderUrgentAlert,
   OrdersTable,
@@ -26,6 +25,7 @@ export const AdminOrdersPage: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { filters, setFilter, resetFilters, hasActiveFilters } = useTableFilters({
     paymentStatus: 'all',
+    limit: 8,
   });
 
   const {
@@ -46,12 +46,14 @@ export const AdminOrdersPage: React.FC = () => {
     search: filters.search,
   });
 
-  const filteredOrders = orders.filter((ord: any) => {
-    if (filters.paymentStatus !== 'all' && ord.payment_status !== filters.paymentStatus) {
-      return false;
-    }
-    return true;
-  });
+  const filteredOrders = useMemo(() => {
+    return orders.filter((ord: any) => {
+      if (filters.paymentStatus !== 'all' && ord.payment_status !== filters.paymentStatus) {
+        return false;
+      }
+      return true;
+    });
+  }, [orders, filters.paymentStatus]);
 
   const handleCreateOrderSubmit = async (payload: AdminCreateOrderPayload) => {
     await createOrder(payload);
@@ -64,7 +66,7 @@ export const AdminOrdersPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-5 font-sans w-full min-h-full pb-16">
+    <div className="flex flex-col gap-4 font-sans">
       <UBreadcrumb
         title="Quản Lý Đơn Hàng"
         trailing={
@@ -72,7 +74,7 @@ export const AdminOrdersPage: React.FC = () => {
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => setIsCreateModalOpen(true)}
-            className="!bg-brand-coral hover:!bg-[#c95f5f] !font-bold !h-10 !px-5 !rounded-lg !shadow-xs cursor-pointer"
+            className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-bold !h-9 !px-4 !rounded-lg !shadow-xs cursor-pointer"
           >
             + Tạo đơn hàng mới
           </Button>
@@ -142,19 +144,25 @@ export const AdminOrdersPage: React.FC = () => {
         </div>
       </FilterBar>
 
-      <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-5 w-full">
+      <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-4 flex flex-col w-full">
         <OrdersTable
           orders={filteredOrders}
           isLoading={isLoading}
           onUpdateStatus={(id, status) => updateOrderStatus({ id, status })}
-        />
-
-        <TablePagination
-          current={filters.page || 1}
-          pageSize={filters.limit || 10}
-          total={total}
-          onChange={(page) => setFilter('page', page)}
-          itemUnit="đơn hàng"
+          pagination={{
+            current: filters.page || 1,
+            pageSize: filters.limit || 8,
+            total: total,
+            showSizeChanger: true,
+            pageSizeOptions: ['8', '15', '30'],
+            showTotal: (t: number) => `Tổng số ${t.toLocaleString()} đơn hàng`,
+            onChange: (page: number, pageSize: number) => {
+              setFilter('page', page);
+              if (pageSize && pageSize !== filters.limit) {
+                setFilter('limit', pageSize);
+              }
+            },
+          }}
         />
       </div>
 

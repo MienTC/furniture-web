@@ -1,24 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import instanceBE from '~/services/v1/instance';
-import type { ResponseAPI } from '~/types';
-
-export interface FeaturedReview {
-  id: string;
-  name: string;
-  role: string;
-  avatar?: string;
-  content: string;
-  rating: number;
-  product: string;
-}
+import { reviewService } from '~/services/v1/review.service';
+import type { FeaturedReview } from '~/types';
 
 export const useFeaturedReviews = () => {
   return useQuery<FeaturedReview[]>({
     queryKey: ['featuredReviews'],
-    queryFn: async () => {
-      const res = await instanceBE.get<any, ResponseAPI<FeaturedReview[]>>('/reviews/featured');
-      return res.data || [];
-    },
+    queryFn: () => reviewService.fetchFeaturedReviews(),
     staleTime: 5 * 60 * 1000,
   });
 };

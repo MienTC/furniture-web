@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Tag, Image } from "antd";
+import React, { useState, useEffect } from "react";
+import { Image } from "antd";
 import { LeftOutlined, RightOutlined, ExpandOutlined } from "@ant-design/icons";
 import type { Product } from "~/types";
 
@@ -27,7 +27,7 @@ export const ProductGallery: React.FC<Props> = ({
     }
   }, [activeImage, images]);
 
-  // Auto-slide effect (every 3.5 seconds)
+  // Auto-slide effect (every 4 seconds)
   useEffect(() => {
     if (images.length <= 1 || isHovered || previewVisible) return;
 
@@ -37,7 +37,7 @@ export const ProductGallery: React.FC<Props> = ({
         onSelect(images[next]);
         return next;
       });
-    }, 3500);
+    }, 4000);
 
     return () => clearInterval(timer);
   }, [images, isHovered, previewVisible, onSelect]);
@@ -60,25 +60,22 @@ export const ProductGallery: React.FC<Props> = ({
 
   return (
     <div className="space-y-4">
-      {/* Main Image Container */}
+      {/* Main Image Container: Chuẩn tỷ lệ 1:1 vuông khớp ảnh gốc 2000x2000, tràn viền không bị lọt thỏm */}
       <div
-        className="aspect-square rounded-3xl overflow-hidden bg-white border border-stone-200/80 shadow-sm relative flex items-center justify-center group cursor-pointer"
+        className="w-full aspect-square rounded-2xl overflow-hidden bg-[#F4F6F5] border border-[#E5EAE7] shadow-sm relative group cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={() => setPreviewVisible(true)}
       >
-        {/* Ant Design Image Preview */}
-        <div className="w-full h-full flex items-center justify-center pointer-events-none">
-          <img
-            src={currentImg}
-            alt={product.name}
-            className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
-          />
-        </div>
+        <img
+          src={currentImg}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 block select-none"
+        />
 
         {/* Zoom Hint Overlay Icon in Center */}
-        <div className="absolute inset-0 bg-stone-900/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-          <div className="bg-stone-900/70 text-white px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 shadow-lg backdrop-blur-xs">
+        <div className="absolute inset-0 bg-stone-900/15 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+          <div className="bg-stone-900/80 text-white px-3.5 py-1.5 rounded-full text-xs font-medium flex items-center gap-1.5 shadow-lg backdrop-blur-xs">
             <ExpandOutlined style={{ fontSize: 13 }} />
             <span>Click để phóng to</span>
           </div>
@@ -86,17 +83,14 @@ export const ProductGallery: React.FC<Props> = ({
 
         {/* Discount Tag */}
         {product.discountPercent && (
-          <Tag
-            color="error"
-            className="absolute top-4 left-4 font-bold border-none px-3 py-1 text-xs shadow-md z-10"
-          >
+          <span className="absolute top-3.5 left-3.5 bg-brand-coral text-white font-extrabold px-3 py-1 rounded-full text-xs shadow-md z-10 uppercase tracking-wider">
             GIẢM {product.discountPercent}%
-          </Tag>
+          </span>
         )}
 
         {/* Slide Counter */}
         {images.length > 1 && (
-          <span className="absolute bottom-4 right-4 bg-stone-900/60 text-white text-[11px] font-medium px-2.5 py-0.5 rounded-full backdrop-blur-xs z-10 pointer-events-none">
+          <span className="absolute bottom-3.5 right-3.5 bg-stone-900/60 text-white text-[11px] font-medium px-2.5 py-0.5 rounded-full backdrop-blur-xs z-10 pointer-events-none">
             {currentIndex + 1} / {images.length}
           </span>
         )}
@@ -144,7 +138,7 @@ export const ProductGallery: React.FC<Props> = ({
         </Image.PreviewGroup>
       </div>
 
-      {/* Thumbnail Bar */}
+      {/* Thumbnail Bar: Tràn viền vuông 1:1 gọn gàng */}
       {images.length > 1 && (
         <div className="flex gap-3 overflow-x-auto pb-2">
           {images.map((img, idx) => (
@@ -154,13 +148,13 @@ export const ProductGallery: React.FC<Props> = ({
                 setCurrentIndex(idx);
                 onSelect(img);
               }}
-              className={`w-18 h-18 rounded-xl overflow-hidden border-2 transition-all shrink-0 bg-white p-1 cursor-pointer ${
+              className={`w-20 h-20 rounded-xl overflow-hidden border-2 transition-all shrink-0 bg-[#F4F6F5] cursor-pointer ${
                 currentIndex === idx
                   ? "border-brand-coral ring-2 ring-brand-coral/30 shadow-xs"
-                  : "border-stone-200 opacity-60 hover:opacity-100"
+                  : "border-[#E5EAE7] opacity-60 hover:opacity-100"
               }`}
             >
-              <img src={img} alt="" className="w-full h-full object-contain" />
+              <img src={img} alt="" className="w-full h-full object-cover block" />
             </button>
           ))}
         </div>

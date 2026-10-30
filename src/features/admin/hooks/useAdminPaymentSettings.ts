@@ -18,7 +18,7 @@ export const useAdminPaymentSettings = () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.settings] });
     },
     onError: (e: any) => {
-      toast.error(e.message || 'Lỗi khi lưu cấu hình thanh toán');
+      toast.error(e?.response?.data?.message || e?.message);
     },
   });
 

@@ -32,18 +32,3 @@ export interface IFTrustBarItem {
   iconName: string;
   sortOrder: number;
 }
-
-export interface IFVoucher {
-  id: string;
-  code: string;
-  name: string;
-  discountType: 'percentage' | 'fixed';
-  discountValue: number;
-  minOrderValue: number;
-  maxDiscount?: number;
-  description: string;
-  expiryDate?: string;
-  usageCount?: number;
-  maxUsage?: number;
-  isActive?: boolean;
-}

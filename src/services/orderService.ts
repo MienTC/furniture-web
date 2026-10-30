@@ -1,34 +1,26 @@
-import { Order, OrderStatus, OrderCustomerInfo, CartItem, Voucher, IFVoucher } from '~/types';
-import { storageService } from './storageService';
-import { SHIPPING_FEE, FREE_SHIPPING_THRESHOLD } from '~/common/constants';
-import instanceBE from './v1/instance';
+import { Order, OrderCustomerInfo, CartItem, Voucher, IFVoucher } from '~/types';
+import { orderServiceBE } from './v1/order.service';
+import { VoucherService } from './v1/voucher.service';
+
+const voucherService = new VoucherService();
 
 export const orderService = {
-  getOrders(): Order[] {
-    return storageService.getOrders();
-  },
-
-  getOrderById(id: string): Order | undefined {
-    return storageService.getOrders().find(o => o.id === id);
-  },
-
   async fetchOrderById(id: string): Promise<Order | undefined> {
     try {
-      const res: any = await instanceBE.get(`/orders/${id}`);
-      return res.data;
+      return await orderServiceBE.fetchOrderDetail(id);
     } catch {
-      return storageService.getOrders().find(o => o.id === id);
+      return undefined;
     }
   },
 
   async validateVoucher(code: string, subtotal: number): Promise<{ valid: boolean; voucher?: Voucher; error?: string }> {
     try {
-      const res: any = await instanceBE.get(`/vouchers/${code}`);
-      const v: IFVoucher = res.data;
+      const v: IFVoucher = await voucherService.fetchVoucherByCode(code);
       if (!v) return { valid: false, error: 'Mã giảm giá không tồn tại' };
 
-      if (subtotal < (v.minOrderValue || 0)) {
-        return { valid: false, error: `Mã áp dụng cho đơn hàng tối thiểu ${(v.minOrderValue || 0).toLocaleString('vi-VN')}₫` };
+      const validation = voucherService.validateVoucher(v, subtotal);
+      if (!validation.valid) {
+        return { valid: false, error: validation.error };
       }
 
       return {
@@ -38,10 +30,10 @@ export const orderService = {
           name: v.name,
           discountType: v.discountType,
           discountValue: v.discountValue,
-          minOrderValue: v.minOrderValue,
+          minOrderValue: v.minOrderValue || 0,
           maxDiscount: v.maxDiscount,
-          description: v.description,
-        }
+          description: v.description || '',
+        },
       };
     } catch (err: any) {
       return { valid: false, error: err.message || 'Mã giảm giá không hợp lệ' };
@@ -49,45 +41,7 @@ export const orderService = {
   },
 
   calculateDiscount(voucher: Voucher, subtotal: number): number {
-    if (voucher.discountType === 'fixed') {
-      return voucher.discountValue;
-    }
-    const calc = Math.round((subtotal * voucher.discountValue) / 100);
-    if (voucher.maxDiscount && calc > voucher.maxDiscount) {
-      return voucher.maxDiscount;
-    }
-    return calc;
-  },
-
-  createOrder(
-    items: CartItem[],
-    customerInfo: OrderCustomerInfo,
-    voucherCode?: string
-  ): Order {
-    const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-    
-    let discountAmount = 0;
-    const shippingFee = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE;
-    const totalAmount = Math.max(0, subtotal - discountAmount + shippingFee);
-
-    const newOrder: Order = {
-      id: `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
-      createdAt: new Date().toISOString(),
-      items,
-      customerInfo,
-      subtotal,
-      discountAmount,
-      shippingFee,
-      totalAmount,
-      status: 'pending',
-      voucherCode,
-    };
-
-    const currentOrders = storageService.getOrders();
-    currentOrders.unshift(newOrder);
-    storageService.saveOrders(currentOrders);
-
-    return newOrder;
+    return voucherService.calculateDiscount(voucher as IFVoucher, subtotal);
   },
 
   async createOrderApi(
@@ -95,26 +49,10 @@ export const orderService = {
     customerInfo: OrderCustomerInfo,
     voucherCode?: string
   ): Promise<any> {
-    try {
-      const res: any = await instanceBE.post('/orders', {
-        items,
-        customerInfo,
-        voucherCode,
-      });
-      return res.data;
-    } catch (err: any) {
-      throw err;
-    }
+    return orderServiceBE.createOrder({
+      items,
+      customerInfo,
+      voucherCode,
+    });
   },
-
-
-  updateOrderStatus(orderId: string, status: OrderStatus): boolean {
-    const orders = storageService.getOrders();
-    const index = orders.findIndex(o => o.id === orderId);
-    if (index === -1) return false;
-
-    orders[index].status = status;
-    storageService.saveOrders(orders);
-    return true;
-  }
 };

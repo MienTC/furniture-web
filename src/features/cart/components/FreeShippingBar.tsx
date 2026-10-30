@@ -14,7 +14,7 @@ export const FreeShippingBar: React.FC<{ subtotal: number }> = ({ subtotal: _ })
         </span>
         <span className="text-brand-coral font-bold">100%</span>
       </div>
-      <Progress percent={100} showInfo={false} strokeColor="#DE7272" size="small" />
+      <Progress percent={100} showInfo={false} strokeColor="#2B5A50" size="small" />
     </div>
   );
 };

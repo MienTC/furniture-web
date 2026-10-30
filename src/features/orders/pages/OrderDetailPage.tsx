@@ -29,7 +29,7 @@ export const OrderDetailPage: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center space-y-4">
         <h2 className="text-2xl font-bold text-stone-800">Không tìm thấy đơn hàng #{orderId}</h2>
-        <Link to="/products" className="inline-block bg-brand-coral hover:bg-[#c95f5f] text-white text-xs font-bold px-6 py-2.5 rounded-lg shadow-sm">
+        <Link to="/products" className="inline-block bg-[#2B5A50] hover:bg-[#20453D] text-white text-xs font-bold px-6 py-2.5 rounded-lg shadow-sm">
           Tiếp tục mua sắm
         </Link>
       </div>

@@ -1,8 +1,10 @@
 import React from 'react';
-import { Table, Select, Tag } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Table, Select, Tag, Button } from 'antd';
 import { ClockCircleOutlined } from '@ant-design/icons';
 import { formatVND, formatDate } from '~/common/utils/formatters';
 import UTag from '~/components/ui/utag';
+import UBadge from '~/components/ui/ubadge';
 import UCopyButton from '~/components/ui/ubutton-copy';
 import { StatusBadge } from '~/components/shared/StatusBadge';
 import { ORDER_STATUS_OPTIONS } from '~/common/constants';
@@ -12,13 +14,17 @@ interface OrdersTableProps {
   orders: AdminOrderSummaryItem[];
   isLoading: boolean;
   onUpdateStatus: (id: string, status: string) => void;
+  pagination?: any;
 }
 
 export const OrdersTable: React.FC<OrdersTableProps> = ({
   orders,
   isLoading,
   onUpdateStatus,
+  pagination,
 }) => {
+  const navigate = useNavigate();
+
   const isOrderUrgent = (order: any) => {
     if (!order.dt_created) return false;
     if (order.status !== 'pending' && order.status !== 'processing') return false;
@@ -35,7 +41,12 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({
         return (
           <div className="space-y-1">
             <div className="flex items-center gap-1 font-mono text-xs font-semibold text-gray-800">
-              <span>{id}</span>
+              <span
+                onClick={() => navigate(`/admin/orders/${id}`)}
+                className="cursor-pointer hover:text-[#2B5A50] hover:underline"
+              >
+                {id}
+              </span>
               <UCopyButton value={id} size={14} />
             </div>
             <div className="text-[11px] text-gray-500 flex items-center gap-1">
@@ -56,8 +67,8 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({
       dataIndex: 'recipient_name',
       render: (name: string, row: any) => (
         <div>
-          <p className="font-semibold text-xs text-gray-900">{name || 'Khách vãng lai'}</p>
-          <p className="text-[11px] text-gray-400">{row.phone}</p>
+          <p className="font-semibold text-xs text-gray-900 m-0">{name}</p>
+          <p className="text-[11px] text-gray-400 m-0">{row.phone}</p>
         </div>
       ),
     },
@@ -66,7 +77,7 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({
       dataIndex: 'address_line',
       render: (addr: string, row: any) => (
         <span className="text-xs text-gray-600 truncate max-w-xs block">
-          {addr}{row.district ? `, ${row.district}` : ''}{row.city ? `, ${row.city}` : ''}
+          {[addr, row.district, row.city].filter(Boolean).join(', ')}
         </span>
       ),
     },
@@ -81,9 +92,9 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({
       title: 'Hình Thức TT',
       dataIndex: 'payment_method',
       render: (pm: string) => (
-        <UTag color="slate">
-          {pm === 'bank_transfer' ? 'VIETQR' : pm?.toUpperCase() || 'COD'}
-        </UTag>
+        <UBadge color={pm === 'bank_transfer' ? 'indigo' : 'gray'}>
+          {pm === 'bank_transfer' ? 'VIETQR' : pm?.toUpperCase()}
+        </UBadge>
       ),
     },
     {
@@ -94,17 +105,40 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({
     {
       title: 'Trạng Thái Đơn',
       dataIndex: 'status',
-      render: (status: string, record: any) => (
-        <Select
-          value={status}
+      render: (status: string, record: any) => {
+        if (status === 'cancelled') {
+          return (
+            <Tag color="red" className="!font-semibold !px-2.5 !py-0.5 !rounded-md">
+              ĐÃ HỦY ĐƠN
+            </Tag>
+          );
+        }
+        return (
+          <Select
+            value={status}
+            size="small"
+            className="w-36 text-xs"
+            style={{ width: '144px' }}
+            onChange={(newVal) =>
+              onUpdateStatus(record.s_ID || record.s_order_id, newVal)
+            }
+            options={ORDER_STATUS_OPTIONS}
+          />
+        );
+      },
+    },
+    {
+      title: 'Thao Tác',
+      width: 100,
+      render: (_: any, record: any) => (
+        <Button
           size="small"
-          className="w-36 text-xs"
-          style={{ width: '144px' }}
-          onChange={(newVal) =>
-            onUpdateStatus(record.s_ID || record.s_order_id, newVal)
-          }
-          options={ORDER_STATUS_OPTIONS}
-        />
+          type="primary"
+          onClick={() => navigate(`/admin/orders/${record.s_order_id || record.s_ID}`)}
+          className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-medium !text-xs !h-7 !px-2.5 !rounded-md cursor-pointer"
+        >
+          Chi tiết
+        </Button>
       ),
     },
   ];
@@ -115,8 +149,9 @@ export const OrdersTable: React.FC<OrdersTableProps> = ({
       rowKey={(r) => r.s_ID || r.s_order_id}
       columns={columns}
       loading={isLoading}
-      pagination={false}
+      pagination={pagination || false}
       size="middle"
+      scroll={{ x: 'max-content' }}
       rowClassName={(record) => (isOrderUrgent(record) ? 'bg-rose-50/30' : '')}
     />
   );

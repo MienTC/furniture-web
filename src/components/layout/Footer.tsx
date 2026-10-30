@@ -16,26 +16,29 @@ export const Footer: React.FC = () => {
 
   return (
     <>
-      <footer className="bg-stone-900 text-stone-300 pt-16 pb-8 border-t border-brand-coral/20">
+      {/* Footer phong cách Bắc Âu Nordic mát mắt, thanh lịch (Không chói, không vàng ố) */}
+      <footer className="bg-[#F4F6F5] text-[#4A5550] pt-16 pb-8 border-t border-[#E5EAE7]">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-15 h-15 bg-white rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+              <div className="w-15 h-15 bg-white rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs">
                 <img src="/logo1.png" alt="" />
               </div>
-              <span className="text-2xl font-bold text-white tracking-tight">
+              <span className="text-2xl font-black text-[#1A2421] tracking-tight">
                 {APP_NAME}
               </span>
             </Link>
-            <p className="text-xs leading-relaxed text-stone-400 pr-6">
+            <p className="text-xs leading-relaxed text-[#606B66] pr-6">
               {APP_SLOGAN}. Chúng tôi tự hào mang tới những kiệt tác nội thất
               cao cấp từ chất liệu gỗ tự nhiên & da Ý sang trọng.
             </p>
-            <div className="space-y-2 text-xs text-stone-300">
-              <p className="flex items-center gap-2">
-                <EnvironmentOutlined className="text-brand-coral shrink-0" style={{fontSize:16}} />
-                Showroom 1: {contactSettings?.address1 || '88 Phố Lý Thường Kiệt, Q. Hoàn Kiếm, Hà Nội'}
-              </p>
+            <div className="space-y-2 text-xs text-[#4A5550]">
+              {contactSettings?.address1 && (
+                <p className="flex items-center gap-2">
+                  <EnvironmentOutlined className="text-brand-coral shrink-0" style={{fontSize:16}} />
+                  Showroom 1: {contactSettings.address1}
+                </p>
+              )}
               {contactSettings?.address2 && (
                 <p className="flex items-center gap-2">
                   <EnvironmentOutlined className="text-brand-coral shrink-0" style={{fontSize:16}} />
@@ -44,12 +47,12 @@ export const Footer: React.FC = () => {
               )}
               {contactSettings?.hotline && (
                 <p className="flex items-center gap-2">
-                  <PhoneOutlined className="text-brand-peach shrink-0" style={{fontSize:16}} />
+                  <PhoneOutlined className="text-brand-coral shrink-0" style={{fontSize:16}} />
                   Hotline: {contactSettings.hotline} {contactSettings.hotline2 ? `- ${contactSettings.hotline2}` : ''}
                 </p>
               )}
             </div>
-            <div className="rounded-xl overflow-hidden border border-stone-700 mt-2">
+            <div className="rounded-xl overflow-hidden border border-[#E5EAE7] mt-2">
               <iframe
                 title="LuxDecor Showroom Hà Nội"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.9027935990297!2d105.84697147599727!3d21.02785528061073!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab953357c995%3A0x1babf6b7a3f9b9f!2zTMO9IFRoxrDhu51uZyBLaeG7h3QsIEhvw6BuIEvhuq9tLCBIw6AgTuG7mWk!5e0!3m2!1svi!2svn!4v1700000000000"
@@ -64,9 +67,9 @@ export const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="font-bold text-white text-base mb-4">
+            <h3 className="font-bold text-[#1A2421] text-base mb-4">
               Danh Mục Sản Phẩm
-            </h4>
+            </h3>
             <ul className="space-y-2.5 text-xs">
               {categories
                 .filter((c) => !c.parentId)
@@ -75,7 +78,7 @@ export const Footer: React.FC = () => {
                   <li key={cat.id}>
                     <Link
                       to={`/products?category=${cat.id}`}
-                      className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5"
+                      className="text-[#4A5550] hover:text-brand-coral transition-colors block py-0.5 font-medium"
                     >
                       {cat.name}
                     </Link>
@@ -85,35 +88,35 @@ export const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="font-bold text-white text-base mb-4">
+            <h3 className="font-bold text-[#1A2421] text-base mb-4">
               Hỗ Trợ Khách Hàng
-            </h4>
+            </h3>
             <ul className="space-y-2.5 text-xs">
               <li>
                 <Link
                   to="/orders"
-                  className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5"
+                  className="text-[#4A5550] hover:text-brand-coral transition-colors block py-0.5 font-medium"
                 >
                   Tra cứu đơn hàng
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5">
+                <a href="#" className="text-[#4A5550] hover:text-brand-coral transition-colors block py-0.5 font-medium">
                   Chính sách bảo hành 5 năm
                 </a>
               </li>
               <li>
-                <a href="#" className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5">
+                <a href="#" className="text-[#4A5550] hover:text-brand-coral transition-colors block py-0.5 font-medium">
                   Chính sách vận chuyển & lắp đặt
                 </a>
               </li>
               <li>
-                <a href="#" className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5">
+                <a href="#" className="text-[#4A5550] hover:text-brand-coral transition-colors block py-0.5 font-medium">
                   Hướng dẫn thanh toán QR Bank
                 </a>
               </li>
               <li>
-                <a href="#" className="text-stone-300 hover:!text-brand-peach transition-colors block py-0.5">
+                <a href="#" className="text-[#4A5550] hover:text-brand-coral transition-colors block py-0.5 font-medium">
                   Quy trình đổi trả sản phẩm
                 </a>
               </li>
@@ -121,21 +124,21 @@ export const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="font-bold text-white text-base mb-4">
+            <h3 className="font-bold text-[#1A2421] text-base mb-4">
               Đăng Ký Nhận Ưu Đãi
-            </h4>
-            <p className="text-xs text-stone-400 mb-3">
+            </h3>
+            <p className="text-xs text-[#606B66] mb-3">
               Nhận mã giảm giá 10% cho đơn hàng đầu tiên.
             </p>
             <div className="flex flex-col gap-2">
               <Input
                 placeholder="Email của bạn..."
-                className="!rounded-lg text-xs"
+                className="!rounded-lg text-xs !bg-white !border-[#E5EAE7]"
               />
               <Button
                 type="primary"
                 onClick={() => setOpenRegister(true)}
-                className="!bg-brand-coral hover:!brightness-95 font-bold text-xs !border-none"
+                className="!bg-brand-coral hover:!bg-[#20453D] font-bold text-xs !border-none cursor-pointer text-white"
               >
                 Đăng Ký Ngay
               </Button>
@@ -143,7 +146,7 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 pt-6 border-t border-stone-800 text-center text-xs text-stone-500">
+        <div className="max-w-7xl mx-auto px-4 pt-6 border-t border-[#E5EAE7] text-center text-xs text-[#606B66] font-medium">
           <p>© 2026 {APP_NAME}. Bản quyền thuộc về LuxDecor Furniture Team.</p>
         </div>
       </footer>
@@ -158,7 +161,7 @@ export const Footer: React.FC = () => {
         className="register-modal"
       >
         <div className="grid gap-5 p-1 md:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-3xl bg-gradient-to-br from-[#DE7272] via-[#e58a8a] to-stone-900 p-5 text-white">
+          <div className="rounded-3xl bg-gradient-to-br from-[#2B5A50] via-[#1E433B] to-[#122622] p-5 text-white">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-cream">
               <ThunderboltOutlined style={{ fontSize: 12 }} /> Khuyến mãi đặc biệt
             </div>
@@ -247,7 +250,7 @@ export const Footer: React.FC = () => {
 
             <Button
               type="primary"
-              className="!h-11 !w-full !bg-brand-coral hover:!bg-[#c95f5f] !font-bold cursor-pointer"
+              className="!h-11 !w-full !bg-[#2B5A50] hover:!bg-[#20453D] !font-bold cursor-pointer"
             >
               Đăng ký nhận ưu đãi
             </Button>

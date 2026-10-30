@@ -19,7 +19,19 @@ export const useAdminCategories = () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.categories.list] });
     },
     onError: (e: any) => {
-      toast.error(e.message || 'Lỗi khi tạo danh mục');
+      toast.error(e?.response?.data?.message || e?.message);
+    },
+  });
+
+  const { mutateAsync: updateCategory, isPending: isUpdating } = useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: Partial<AdminCategoryDto> }) =>
+      adminService.updateCategory(id, payload),
+    onSuccess: () => {
+      toast.success('Cập nhật danh mục thành công');
+      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.categories.list] });
+    },
+    onError: (e: any) => {
+      toast.error(e?.response?.data?.message || e?.message);
     },
   });
 
@@ -30,7 +42,7 @@ export const useAdminCategories = () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.categories.list] });
     },
     onError: (e: any) => {
-      toast.error(e.message || 'Lỗi khi xóa danh mục');
+      toast.error(e?.response?.data?.message || e?.message);
     },
   });
 
@@ -39,8 +51,12 @@ export const useAdminCategories = () => {
     isLoading,
     refetch,
     createCategory,
+    updateCategory,
     deleteCategory,
     isCreating,
+    isUpdating,
     isDeleting,
   };
 };
+
+export default useAdminCategories;

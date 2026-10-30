@@ -18,7 +18,7 @@ export class PaymentController {
       bank_account_number: val.bank_account_number || '',
       bank_account_holder: val.bank_account_holder || '',
       bank_branch: val.bank_branch || '',
-      sepay_enabled: val.sepay_enabled !== undefined ? val.sepay_enabled : false,
+      sepay_enabled: val.sepay_enabled !== undefined ? val.sepay_enabled : true,
       sepay_merchant_id: val.sepay_merchant_id !== undefined ? val.sepay_merchant_id : '',
       sepay_api_key: val.sepay_api_key !== undefined ? val.sepay_api_key : '',
     };

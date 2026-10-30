@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, Link } from "react-router-dom";
 import { Tooltip, Popover, Button } from "antd";
 import {
   IconDashboard,
@@ -89,7 +89,7 @@ export const AdminLayout: React.FC = () => {
   const profileContent = (
     <div className="w-56 p-2 space-y-3">
       <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-        <UAvatar size={36} nickname={user?.name || "Admin"} src={user?.avatar} />
+        <UAvatar size={36} nickname={user?.name} src={user?.avatar} />
         <div className="overflow-hidden">
           <p className="text-sm font-semibold text-gray-800 truncate">{user?.name}</p>
           <p className="text-xs text-gray-500 truncate">{user?.email}</p>
@@ -121,29 +121,27 @@ export const AdminLayout: React.FC = () => {
   );
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col bg-slate-50 font-sans">
+    <div className="h-screen w-screen overflow-hidden flex flex-col bg-[#FAFAFA] font-sans">
       {/* Top Header - Fixed 56px */}
-      <header className="h-14 flex-none bg-white border-b border-brand-mint/40 px-5 flex items-center justify-between shadow-2xs z-30">
+      <header className="h-14 flex-none bg-white border-b border-[#E5EAE7] px-5 flex items-center justify-between shadow-2xs z-30">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div className="size-8 rounded-lg bg-brand-coral flex items-center justify-center text-white shadow-xs">
-              <IconShieldLock size={20} />
-            </div>
-            <span className="font-bold text-gray-900 text-base tracking-tight">LuxDecor Admin</span>
-          </div>
+          <Link to="/admin" className="flex items-center gap-2.5 hover:opacity-90 transition-opacity">
+            <img src="/logo1.png" alt="LuxDecor" className="size-8 object-contain rounded-md" />
+            <span className="font-bold text-[#1A2421] text-base tracking-tight">LuxDecor Admin</span>
+          </Link>
           <span className="text-gray-300">/</span>
-          <span className="bg-brand-mint/30 text-stone-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-brand-mint">
+          <span className="bg-[#EDF5F2] text-[#2B5A50] text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-[#D0DBD6]">
             Hệ thống Quản trị v2.0
           </span>
         </div>
 
         <div className="flex items-center gap-4">
           <Popover content={profileContent} trigger="click" placement="bottomRight">
-            <div className="flex items-center gap-2 cursor-pointer p-1 rounded-md hover:bg-brand-cream/30 transition-colors">
-              <UAvatar size={32} nickname={user?.name || "Admin"} src={user?.avatar} />
+            <div className="flex items-center gap-2 cursor-pointer p-1 rounded-md hover:bg-[#EDF5F2] transition-colors">
+              <UAvatar size={32} nickname={user?.name} src={user?.avatar} />
               <div className="hidden sm:block text-left">
-                <p className="text-xs font-semibold text-gray-800 leading-tight">{user?.name || "Quản trị viên"}</p>
-                <p className="text-[10px] text-brand-coral font-bold capitalize">{user?.role || "Admin"}</p>
+                <p className="text-xs font-semibold text-[#1A2421] leading-tight">{user?.name}</p>
+                <p className="text-[10px] text-[#2B5A50] font-bold capitalize">{user?.role}</p>
               </div>
             </div>
           </Popover>
@@ -153,7 +151,7 @@ export const AdminLayout: React.FC = () => {
       {/* Main Body - Viewport Locked, Zero window scroll */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Sidebar Fixed 64px */}
-        <aside className="w-16 flex-none border-r border-brand-mint/40 bg-white flex flex-col justify-between py-4 px-2.5 z-20">
+        <aside className="w-16 flex-none border-r border-[#E5EAE7] bg-white flex flex-col justify-between py-4 px-2.5 z-20">
           <div className="flex flex-col gap-2.5">
             {menu.map((item, index) => {
               const isActive = item.exact
@@ -165,9 +163,9 @@ export const AdminLayout: React.FC = () => {
                   <div
                     onClick={() => navigate(item.path)}
                     className={cn(
-                      "flex items-center justify-center size-[44px] rounded-xl text-neutral-400 cursor-pointer transition-all border border-transparent hover:border-brand-coral hover:bg-brand-coral/10 hover:text-brand-coral",
+                      "flex items-center justify-center size-[44px] rounded-xl text-neutral-400 cursor-pointer transition-all border border-transparent hover:border-[#D0DBD6] hover:bg-[#EDF5F2] hover:text-[#2B5A50]",
                       {
-                        "bg-brand-coral text-white border-brand-coral shadow-xs hover:bg-brand-coral hover:text-white": isActive,
+                        "bg-[#2B5A50] text-white border-[#2B5A50] shadow-xs hover:bg-[#20453D] hover:text-white": isActive,
                       }
                     )}
                   >
@@ -182,7 +180,7 @@ export const AdminLayout: React.FC = () => {
             <Tooltip title="Về trang cửa hàng" placement="right">
               <div
                 onClick={() => navigate("/")}
-                className="flex items-center justify-center size-[40px] text-neutral-400 rounded-lg hover:bg-gray-100 hover:text-gray-700 cursor-pointer transition-colors"
+                className="flex items-center justify-center size-[40px] text-neutral-400 rounded-lg hover:bg-stone-100 hover:text-[#2D2623] cursor-pointer transition-colors"
               >
                 <IconArrowLeft size={20} />
               </div>

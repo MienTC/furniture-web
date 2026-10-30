@@ -2,69 +2,114 @@
 
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-serif: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --color-brand-coral: #DE7272;
-  --color-brand-peach: #FFCA88;
-  --color-brand-cream: #FFF6A9;
-  --color-brand-mint: #B4E4D6;
+  --color-brand-coral: #2B5A50;
+  --color-brand-peach: #C88A58;
+  --color-brand-cream: #F5EBE1;
+  --color-brand-mint: #93C5B5;
 }
 
 @layer base {
   html {
     overflow-y: scroll;
+    scrollbar-gutter: stable;
   }
   html, body {
     font-family: var(--font-sans);
-    color: #292524;
-    background-color: #fbfbf9;
+    color: #1A2421;
+    background-color: #FAFAFA;
     letter-spacing: -0.01em;
-    overflow-x: hidden;
-    max-width: 100vw;
   }
   body {
+    width: 100% !important;
+    max-width: 100% !important;
     padding-right: 0px !important;
+    margin-right: 0px !important;
+    overflow-x: hidden;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-sans);
     letter-spacing: -0.02em;
+    color: #1A2421;
   }
+  a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.15s ease-in-out;
+  }
+}
+
+/* Fix Ant Design Modal / Drawer layout shift */
+body.ant-scrolling-effect,
+body[style*="overflow: hidden"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-right: 0px !important;
+  margin-right: 0px !important;
+  overflow-y: scroll !important;
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #f5f5f4; }
-::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+::-webkit-scrollbar-track { background: #F4F6F5; }
+::-webkit-scrollbar-thumb { background: #D0DBD6; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #B3C4BD; }
+
+/* Utilities for modal scrollbars */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #D0DBD6 transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #D0DBD6;
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #B3C4BD;
+}
 
 /* Glassmorphism utility */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(12px);
-  border: 1px solid #e7e5e4;
+  border: 1px solid #E5EAE7;
 }
 
-/* Brand palette utility buttons & texts */
+/* ColorHunt Nordic Forest Luxury Palette */
 :root {
-  --color-brand-coral: #DE7272;
-  --color-brand-peach: #FFCA88;
-  --color-brand-cream: #FFF6A9;
-  --color-brand-mint: #B4E4D6;
+  --color-brand-coral: #2B5A50;
+  --color-brand-peach: #C88A58;
+  --color-brand-cream: #F5EBE1;
+  --color-brand-mint: #93C5B5;
 }
 
-.bg-brand-coral { background-color: #DE7272 !important; }
-.bg-brand-peach { background-color: #FFCA88 !important; }
-.bg-brand-cream { background-color: #FFF6A9 !important; }
-.bg-brand-mint  { background-color: #B4E4D6 !important; }
+.bg-brand-coral { background-color: #2B5A50 !important; }
+.bg-brand-peach { background-color: #C88A58 !important; }
+.bg-brand-cream { background-color: #F5EBE1 !important; }
+.bg-brand-mint  { background-color: #93C5B5 !important; }
 
-.text-brand-coral { color: #DE7272 !important; }
-.text-brand-peach { color: #FFCA88 !important; }
-.text-brand-cream { color: #FFF6A9 !important; }
-.text-brand-mint  { color: #B4E4D6 !important; }
+.text-brand-coral { color: #2B5A50 !important; }
+.text-brand-peach { color: #C88A58 !important; }
+.text-brand-cream { color: #F5EBE1 !important; }
+.text-brand-mint  { color: #93C5B5 !important; }
 
-.border-brand-coral { border-color: #DE7272 !important; }
-.border-brand-peach { border-color: #FFCA88 !important; }
-.border-brand-cream { border-color: #FFF6A9 !important; }
-.border-brand-mint  { border-color: #B4E4D6 !important; }
+.border-brand-coral { border-color: #2B5A50 !important; }
+.border-brand-peach { border-color: #C88A58 !important; }
+.border-brand-cream { border-color: #F5EBE1 !important; }
+.border-brand-mint  { border-color: #93C5B5 !important; }
 
 a {
   color: inherit;
@@ -92,109 +137,52 @@ button, [role="button"] {
 
 .action-btn-detail {
   background-color: #ffffff !important;
-  color: #1c1917 !important;
-  border: 1px solid #d6d3d1 !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
-  font-weight: 800 !important;
+  color: #1A2421 !important;
+  border: 1px solid #DCE3E0 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+  font-weight: 700 !important;
   cursor: pointer !important;
   pointer-events: auto !important;
 }
 
 .action-btn-detail * {
-  color: #1c1917 !important;
-  font-weight: 800 !important;
+  color: #1A2421 !important;
+  font-weight: 700 !important;
   pointer-events: none !important;
   cursor: pointer !important;
 }
 
 .action-btn-detail:hover {
-  background-color: #f5f5f4 !important;
+  background-color: #F4F6F5 !important;
 }
 
 .action-btn-buy {
-  background-color: #DE7272 !important;
+  background-color: #2B5A50 !important;
   color: #ffffff !important;
-  box-shadow: 0 4px 14px rgba(222, 114, 114, 0.35) !important;
-  font-weight: 800 !important;
+  box-shadow: 0 4px 14px rgba(43, 90, 80, 0.3) !important;
+  font-weight: 700 !important;
   cursor: pointer !important;
   pointer-events: auto !important;
 }
 
 .action-btn-buy:hover {
-  background-color: #c95f5f !important;
+  background-color: #20453D !important;
 }
 
 .action-btn-buy * {
   color: #ffffff !important;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
   pointer-events: none !important;
   cursor: pointer !important;
 }
 
 .ant-btn-primary { 
-  background-color: #DE7272 !important; 
-  border-color: #DE7272 !important; 
+  background-color: #2B5A50 !important; 
+  border-color: #2B5A50 !important; 
   color: #ffffff !important;
   cursor: pointer !important;
 }
 .ant-btn-primary:hover { 
-  background-color: #c95f5f !important; 
-  border-color: #c95f5f !important; 
-}
-
-/* Product Rich HTML Description Styling */
-.ck-content {
-  font-family: var(--font-sans);
-  color: #44403c;
-  line-height: 1.7;
-}
-
-.ck-content h1, .ck-content h2, .ck-content h3, .ck-content h4 {
-  font-weight: 700;
-  color: #1c1917;
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.ck-content h1 { font-size: 1.4rem; }
-.ck-content h2 { font-size: 1.25rem; }
-.ck-content h3 { font-size: 1.125rem; }
-
-.ck-content p {
-  margin-bottom: 1rem;
-}
-
-.ck-content ul {
-  list-style-type: disc;
-  margin-left: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.ck-content ol {
-  list-style-type: decimal;
-  margin-left: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.ck-content img {
-  max-width: 100% !important;
-  height: auto !important;
-  border-radius: 0.75rem;
-  margin: 1.25rem auto;
-  display: block;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.ck-content a {
-  color: #DE7272;
-  text-decoration: underline;
-  font-weight: 500;
-}
-.ck-content a:hover {
-  color: #c95f5f;
-}
-
-/* React Toastify custom z-index override */
-.Toastify__toast-container {
-  z-index: 99999 !important;
+  background-color: #20453D !important; 
+  border-color: #20453D !important; 
 }

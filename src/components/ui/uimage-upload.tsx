@@ -12,6 +12,7 @@ interface UImageUploadProps {
   onChange?: (val: string) => void;
   aspectRatio?: 'square' | 'video' | 'banner';
   placeholderText?: string;
+  className?: string;
 }
 
 export const UImageUpload: React.FC<UImageUploadProps> = ({
@@ -19,6 +20,7 @@ export const UImageUpload: React.FC<UImageUploadProps> = ({
   onChange,
   aspectRatio = 'square',
   placeholderText = 'Tải ảnh lên hoặc dán URL',
+  className = '',
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [urlModalOpen, setUrlModalOpen] = useState(false);
@@ -82,7 +84,7 @@ export const UImageUpload: React.FC<UImageUploadProps> = ({
 
       {value ? (
         <div
-          className={`relative w-full ${aspectClass} rounded-xl border border-gray-200 overflow-hidden group bg-gray-50 flex items-center justify-center`}
+          className={`relative w-full ${aspectClass} rounded-xl border border-gray-200 overflow-hidden group bg-gray-50 flex items-center justify-center ${className}`}
         >
           <img
             src={value}
@@ -123,7 +125,7 @@ export const UImageUpload: React.FC<UImageUploadProps> = ({
       ) : (
         <div
           onClick={() => fileInputRef.current?.click()}
-          className={`w-full ${aspectClass} rounded-xl border-2 border-dashed border-gray-200 hover:border-sky-500 bg-gray-50/50 hover:bg-sky-50/20 transition-all flex flex-col items-center justify-center gap-2 cursor-pointer p-4 text-center`}
+          className={`w-full ${aspectClass} rounded-xl border-2 border-dashed border-gray-200 hover:border-brand-coral bg-gray-50/50 hover:bg-brand-coral/5 transition-all flex flex-col items-center justify-center gap-2 cursor-pointer p-4 text-center ${className}`}
         >
           <div className="size-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
             <UploadOutlined style={{ fontSize: 18 }} />

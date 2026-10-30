@@ -42,7 +42,7 @@ export const AdminLoginPage: React.FC = () => {
         navigate('/admin');
       }
     } catch (err: any) {
-      toast.error(err.message || 'Đăng nhập không thành công');
+      toast.error(err?.response?.data?.message || err?.message);
     } finally {
       setLoading(false);
     }

@@ -169,7 +169,7 @@ export const CreateOrderForm: React.FC<CreateOrderFormProps> = ({
         size="small"
         title={
           <div className="flex items-center gap-1.5 text-xs font-bold text-stone-700">
-            <UserOutlined className="text-brand-coral" /> Thông Tin Người Nhận
+            <UserOutlined className="text-[#2B5A50]" /> Thông Tin Người Nhận
           </div>
         }
         className="!rounded-xl border-stone-200"
@@ -320,7 +320,7 @@ export const CreateOrderForm: React.FC<CreateOrderFormProps> = ({
         size="small"
         title={
           <div className="flex items-center gap-1.5 text-xs font-bold text-stone-700">
-            <ShoppingOutlined className="text-brand-coral" /> Danh Sách Sản Phẩm Trong Đơn
+            <ShoppingOutlined className="text-[#2B5A50]" /> Danh Sách Sản Phẩm Trong Đơn
           </div>
         }
         className="!rounded-xl border-stone-200"
@@ -411,7 +411,7 @@ export const CreateOrderForm: React.FC<CreateOrderFormProps> = ({
 
             <div className="flex justify-between items-center pt-2 border-t border-stone-200 text-xs">
               <span className="font-semibold text-stone-600">Tổng tiền sản phẩm:</span>
-              <span className="text-sm font-bold text-brand-coral">{formatVND(totalAmount)}</span>
+              <span className="text-sm font-bold text-[#2B5A50]">{formatVND(totalAmount)}</span>
             </div>
           </div>
         )}
@@ -422,7 +422,7 @@ export const CreateOrderForm: React.FC<CreateOrderFormProps> = ({
         size="small"
         title={
           <div className="flex items-center gap-1.5 text-xs font-bold text-stone-700">
-            <CreditCardOutlined className="text-brand-coral" /> Phương Thức & Trạng Thái
+            <CreditCardOutlined className="text-[#2B5A50]" /> Phương Thức & Trạng Thái
           </div>
         }
         className="!rounded-xl border-stone-200"

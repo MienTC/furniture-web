@@ -21,12 +21,12 @@ const VoucherCard: React.FC<{ voucher: IFVoucher; onClaim: (v: IFVoucher) => voi
             {v.code}
           </span>
           {v.discountType === 'percentage' && (
-            <span className="text-[10px] bg-brand-coral/10 text-brand-coral border border-brand-coral/25 font-black px-2 py-0.5 rounded-full uppercase">
+            <span className="text-xs bg-brand-coral/10 text-brand-coral border border-brand-coral/25 font-black px-2.5 py-0.5 rounded-full uppercase">
               Giảm {v.discountValue}%
             </span>
           )}
           {v.discountType === 'fixed' && (
-            <span className="text-[10px] bg-stone-100 text-stone-700 font-bold px-2 py-0.5 rounded-full uppercase">
+            <span className="text-xs bg-stone-100 text-stone-700 font-bold px-2.5 py-0.5 rounded-full uppercase">
               Ưu đãi tiền mặt
             </span>
           )}
@@ -37,7 +37,7 @@ const VoucherCard: React.FC<{ voucher: IFVoucher; onClaim: (v: IFVoucher) => voi
       </div>
 
       <div className="pt-2 border-t border-dashed border-stone-100 flex items-center justify-between gap-2">
-        <span className="text-[11px] text-stone-400 font-medium">Hạn sử dụng có hạn</span>
+        <span className="text-xs text-stone-500 font-medium">Hạn sử dụng có hạn</span>
         <button
           type="button"
           onClick={() => onClaim(v)}
@@ -70,7 +70,7 @@ export const VoucherSection: React.FC<Props> = ({ vouchers, isLoading }) => {
             <TagOutlined style={{ fontSize: 16 }} />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-stone-900 leading-none">Mã Giảm Giá Hôm Nay</h2>
+            <h2 className="text-xl font-bold text-stone-900 leading-none">Mã Giảm Giá Hôm Nay</h2>
             <p className="text-xs text-stone-500 mt-0.5">Săn voucher ưu đãi cho đơn hàng của bạn</p>
           </div>
         </div>

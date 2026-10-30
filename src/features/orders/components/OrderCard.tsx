@@ -18,7 +18,7 @@ export const OrderCard: React.FC<{ order: Order }> = ({ order }) => {
         </div>
         <div className="flex items-center gap-3">
           <Tag color={statusInfo.color} className="font-bold text-xs px-3 py-0.5 rounded-full">{statusInfo.label}</Tag>
-          <Link to={`/orders/${order.id}`} className="text-xs font-bold text-brand-coral hover:text-[#c95f5f] flex items-center gap-1"><EyeOutlined style={{ fontSize: 13 }} /> Xem chi tiết</Link>
+          <Link to={`/orders/${order.id}`} className="text-xs font-bold text-[#2B5A50] hover:text-[#20453D] flex items-center gap-1"><EyeOutlined style={{ fontSize: 13 }} /> Xem chi tiết</Link>
         </div>
       </div>
       <div className="space-y-3">

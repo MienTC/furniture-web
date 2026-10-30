@@ -19,7 +19,18 @@ export const useAdminReviews = () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.reviews.list] });
     },
     onError: (e: any) => {
-      toast.error(e.message || 'Lỗi khi gửi phản hồi');
+      toast.error(e?.response?.data?.message || e?.message);
+    },
+  });
+
+  const { mutateAsync: toggleReviewStatus, isPending: isToggling } = useMutation({
+    mutationFn: (id: string) => adminService.toggleReviewStatus(id),
+    onSuccess: (data: any) => {
+      toast.success(data?.message);
+      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.reviews.list] });
+    },
+    onError: (e: any) => {
+      toast.error(e?.response?.data?.message || e?.message);
     },
   });
 
@@ -30,7 +41,7 @@ export const useAdminReviews = () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.reviews.list] });
     },
     onError: (e: any) => {
-      toast.error(e.message || 'Lỗi khi xóa đánh giá');
+      toast.error(e?.response?.data?.message || e?.message);
     },
   });
 
@@ -39,8 +50,10 @@ export const useAdminReviews = () => {
     isLoading,
     refetch,
     replyReview,
+    toggleReviewStatus,
     deleteReview,
     isReplying,
+    isToggling,
     isDeleting,
   };
 };

@@ -111,7 +111,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             htmlType="submit"
             loading={loading}
             block
-            className="!h-11 !rounded-xl !bg-brand-coral hover:!bg-[#c95f5f] font-bold text-sm tracking-wide shadow-md cursor-pointer"
+            className="!h-11 !rounded-xl !bg-[#2B5A50] hover:!bg-[#20453D] font-bold text-sm tracking-wide shadow-md cursor-pointer"
           >
             Đăng Nhập
           </Button>
@@ -187,7 +187,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
             htmlType="submit"
             loading={loading}
             block
-            className="!h-11 !rounded-xl !bg-brand-coral hover:!bg-[#c95f5f] font-bold text-sm tracking-wide shadow-md cursor-pointer"
+            className="!h-11 !rounded-xl !bg-[#2B5A50] hover:!bg-[#20453D] font-bold text-sm tracking-wide shadow-md cursor-pointer"
           >
             Tạo Tài Khoản
           </Button>

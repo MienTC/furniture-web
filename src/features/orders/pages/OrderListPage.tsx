@@ -1,40 +1,66 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { orderService } from '~/services/orderService';
+import { useMyOrders } from '~/features/orders/hooks';
 import { OrderCard } from '~/features/orders/components/OrderCard';
 import { InboxOutlined } from '@ant-design/icons';
-import { Tabs } from 'antd';
-import type { Order } from '~/types';
+import { Tabs, Spin } from 'antd';
 
 export const OrderListPage: React.FC = () => {
-  const [orders]    = useState<Order[]>(() => orderService.getOrders());
+  const { data: orders = [], isLoading } = useMyOrders();
   const [activeTab, setActiveTab] = useState('all');
-  const filtered = orders.filter(o => activeTab === 'all' || o.status === activeTab);
+
+  const filtered = orders.filter((o) => activeTab === 'all' || o.status === activeTab);
+
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+        <Spin size="large" tip="Đang tải danh sách đơn hàng..." />
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 py-8 space-y-8 font-sans">
       <div className="border-b border-stone-200 pb-4">
         <h1 className="text-2xl sm:text-3xl font-bold text-stone-900">Quản Lý Đơn Hàng</h1>
         <p className="text-xs text-stone-500">Theo dõi tiến độ giao nhận & lắp đặt sản phẩm nội thất</p>
       </div>
-      <Tabs activeKey={activeTab} onChange={setActiveTab} items={[
-        { key: 'all',        label: `Tất cả (${orders.length})` },
-        { key: 'pending',    label: 'Chờ xác nhận' },
-        { key: 'processing', label: 'Đang xử lý' },
-        { key: 'shipping',   label: 'Đang giao hàng' },
-        { key: 'completed',  label: 'Đã hoàn thành' },
-      ]} />
+
+      <Tabs
+        activeKey={activeTab}
+        onChange={setActiveTab}
+        items={[
+          { key: 'all', label: `Tất cả (${orders.length})` },
+          { key: 'pending', label: 'Chờ xác nhận' },
+          { key: 'processing', label: 'Đang xử lý' },
+          { key: 'shipping', label: 'Đang giao hàng' },
+          { key: 'completed', label: 'Đã hoàn thành' },
+        ]}
+      />
+
       {filtered.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-stone-200 space-y-4">
+        <div className="bg-white rounded-2xl p-12 text-center border border-stone-200 space-y-4 shadow-2xs">
           <div className="w-16 h-16 rounded-full bg-stone-100 mx-auto flex items-center justify-center text-stone-400">
             <InboxOutlined style={{ fontSize: 32 }} />
           </div>
           <h3 className="font-bold text-stone-800 text-lg">Chưa có đơn hàng nào trong mục này</h3>
-          <Link to="/products" className="inline-block bg-brand-coral hover:bg-[#c95f5f] text-white text-xs font-bold px-6 py-2.5 rounded-lg shadow-sm">Khám phá ngay</Link>
+          <p className="text-xs text-stone-500">Khám phá các sản phẩm nội thất cao cấp của chúng tôi ngay hôm nay</p>
+          <Link
+            to="/products"
+            className="inline-block bg-[#2B5A50] hover:bg-[#20453D] text-white text-xs font-bold px-6 py-2.5 rounded-lg shadow-sm transition-colors"
+          >
+            Khám phá ngay
+          </Link>
         </div>
       ) : (
-        <div className="space-y-4">{filtered.map(o => <OrderCard key={o.id} order={o} />)}</div>
+        <div className="space-y-4">
+          {filtered.map((o) => (
+            <OrderCard key={o.id} order={o} />
+          ))}
+        </div>
       )}
     </div>
   );
 };
+
+export default OrderListPage;

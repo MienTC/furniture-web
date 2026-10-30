@@ -30,7 +30,7 @@ export const VoucherSuccessPopup: React.FC<{ voucher: IFVoucher; onClose: () => 
         <p className="text-stone-500 text-xs mb-1">Mã giảm giá đã được lưu vào phiên mua hàng</p>
         <div className="inline-flex items-center gap-3 bg-brand-peach/15 border-2 border-dashed border-brand-coral rounded-xl px-5 py-3">
           <span className="text-2xl font-bold tracking-widest text-brand-coral font-mono">{voucher.code}</span>
-          <button onClick={handleCopy} className="p-1.5 rounded-lg bg-brand-coral hover:bg-[#c95f5f] text-white transition-colors cursor-pointer">
+          <button onClick={handleCopy} className="p-1.5 rounded-lg bg-[#2B5A50] hover:bg-[#20453D] text-white transition-colors cursor-pointer">
             {copied ? <CheckCircleOutlined style={{ fontSize: 16 }} /> : <CopyOutlined style={{ fontSize: 16 }} />}
           </button>
         </div>
@@ -43,7 +43,7 @@ export const VoucherSuccessPopup: React.FC<{ voucher: IFVoucher; onClose: () => 
           block
           onClick={handleUseNow}
           icon={isApplied ? <CheckOutlined /> : undefined}
-          className="!bg-brand-coral hover:!bg-[#c95f5f] !border-0 font-bold cursor-pointer !h-10"
+          className="!bg-[#2B5A50] hover:!bg-[#20453D] !border-0 font-bold cursor-pointer !h-10"
         >
           {isApplied ? 'Đã áp dụng — Đến giỏ hàng' : 'Áp dụng vào giỏ hàng ngay'}
         </Button>
@@ -71,7 +71,7 @@ export const LoginRequiredPopup: React.FC<{ onClose: () => void; onOpenAuth?: (t
             onClose();
             if (onOpenAuth) onOpenAuth('login');
           }}
-          className="!bg-brand-coral hover:!bg-[#c95f5f] !border-0 font-bold cursor-pointer"
+          className="!bg-[#2B5A50] hover:!bg-[#20453D] !border-0 font-bold cursor-pointer"
         >
           Đăng Nhập
         </Button>

@@ -12,42 +12,19 @@ import {
   ShoppingOutlined 
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { aiService, type AIChatProduct } from "~/services/v1/ai.service";
+import { useAIChat } from "~/common/hooks/useAIChat";
 import { usePublicContactSettings } from "~/features/admin/hooks";
 
 const qrCodeUrl = (value: string) =>
   `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(value)}`;
 
-interface Message {
-  id: string;
-  sender: 'user' | 'assistant';
-  text: string;
-  products?: AIChatProduct[];
-  suggestedQuestions?: string[];
-  time: string;
-}
-
 export const FloatingContact: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'ai' | 'contact'>('ai');
   const [inputMessage, setInputMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const { data: contactSettings } = usePublicContactSettings();
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 'welcome',
-      sender: 'assistant',
-      text: 'Dạ xin kính chào Quý khách! Em là **LuxBot** - Chuyên viên AI tư vấn nội thất của LuxDecor.\n\nEm có thể hỗ trợ Quý khách chọn mẫu sofa, giường ngủ, bàn ăn thông minh theo diện tích phòng, tư vấn chất liệu và chính sách bảo hành 5 năm. Quý khách đang quan tâm sản phẩm nào ạ?',
-      suggestedQuestions: [
-        'Tư vấn sofa giường cho phòng khách nhỏ',
-        'Bàn ăn thông minh kéo dài 4-8 người',
-        'Chính sách bảo hành và lắp đặt',
-        'Bộ sưu tập phòng ngủ hiện đại',
-      ],
-      time: 'Vừa xong',
-    },
-  ]);
+  const { messages, isLoading, sendMessage, resetChat } = useAIChat();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -64,49 +41,8 @@ export const FloatingContact: React.FC = () => {
   const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputMessage;
     if (!text.trim() || isLoading) return;
-
-    const userMsg: Message = {
-      id: Date.now().toString(),
-      sender: 'user',
-      text: text.trim(),
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-
-    setMessages((prev) => [...prev, userMsg]);
     if (!textToSend) setInputMessage('');
-    setIsLoading(true);
-
-    try {
-      const history = messages.slice(-4).map((m) => ({
-        sender: m.sender,
-        text: m.text,
-      }));
-
-      const res = await aiService.chat(text.trim(), history);
-
-      const botMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        sender: 'assistant',
-        text: res.reply,
-        products: res.products,
-        suggestedQuestions: res.suggestedQuestions,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-
-      setMessages((prev) => [...prev, botMsg]);
-    } catch (err: any) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: (Date.now() + 1).toString(),
-          sender: 'assistant',
-          text: 'Dạ, hiện hệ thống AI đang bận xử lý hoặc kết nối gián đoạn. Quý khách có thể chuyển sang tab "Hotline & Zalo" để gặp nhân viên tư vấn ngay nhé ạ!',
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
+    await sendMessage(text);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -137,14 +73,25 @@ export const FloatingContact: React.FC = () => {
               <p className="text-[11px] text-white/80">Tư vấn nội thất thông minh 24/7</p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => setIsOpen(false)}
-            className="rounded-full p-1.5 text-white/80 hover:text-white transition hover:bg-white/10 cursor-pointer"
-            aria-label="Đóng chat"
-          >
-            <CloseOutlined style={{ fontSize: 16 }} />
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={resetChat}
+              title="Bắt đầu cuộc trò chuyện mới"
+              className="rounded-full p-1.5 text-white/80 hover:text-white transition hover:bg-white/10 cursor-pointer"
+              aria-label="Làm mới chat"
+            >
+              <ReloadOutlined style={{ fontSize: 14 }} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="rounded-full p-1.5 text-white/80 hover:text-white transition hover:bg-white/10 cursor-pointer"
+              aria-label="Đóng chat"
+            >
+              <CloseOutlined style={{ fontSize: 16 }} />
+            </button>
+          </div>
         </div>
 
         {/* Tab Selector */}
@@ -280,7 +227,7 @@ export const FloatingContact: React.FC = () => {
                   type="button"
                   onClick={() => handleSendMessage()}
                   disabled={!inputMessage.trim() || isLoading}
-                  className="w-7 h-7 rounded-lg bg-brand-coral text-white flex items-center justify-center hover:bg-[#c95f5f] disabled:opacity-40 transition shrink-0 cursor-pointer"
+                  className="w-7 h-7 rounded-lg bg-[#2B5A50] text-white flex items-center justify-center hover:bg-[#20453D] disabled:opacity-40 transition shrink-0 cursor-pointer"
                   aria-label="Gửi tin nhắn"
                 >
                   <SendOutlined style={{ fontSize: 13 }} />
@@ -374,14 +321,17 @@ export const FloatingContact: React.FC = () => {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="pointer-events-auto group relative flex items-center gap-2 rounded-full bg-brand-coral p-3.5 sm:px-4 sm:py-3.5 text-white shadow-[0_16px_35px_rgba(222,114,114,0.4)] transition-all hover:scale-105 hover:brightness-95 cursor-pointer"
+        className="pointer-events-auto group relative flex items-center gap-2.5 rounded-full bg-gradient-to-r from-[#2B5A50] via-[#244C44] to-[#1E3E37] px-4 py-3 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer border border-white/20"
         aria-label="Mở trợ lý AI tư vấn"
       >
-        <div className="relative">
-          <ThunderboltOutlined className="text-brand-cream group-hover:rotate-12 transition-transform" style={{ fontSize: 20 }} />
-          <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-brand-mint ring-2 ring-white" />
+        <div className="relative flex items-center justify-center">
+          <ThunderboltOutlined className="text-brand-cream text-base group-hover:rotate-12 transition-transform duration-300" />
+          <span className="absolute -top-1 -right-1 flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-mint opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-mint"></span>
+          </span>
         </div>
-        <span className="hidden sm:inline-block text-xs font-bold tracking-tight">AI Tư Vấn</span>
+        <span className="text-xs font-bold tracking-wide">Trợ Lý AI LuxBot</span>
       </button>
     </div>
   );

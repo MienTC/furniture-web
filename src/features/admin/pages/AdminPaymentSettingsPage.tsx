@@ -29,12 +29,13 @@ export const AdminPaymentSettingsPage: React.FC = () => {
       form.setFieldsValue({
         cod_enabled: settings.cod_enabled !== undefined ? settings.cod_enabled : true,
         bank_transfer_enabled: settings.bank_transfer_enabled !== undefined ? settings.bank_transfer_enabled : true,
-        bank_name: settings.bank_name || 'MB Bank',
-        bank_account_number: settings.bank_account_number || '',
-        bank_account_holder: settings.bank_account_holder || '',
-        bank_branch: settings.bank_branch || '',
-        sepay_enabled: settings.sepay_enabled !== undefined ? settings.sepay_enabled : false,
-        sepay_api_key: settings.sepay_api_key || '',
+        bank_name: settings.bank_name,
+        bank_account_number: settings.bank_account_number,
+        bank_account_holder: settings.bank_account_holder,
+        bank_branch: settings.bank_branch,
+        sepay_enabled: settings.sepay_enabled !== undefined ? settings.sepay_enabled : true,
+        sepay_merchant_id: settings.sepay_merchant_id,
+        sepay_api_key: settings.sepay_api_key,
       });
     }
   }, [settings, form]);
@@ -53,7 +54,7 @@ export const AdminPaymentSettingsPage: React.FC = () => {
             icon={<SaveOutlined />}
             loading={isUpdating}
             onClick={() => form.submit()}
-            className="!bg-brand-coral hover:!bg-[#c95f5f] !font-semibold !shadow-xs !h-10 !px-6"
+            className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-semibold !shadow-xs !h-9 !px-5"
           >
             Lưu cấu hình thanh toán
           </Button>
@@ -232,7 +233,7 @@ export const AdminPaymentSettingsPage: React.FC = () => {
           {/* Card Cấu hình COD */}
           <Card
             title={
-              <div className="flex items-center gap-2 text-brand-coral font-bold">
+              <div className="flex items-center gap-2 text-[#2B5A50] font-bold">
                 <CheckCircleOutlined style={{ fontSize: 20 }} />
                 <span>Thanh Toán Khi Nhận Hàng (COD)</span>
               </div>

@@ -14,7 +14,7 @@ export const FeaturedProducts: React.FC<Props> = ({ products, totalCount, isLoad
         <div className="flex items-center gap-1.5 text-brand-coral font-bold text-xs uppercase tracking-wider mb-1">
           <FireOutlined className="text-brand-coral" style={{ fontSize: 15 }} /> Bộ Sưu Tập Nội Thất
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-stone-900">Sản Phẩm Nổi Bật & Ưu Đãi</h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-stone-900 tracking-tight">Sản Phẩm Nổi Bật & Ưu Đãi</h2>
       </div>
       <Link
         to="/products"

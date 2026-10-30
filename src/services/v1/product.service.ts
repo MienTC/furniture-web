@@ -22,6 +22,8 @@ export class ProductService {
           materials: params?.materials?.length ? params.materials.join(',') : undefined,
           inStockOnly: params?.inStockOnly ? 'true' : undefined,
           onSaleOnly: params?.onSaleOnly ? 'true' : undefined,
+          flashsale: params?.flashsale ? 'true' : undefined,
+          ids: params?.ids?.length ? params.ids.join(',') : undefined,
           sortBy: params?.sortBy || undefined,
           page: params?.page || 1,
           limit: params?.limit || 12,

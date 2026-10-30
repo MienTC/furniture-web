@@ -1,23 +1,29 @@
-import React, { useState } from 'react';
-import { Table, Button, Modal, Form, Input, Popconfirm, Space, Tooltip } from 'antd';
+import React, { useState, useMemo } from 'react';
+import { Table, Button, Space, Tooltip } from 'antd';
 import {
   PlusOutlined,
   DeleteOutlined,
   EyeOutlined,
   AppstoreOutlined,
 } from '@ant-design/icons';
-import { useAdminCategories } from '~/features/admin/hooks';
+import { useAdminCategories, useTableFilters } from '~/features/admin/hooks';
 import UBreadcrumb from '~/components/ui/ubreadcrumb';
-import USearchInput from '~/components/ui/usearch-input';
-import UImageUpload from '~/components/ui/uimage-upload';
+import UButtonCopy from '~/components/ui/ubutton-copy';
+import UAlertDialog from '~/components/ui/ualert-dialog';
+import {
+  FilterBar,
+  FilterSearch,
+  FilterResetButton,
+} from '~/components/common/filters';
 import CategoryDetailDrawer from '~/features/admin/components/CategoryDetailDrawer';
+import { CategoryModal } from '~/features/admin/components/categories';
+import type { AdminCategoryPayload } from '~/types';
 
 export const AdminCategoriesPage: React.FC = () => {
+  const { filters, setFilter, resetFilters, hasActiveFilters } = useTableFilters();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [form] = Form.useForm();
 
   // Hook tập trung quản lý categories
   const {
@@ -26,12 +32,12 @@ export const AdminCategoriesPage: React.FC = () => {
     createCategory,
     deleteCategory,
     isCreating,
+    isDeleting,
   } = useAdminCategories();
 
-  const handleFinish = async (values: any) => {
+  const handleFinish = async (values: AdminCategoryPayload) => {
     await createCategory(values);
     setIsModalOpen(false);
-    form.resetFields();
   };
 
   const handleOpenDetail = (cat: any) => {
@@ -39,11 +45,13 @@ export const AdminCategoriesPage: React.FC = () => {
     setIsDetailDrawerOpen(true);
   };
 
-  const filteredCategories = categories.filter((c: any) =>
-    (c.s_Name || c.name || '')
-      .toLowerCase()
-      .includes(search.toLowerCase().trim())
-  );
+  const filteredCategories = useMemo(() => {
+    return categories.filter((c: any) =>
+      (c.s_Name || c.name || '')
+        .toLowerCase()
+        .includes((filters.search || '').toLowerCase().trim())
+    );
+  }, [categories, filters.search]);
 
   const columns = [
     {
@@ -61,15 +69,18 @@ export const AdminCategoriesPage: React.FC = () => {
               className="size-10 rounded-lg object-cover border border-gray-200 group-hover:scale-105 transition-transform"
             />
           ) : (
-            <div className="size-10 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-xs group-hover:scale-105 transition-transform">
+            <div className="size-10 rounded-lg bg-stone-100 text-stone-600 flex items-center justify-center font-bold text-xs group-hover:scale-105 transition-transform">
               <AppstoreOutlined style={{ fontSize: 18 }} />
             </div>
           )}
           <div>
-            <p className="font-semibold text-xs text-gray-900 group-hover:text-sky-600 transition-colors m-0">
+            <p className="font-semibold text-xs text-gray-900 group-hover:text-[#2B5A50] transition-colors m-0">
               {name || row.name}
             </p>
-            <p className="text-[11px] text-gray-400 font-mono m-0 mt-0.5">/{row.slug}</p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="text-[11px] text-gray-400 font-mono">/{row.slug}</span>
+              <UButtonCopy copyValue={row.slug} />
+            </div>
           </div>
         </div>
       ),
@@ -78,7 +89,9 @@ export const AdminCategoriesPage: React.FC = () => {
       title: 'Mô Tả',
       dataIndex: 'description',
       render: (desc: string) => (
-        <span className="text-xs text-gray-600 line-clamp-1">{desc || '—'}</span>
+        <span className="text-xs text-gray-600 line-clamp-1">
+          {desc || <span className="text-slate-400">-</span>}
+        </span>
       ),
     },
     {
@@ -90,125 +103,94 @@ export const AdminCategoriesPage: React.FC = () => {
             <Button
               size="small"
               type="text"
-              icon={<EyeOutlined style={{ fontSize: 16, color: '#0ea5e9' }} />}
+              icon={<EyeOutlined style={{ fontSize: 16, color: '#2B5A50' }} />}
               onClick={() => handleOpenDetail(record)}
             />
           </Tooltip>
 
-          <Popconfirm
-            title="Xác nhận xóa danh mục này?"
-            onConfirm={() => deleteCategory(record.s_ID)}
-            okText="Xóa"
-            cancelText="Hủy"
-            okButtonProps={{ danger: true }}
-          >
-            <Tooltip title="Xóa danh mục">
-              <Button
-                size="small"
-                type="text"
-                danger
-                icon={<DeleteOutlined style={{ fontSize: 16 }} />}
-              />
-            </Tooltip>
-          </Popconfirm>
+          <UAlertDialog
+            title="Xác nhận xóa danh mục?"
+            description={`Bạn có chắc chắn muốn xóa danh mục "${record.s_Name || record.name}" không?`}
+            onDelete={() => deleteCategory(record.s_ID)}
+            loading={isDeleting}
+            iconChildren={<DeleteOutlined style={{ fontSize: 16, color: '#ef4444' }} />}
+            titleTooltip="Xóa danh mục"
+          />
         </Space>
       ),
     },
   ];
 
   return (
-    <div className="flex flex-col gap-4 font-sans h-full">
+    <div className="flex flex-col gap-4 font-sans">
       <UBreadcrumb
         title="Quản Lý Danh Mục"
         trailing={
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => {
-              form.resetFields();
-              setIsModalOpen(true);
-            }}
-            className="!bg-sky-500 hover:!bg-sky-400 !font-semibold !shadow-xs"
+            onClick={() => setIsModalOpen(true)}
+            className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-semibold !shadow-xs !h-9 !px-4 !rounded-lg cursor-pointer"
           >
             Thêm danh mục mới
           </Button>
         }
-      >
-        <div className="w-72">
-          <USearchInput
-            placeholder="Tìm theo tên danh mục..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-      </UBreadcrumb>
+      />
 
-      <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-4 flex-1 min-h-0 flex flex-col justify-between">
+      <FilterBar
+        trailing={
+          <div className="text-xs text-gray-400 font-medium">
+            Tổng cộng <strong>{filteredCategories.length}</strong> danh mục
+          </div>
+        }
+      >
+        <FilterSearch
+          value={filters.search || ''}
+          onChange={(val) => setFilter('search', val)}
+          placeholder="Tìm kiếm danh mục..."
+          className="w-72"
+        />
+
+        {hasActiveFilters && (
+          <FilterResetButton onReset={resetFilters} />
+        )}
+      </FilterBar>
+
+      <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-4 flex flex-col">
         <Table
           dataSource={filteredCategories}
-          rowKey="s_ID"
+          rowKey={(r) => r.s_ID || r.id || r.slug}
           columns={columns}
           loading={isLoading}
-          pagination={{ pageSize: 8, showTotal: (t) => `Tổng số ${t} danh mục` }}
+          pagination={{
+            pageSize: 8,
+            showSizeChanger: true,
+            pageSizeOptions: ['8', '15', '30'],
+            showTotal: (t) => `Tổng số ${t} danh mục`,
+          }}
           size="middle"
-          scroll={{ y: 'calc(100vh - 290px)' }}
-          onRow={(record) => ({
-            onClick: (e) => {
-              const target = e.target as HTMLElement;
-              if (!target.closest('button') && !target.closest('.ant-popconfirm')) {
-                handleOpenDetail(record);
-              }
-            },
-            className: 'cursor-pointer hover:bg-sky-50/30 transition-colors',
-          })}
+          scroll={{ x: 'max-content' }}
         />
       </div>
 
-      {/* Modal Thêm Danh Mục */}
-      <Modal
-        title="Thêm Mới Danh Mục"
+      <CategoryModal
         open={isModalOpen}
-        onOk={() => form.submit()}
-        onCancel={() => setIsModalOpen(false)}
-        confirmLoading={isCreating}
-        okText="Tạo mới"
-        cancelText="Đóng"
-        width={480}
-        centered
-        destroyOnClose
-      >
-        <Form form={form} layout="vertical" onFinish={handleFinish} className="mt-3">
-          <Form.Item
-            name="name"
-            label="Tên danh mục"
-            rules={[{ required: true, message: 'Vui lòng nhập tên danh mục' }]}
-          >
-            <Input placeholder="Ví dụ: Phòng Khách, Phòng Ngủ, Bếp..." className="!rounded-lg !py-1.5 !w-full" style={{ width: '100%' }} />
-          </Form.Item>
-
-          <Form.Item name="image_url" label="Ảnh minh họa danh mục">
-            <UImageUpload aspectRatio="square" placeholderText="Chọn ảnh danh mục" />
-          </Form.Item>
-
-          <Form.Item name="description" label="Mô tả danh mục">
-            <Input.TextArea rows={2} placeholder="Mô tả ngắn gọn về danh mục..." className="!rounded-lg !w-full" style={{ width: '100%' }} />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* Drawer Chi Tiết Danh Mục & Danh Sách Sản Phẩm */}
-      <CategoryDetailDrawer
-        open={isDetailDrawerOpen}
-        onClose={() => {
-          setIsDetailDrawerOpen(false);
-          setSelectedCategory(null);
-        }}
-        category={selectedCategory}
-        categories={categories.map((c: any) => ({
-          id: c.s_ID || c.id,
-          name: c.s_Name || c.name,
-        }))}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleFinish}
+        loading={isCreating}
       />
+
+      {selectedCategory && (
+        <CategoryDetailDrawer
+          open={isDetailDrawerOpen}
+          onClose={() => {
+            setIsDetailDrawerOpen(false);
+            setSelectedCategory(null);
+          }}
+          category={selectedCategory}
+          categories={categories}
+        />
+      )}
     </div>
   );
 };

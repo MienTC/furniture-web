@@ -8,6 +8,7 @@ import { usePublicContactSettings } from "~/features/admin/hooks";
 import { APP_NAME } from "~/common/constants";
 import { CarOutlined, SafetyCertificateOutlined, SearchOutlined, MenuOutlined, PhoneOutlined, HeartOutlined, ShoppingOutlined } from '@ant-design/icons';
 import { Badge, Dropdown, MenuProps, Drawer, Input, Button } from "antd";
+import UAvatar from "~/components/ui/uavatar";
 import { CategoryNav } from "./CategoryNav";
 import { AuthModal } from "~/components/ui/AuthModal";
 
@@ -42,7 +43,7 @@ export const Header: React.FC = () => {
         <div className="py-1 px-1">
           <p className="font-bold text-stone-800">{user.name}</p>
           <p className="text-xs text-stone-500">{user.email}</p>
-          <span className="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-brand-peach/30 text-brand-coral uppercase">
+          <span className="inline-block mt-1 px-2 py-0.5 rounded text-xs font-bold bg-brand-peach/30 text-brand-coral uppercase">
             {user.role}
           </span>
         </div>
@@ -76,22 +77,21 @@ export const Header: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-xs">
-      {/* Top Banner */}
-      <div className="bg-stone-900 text-brand-cream text-xs py-2 px-4 border-b border-brand-coral/30">
+      {/* Top Banner - Tông Bắc Âu Nordic mát mắt, thanh lịch */}
+      <div className="bg-[#F4F6F5] text-[#4A5550] text-xs py-2 px-4 border-b border-[#E5EAE7]">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5">
-              <CarOutlined className="text-brand-peach" style={{ fontSize: 14 }} /> Miễn phí giao hàng & lắp đặt toàn quốc
+            <span className="flex items-center gap-1.5 font-medium">
+              <CarOutlined className="text-brand-coral" style={{ fontSize: 14 }} /> Miễn phí giao hàng & lắp đặt toàn quốc
             </span>
-            <span className="hidden md:flex items-center gap-1.5">
-              <SafetyCertificateOutlined className="text-brand-mint" style={{ fontSize: 14 }} /> Bảo hành 5
-              năm
+            <span className="hidden md:flex items-center gap-1.5 font-medium">
+              <SafetyCertificateOutlined className="text-brand-coral" style={{ fontSize: 14 }} /> Bảo hành 5 năm tận nhà
             </span>
           </div>
           {contactSettings?.hotline && (
             <a
               href={`tel:${contactSettings.hotline}`}
-              className="hover:text-brand-peach flex items-center gap-1 font-semibold"
+              className="hover:text-brand-coral text-[#4A5550] flex items-center gap-1 font-semibold transition-colors"
             >
               <PhoneOutlined style={{ fontSize: 12 }} /> Hotline: {contactSettings.hotline}
             </a>
@@ -109,7 +109,7 @@ export const Header: React.FC = () => {
             <span className="text-2xl font-black text-stone-900 tracking-tight block leading-none">
               {APP_NAME}
             </span>
-            <span className="text-[10px] text-brand-coral tracking-widest uppercase font-bold">
+            <span className="text-xs text-brand-coral tracking-widest uppercase font-bold">
               Interior Luxury
             </span>
           </div>
@@ -137,7 +137,7 @@ export const Header: React.FC = () => {
               count={wishlistIds.length}
               overflowCount={99}
               size="small"
-              color="#DE7272"
+              color="#2B5A50"
             >
               <HeartOutlined style={{ fontSize: 22 }} />
             </Badge>
@@ -145,21 +145,21 @@ export const Header: React.FC = () => {
 
           <Link
             to="/cart"
-            className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-stone-100 hover:bg-brand-peach/30 transition-colors text-stone-800 min-w-[120px] border border-stone-200"
+            className="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-stone-50 hover:bg-stone-100 transition-colors text-stone-800 border border-stone-200 shadow-2xs group"
           >
             <Badge
               count={itemCount}
               overflowCount={99}
               size="small"
-              color="#DE7272"
+              color="#2B5A50"
             >
-              <ShoppingOutlined className="text-stone-800" style={{ fontSize: 22 }} />
+              <ShoppingOutlined className="text-stone-800 group-hover:text-brand-coral transition-colors" style={{ fontSize: 20 }} />
             </Badge>
-            <div className="flex flex-col text-left">
-              <span className="text-[10px] text-stone-500 font-medium leading-none">
+            <div className="flex flex-col text-left justify-center">
+              <span className="text-[11px] text-stone-500 font-semibold leading-none">
                 Giỏ hàng
               </span>
-              <span className="text-xs font-bold text-brand-coral leading-tight">
+              <span className="text-xs font-bold text-brand-coral mt-1 leading-none font-mono">
                 {subtotal.toLocaleString("vi-VN")}₫
               </span>
             </div>
@@ -172,14 +172,7 @@ export const Header: React.FC = () => {
               trigger={["click"]}
             >
               <button className="flex items-center gap-2 p-1.5 rounded-full hover:bg-stone-100 transition-colors">
-                <img
-                  src={
-                    user.avatar ||
-                    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-                  }
-                  alt={user.name || "User"}
-                  className="w-8 h-8 rounded-full object-cover border border-brand-coral/40"
-                />
+                <UAvatar size={32} src={user.avatar} nickname={user.name} />
                 <span className="hidden md:inline text-xs font-semibold text-stone-800">
                   {user.name?.split(" ")[0]}
                 </span>
@@ -197,7 +190,7 @@ export const Header: React.FC = () => {
               <button
                 type="button"
                 onClick={() => openAuth('register')}
-                className="px-3.5 py-1.5 text-xs font-bold text-white bg-brand-coral hover:bg-[#c95f5f] rounded-lg shadow-xs transition-colors cursor-pointer"
+                className="px-3.5 py-1.5 text-xs font-bold text-white bg-[#2B5A50] hover:bg-[#20453D] rounded-lg shadow-xs transition-colors cursor-pointer"
               >
                 Đăng ký
               </button>
@@ -232,13 +225,22 @@ export const Header: React.FC = () => {
               prefix={<SearchOutlined style={{ fontSize: 16 }} />}
             />
           </form>
-          <Link
-            to="/products"
-            onClick={() => setMobileMenuOpen(false)}
-            className="py-2 px-3 rounded-lg font-bold text-brand-coral bg-brand-peach/20"
-          >
-            Tất cả Sản Phẩm
-          </Link>
+          <div className="grid grid-cols-2 gap-2 mb-2">
+            <Link
+              to="/products"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2.5 px-3 rounded-xl font-bold text-stone-800 bg-stone-100 text-center text-xs"
+            >
+              Tất cả Sản Phẩm
+            </Link>
+            <Link
+              to="/products?flashsale=true"
+              onClick={() => setMobileMenuOpen(false)}
+              className="py-2.5 px-3 rounded-xl font-bold text-brand-coral bg-brand-peach/30 text-center text-xs flex items-center justify-center gap-1"
+            >
+              <span>⚡ Flash Sale</span>
+            </Link>
+          </div>
           {categories
             .filter((c) => !c.parentId)
             .map((cat) => {
@@ -279,7 +281,7 @@ export const Header: React.FC = () => {
                     setMobileMenuOpen(false);
                     openAuth('login');
                   }}
-                  className="!bg-brand-coral hover:!bg-[#c95f5f] font-bold"
+                  className="!bg-[#2B5A50] hover:!bg-[#20453D] font-bold"
                 >
                   Đăng Nhập
                 </Button>

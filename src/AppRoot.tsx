@@ -1,4 +1,5 @@
 import React from 'react';
+import { StyleProvider } from '@ant-design/cssinjs';
 import { ConfigProvider, App } from 'antd';
 import viVN from 'antd/locale/vi_VN';
 import { ToastContainer } from 'react-toastify';
@@ -11,15 +12,30 @@ import AppRoutes from '~/routes';
 
 const antdTheme = {
   token: {
-    colorPrimary: '#DE7272', colorPrimaryHover: '#e58585', colorPrimaryActive: '#c95f5f',
-    colorBgBase: '#fafaf9', colorText: '#1c1917',
-    borderRadius: 10,
+    colorPrimary: '#2B5A50',
+    colorPrimaryHover: '#20453D',
+    colorPrimaryActive: '#183730',
+    colorLink: '#1A2421',
+    colorLinkHover: '#2B5A50',
+    colorLinkActive: '#20453D',
+    colorBgBase: '#FFFFFF',
+    colorText: '#1A2421',
+    colorBorder: '#E5EAE7',
+    borderRadius: 8,
     fontFamily: "'Inter', sans-serif",
-    colorLink: '#DE7272', colorLinkHover: '#FFCA88',
   },
   components: {
-    Button: { borderRadius: 10 }, Input: { borderRadius: 10 }, Select: { borderRadius: 10 },
-    Tag: { borderRadius: 6 }, Card: { borderRadius: 16 },
+    Button: {
+      borderRadius: 8,
+      colorPrimary: '#2B5A50',
+      colorPrimaryHover: '#20453D',
+      colorPrimaryActive: '#183730',
+      fontWeight: 600,
+    },
+    Input: { borderRadius: 8 },
+    Select: { borderRadius: 8 },
+    Tag: { borderRadius: 6 },
+    Card: { borderRadius: 14 },
     Carousel: { dotHeight: 6, dotWidth: 28 },
   },
 };
@@ -38,17 +54,19 @@ const AppRoot: React.FC = () => (
       pauseOnHover
       theme="light"
     />
-    <ConfigProvider theme={antdTheme} locale={viVN}>
-      <App>
-        <AuthProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <AppRoutes />
-            </WishlistProvider>
-          </CartProvider>
-        </AuthProvider>
-      </App>
-    </ConfigProvider>
+    <StyleProvider hashPriority="high">
+      <ConfigProvider theme={antdTheme} locale={viVN}>
+        <App>
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <AppRoutes />
+              </WishlistProvider>
+            </CartProvider>
+          </AuthProvider>
+        </App>
+      </ConfigProvider>
+    </StyleProvider>
   </QueryProvider>
 );
 

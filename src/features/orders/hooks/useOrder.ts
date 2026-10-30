@@ -1,16 +1,21 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import instanceBE from '~/services/v1/instance';
+import { orderServiceBE } from '~/services/v1/order.service';
 import { QUERY_KEYS } from '~/common/com-query-key';
-import type { Order, ResponseAPI } from '~/types';
-import { orderService } from '~/services/orderService';
+import type { Order } from '~/types';
+
+export const useMyOrders = () => {
+  return useQuery<Order[]>({
+    queryKey: [QUERY_KEYS.order.list],
+    queryFn: () => orderServiceBE.fetchMyOrders(),
+  });
+};
 
 export const useOrderDetail = (orderId?: string) => {
   return useQuery<Order | undefined>({
     queryKey: [QUERY_KEYS.order.detail, orderId],
     queryFn: async () => {
       if (!orderId) return undefined;
-      const res = await instanceBE.get<any, ResponseAPI<Order>>(`/orders/${orderId}`);
-      return res.data;
+      return await orderServiceBE.fetchOrderDetail(orderId);
     },
     enabled: Boolean(orderId),
     refetchInterval: (query) => {
@@ -26,10 +31,7 @@ export const useOrderDetail = (orderId?: string) => {
 export const useCancelOrder = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (orderId: string) => {
-      const res = await instanceBE.patch<any, ResponseAPI<any>>(`/orders/${orderId}/cancel`);
-      return res.data;
-    },
+    mutationFn: (orderId: string) => orderServiceBE.cancelOrder(orderId),
     onSuccess: (_, orderId) => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.order.detail, orderId] });
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.order.list] });

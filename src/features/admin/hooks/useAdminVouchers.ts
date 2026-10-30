@@ -19,7 +19,19 @@ export const useAdminVouchers = () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.vouchers.list] });
     },
     onError: (e: any) => {
-      toast.error(e.message || 'Lỗi khi tạo mã giảm giá');
+      toast.error(e?.response?.data?.message || e?.message);
+    },
+  });
+
+  const { mutateAsync: updateVoucher, isPending: isUpdating } = useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: Partial<AdminVoucherDto> }) =>
+      adminService.updateVoucher(id, payload),
+    onSuccess: () => {
+      toast.success('Cập nhật voucher thành công');
+      queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.vouchers.list] });
+    },
+    onError: (e: any) => {
+      toast.error(e?.response?.data?.message || e?.message);
     },
   });
 
@@ -30,7 +42,7 @@ export const useAdminVouchers = () => {
       queryClient.invalidateQueries({ queryKey: [ADMIN_QUERY_KEYS.vouchers.list] });
     },
     onError: (e: any) => {
-      toast.error(e.message || 'Lỗi khi xóa voucher');
+      toast.error(e?.response?.data?.message || e?.message);
     },
   });
 
@@ -39,8 +51,10 @@ export const useAdminVouchers = () => {
     isLoading,
     refetch,
     createVoucher,
+    updateVoucher,
     deleteVoucher,
     isCreating,
+    isUpdating,
     isDeleting,
   };
 };

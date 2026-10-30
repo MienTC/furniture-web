@@ -13,6 +13,7 @@ import { WishlistPage } from '~/features/wishlist/pages/WishlistPage';
 import { AdminDashboardPage } from '~/features/admin/pages/AdminDashboardPage';
 import { AdminProductsPage } from '~/features/admin/pages/AdminProductsPage';
 import { AdminOrdersPage } from '~/features/admin/pages/AdminOrdersPage';
+import { AdminOrderDetailPage } from '~/features/admin/pages/AdminOrderDetailPage';
 import { AdminUsersPage } from '~/features/admin/pages/AdminUsersPage';
 import { AdminCategoriesPage } from '~/features/admin/pages/AdminCategoriesPage';
 import { AdminBannersPage } from '~/features/admin/pages/AdminBannersPage';
@@ -74,11 +75,13 @@ const router = createBrowserRouter([
       { path: 'products', element: <AdminProductsPage /> },
       { path: 'categories', element: <AdminCategoriesPage /> },
       { path: 'orders', element: <AdminOrdersPage /> },
+      { path: 'orders/:id', element: <AdminOrderDetailPage /> },
       { path: 'users', element: <AdminUsersPage /> },
       { path: 'banners', element: <AdminBannersPage /> },
       { path: 'vouchers', element: <AdminVouchersPage /> },
       { path: 'reviews', element: <AdminReviewsPage /> },
       { path: 'flash-sale', element: <AdminFlashSalePage /> },
+      { path: 'flash_sale', element: <Navigate to="/admin/flash-sale" replace /> },
       { path: 'payment-settings', element: <AdminPaymentSettingsPage /> },
       { path: 'contact-settings', element: <AdminContactSettingsPage /> },
       { path: '*', element: <Navigate to="/admin" replace /> },

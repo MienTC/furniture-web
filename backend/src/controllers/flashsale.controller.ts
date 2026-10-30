@@ -14,58 +14,55 @@ export class FlashSaleController {
       const setting = await SettingModel.findOne({ key: 'flash_sale_config' });
       const config = setting?.value || null;
 
-      if (!config || !config.is_active || !Array.isArray(config.product_ids) || config.product_ids.length === 0) {
-        return sendSuccess(res, 'Flash Sale hiện đang tắt', {
-          isActive: false,
-          config: config || {
-            is_active: false,
-            title: '',
-            discount_badge: '',
-            description: '',
-            end_time: null,
-            product_ids: [],
-          },
-          products: [],
+      const isExpired = Boolean(config && config.end_time && new Date(config.end_time).getTime() <= Date.now());
+      const isActive = Boolean(config && config.is_active && !isExpired && Array.isArray(config.product_ids) && config.product_ids.length > 0);
+
+      let formatted: any[] = [];
+      if (config && Array.isArray(config.product_ids) && config.product_ids.length > 0) {
+        // Luôn nạp thông tin chi tiết sản phẩm kể cả khi Flash Sale đang tắt để Admin xem và chỉnh sửa
+        const products = await ProductModel.find({
+          s_ID: { $in: config.product_ids },
+        }).lean();
+
+        const productIds = products.map((p) => p.s_ID);
+        const images = await ProductImageModel.find({
+          s_product_ID: { $in: productIds },
+        }).sort({ sort_order: 1 });
+
+        const imageMap = new Map<string, string[]>();
+        images.forEach((img: any) => {
+          if (!imageMap.has(img.s_product_ID)) {
+            imageMap.set(img.s_product_ID, []);
+          }
+          imageMap.get(img.s_product_ID)!.push(img.image_url);
         });
+
+        formatted = products.map((p: any) => ({
+          id: p.s_ID,
+          s_ID: p.s_ID,
+          name: p.s_Name,
+          slug: p.slug,
+          categoryId: p.category_id,
+          categoryName: p.category_name,
+          price: p.price,
+          originalPrice: p.original_price,
+          discountPercent: p.discount_percent,
+          inStock: p.in_stock,
+          stockQuantity: p.stock_quantity,
+          images: imageMap.get(p.s_ID) || [],
+        }));
       }
 
-      // Lấy danh sách sản phẩm theo ID được admin set
-      const products = await ProductModel.find({
-        s_ID: { $in: config.product_ids },
-        is_active: true,
-      }).lean();
-
-      const productIds = products.map((p) => p.s_ID);
-      const images = await ProductImageModel.find({
-        s_product_ID: { $in: productIds },
-      }).sort({ sort_order: 1 });
-
-      const imageMap = new Map<string, string[]>();
-      images.forEach((img: any) => {
-        if (!imageMap.has(img.s_product_ID)) {
-          imageMap.set(img.s_product_ID, []);
-        }
-        imageMap.get(img.s_product_ID)!.push(img.image_url);
-      });
-
-      const formatted = products.map((p: any) => ({
-        id: p.s_ID,
-        s_ID: p.s_ID,
-        name: p.s_Name,
-        slug: p.slug,
-        categoryId: p.category_id,
-        categoryName: p.category_name,
-        price: p.price,
-        originalPrice: p.original_price,
-        discountPercent: p.discount_percent,
-        inStock: p.in_stock,
-        stockQuantity: p.stock_quantity,
-        images: imageMap.get(p.s_ID) || [],
-      }));
-
       return sendSuccess(res, 'Lấy flash sale thành công', {
-        isActive: true,
-        config,
+        isActive,
+        config: config || {
+          is_active: false,
+          title: '',
+          discount_badge: '',
+          description: '',
+          end_time: null,
+          product_ids: [],
+        },
         products: formatted,
       });
     } catch (e: any) {
