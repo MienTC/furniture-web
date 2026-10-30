@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Modal, Form, Input, Rate, Switch, Tooltip } from 'antd';
-import { IconMessageReply, IconTrash } from '@tabler/icons-react';
+import { IconMessageReply, IconTrash, IconPackage } from '@tabler/icons-react';
+import { Link } from 'react-router-dom';
 import { useAdminReviews } from '~/features/admin/hooks';
 import UBreadcrumb from '~/components/ui/ubreadcrumb';
 import UAvatar from '~/components/ui/uavatar';
@@ -39,14 +40,46 @@ export const AdminReviewsPage: React.FC = () => {
 
   const columns = [
     {
+      title: 'Sản Phẩm',
+      dataIndex: 'product_name',
+      width: 220,
+      render: (name: string, row: any) => (
+        <div className="flex items-center gap-2.5">
+          {row.product_image ? (
+            <img
+              src={row.product_image}
+              alt=""
+              className="w-10 h-10 rounded-lg object-cover bg-stone-100 border border-stone-200 shrink-0"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-lg bg-stone-100 border border-stone-200 flex items-center justify-center text-stone-400 shrink-0">
+              <IconPackage size={18} />
+            </div>
+          )}
+          <div className="min-w-0">
+            <Link
+              to={row.product_slug ? `/products/${row.product_slug}` : '#'}
+              target="_blank"
+              className="text-xs font-semibold text-stone-900 hover:text-[#2B5A50] line-clamp-2 leading-tight block"
+            >
+              {name || row.product_id}
+            </Link>
+            <span className="text-[10px] text-stone-400 font-mono block mt-0.5">
+              {row.product_id}
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    {
       title: 'Khách Hàng',
       dataIndex: 'user_name',
-      width: 180,
+      width: 170,
       render: (name: string, row: any) => (
         <div className="flex items-center gap-2.5">
           <UAvatar size={32} nickname={name} src={row.user_avatar} />
           <div>
-            <p className="font-semibold text-xs text-gray-900 leading-tight">{name}</p>
+            <p className="font-semibold text-xs text-gray-900 leading-tight m-0">{name}</p>
             {row.verified_purchase && <UBadge color="green">Đã mua hàng</UBadge>}
           </div>
         </div>

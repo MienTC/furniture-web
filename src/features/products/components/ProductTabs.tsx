@@ -80,41 +80,59 @@ export const ProductTabs: React.FC<{ product: Product }> = ({ product }) => {
                       Viết Đánh Giá
                     </Button>
                   </div>
-                  <div className="space-y-4">
-                    {(product.reviews ?? []).map((rev) => (
-                      <div
-                        key={rev.id}
-                        className="p-4 rounded-xl bg-stone-50 border border-stone-200/80 space-y-2"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-xs text-stone-900">
-                              {rev.userName}
-                            </span>
-                            {rev.verifiedPurchase && (
-                              <Tag
-                                color="green"
-                                className="text-[10px] font-bold"
-                              >
-                                Đã mua hàng
-                              </Tag>
-                            )}
-                          </div>
-                          <span className="text-[11px] text-stone-400">
-                            {rev.date}
-                          </span>
-                        </div>
-                        <Rate
-                          disabled
-                          defaultValue={rev.rating}
-                          className="!text-brand-coral text-xs"
-                        />
-                        <p className="text-xs text-stone-700 leading-relaxed">
-                          {rev.comment}
-                        </p>
+                  {(product.reviews ?? []).length === 0 ? (
+                    <div className="py-10 text-center bg-stone-50 rounded-2xl border border-dashed border-stone-200 space-y-3">
+                      <div className="w-12 h-12 rounded-full bg-stone-100 mx-auto flex items-center justify-center text-stone-400">
+                        <MessageOutlined style={{ fontSize: 22 }} />
                       </div>
-                    ))}
-                  </div>
+                      <p className="font-semibold text-xs text-stone-700 m-0">Chưa có đánh giá nào cho sản phẩm này</p>
+                      <p className="text-[11px] text-stone-500 m-0">Hãy là người đầu tiên chia sẻ cảm nhận thực tế về chất lượng sản phẩm!</p>
+                      <Button
+                        onClick={() => setReviewOpen(true)}
+                        type="primary"
+                        size="small"
+                        className="!bg-[#2B5A50] hover:!bg-[#20453D] font-bold text-xs"
+                      >
+                        Viết đánh giá ngay
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {(product.reviews ?? []).map((rev) => (
+                        <div
+                          key={rev.id}
+                          className="p-4 rounded-xl bg-stone-50 border border-stone-200/80 space-y-2"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-xs text-stone-900">
+                                {rev.userName}
+                              </span>
+                              {rev.verifiedPurchase && (
+                                <Tag
+                                  color="green"
+                                  className="text-[10px] font-bold"
+                                >
+                                  Đã mua hàng
+                                </Tag>
+                              )}
+                            </div>
+                            <span className="text-[11px] text-stone-400">
+                              {rev.date}
+                            </span>
+                          </div>
+                          <Rate
+                            disabled
+                            defaultValue={rev.rating}
+                            className="!text-brand-coral text-xs"
+                          />
+                          <p className="text-xs text-stone-700 leading-relaxed">
+                            {rev.comment}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ),
             },

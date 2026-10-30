@@ -25,6 +25,7 @@ export interface CreateReviewPayload {
   rating: number;
   comment: string;
   name?: string;
+  orderId?: string;
 }
 
 export interface AdminReviewReplyPayload {

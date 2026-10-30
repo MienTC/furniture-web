@@ -8,6 +8,7 @@ import { VoucherUsageModel } from '../models/VoucherUsage.model.js';
 import { CartModel } from '../models/Cart.model.js';
 import { CartItemModel } from '../models/CartItem.model.js';
 import { UserModel } from '../models/User.model.js';
+import { ReviewModel } from '../models/Review.model.js';
 import { generateId } from '../utils/generateId.js';
 import { sendSuccess, sendError } from '../utils/response.js';
 import { AuthRequest } from '../types/index.js';
@@ -20,7 +21,6 @@ export class OrderController {
    */
   static async createOrder(req: AuthRequest, res: Response): Promise<any> {
     try {
-      const userId = req.user?.s_ID || 'guest';
       const { items, customerInfo, voucherCode } = req.body;
 
       if (!items || !Array.isArray(items) || items.length === 0) {
@@ -29,6 +29,22 @@ export class OrderController {
 
       if (!customerInfo || !customerInfo.fullName || !customerInfo.phone || !customerInfo.address) {
         return sendError(res, 'Vui lòng cung cấp đầy đủ thông tin người nhận', 400);
+      }
+
+      // Determine userId
+      let userId = req.user?.s_ID;
+      if (!userId && customerInfo.phone) {
+        const phoneClean = customerInfo.phone.trim();
+        const emailClean = customerInfo.email?.trim().toLowerCase();
+        const orConditions: any[] = [{ phone: phoneClean }];
+        if (emailClean) orConditions.push({ email: emailClean });
+        const matchedUser = await UserModel.findOne({ $or: orConditions }).lean();
+        if (matchedUser) {
+          userId = matchedUser.s_ID;
+        }
+      }
+      if (!userId) {
+        userId = 'guest';
       }
 
       // 1. Validate items & calculate subtotal
@@ -165,7 +181,7 @@ export class OrderController {
         await usage.save();
       }
 
-      // 7. Clear user cart if logged in & Tích điểm thành viên (100.000 VNĐ = 1 điểm)
+      // 7. Clear user cart if logged in & Tích điểm thành viên
       if (userId !== 'guest') {
         const cart = await CartModel.findOne({ user_id: userId });
         if (cart) {
@@ -181,7 +197,7 @@ export class OrderController {
         }
       }
 
-      // 8. Tự động thông báo tới Telegram Admin (chạy ngầm không chặn luồng)
+      // 8. Tự động thông báo tới Telegram Admin
       NotificationService.notifyNewOrder({
         orderId: newOrder.s_order_id,
         customerName: newOrder.recipient_name,
@@ -214,7 +230,25 @@ export class OrderController {
   static async getMyOrders(req: AuthRequest, res: Response): Promise<any> {
     try {
       const userId = req.user?.s_ID!;
-      const orders = await OrderModel.find({ s_user_id: userId }).sort({ dt_created: -1 }).lean();
+      const user = await UserModel.findOne({ s_ID: userId }).lean();
+
+      // Find by user s_ID OR matching phone OR matching email
+      const orConditions: any[] = [{ s_user_id: userId }];
+      if (user?.phone) {
+        orConditions.push({ phone: user.phone });
+      }
+      if (user?.email) {
+        orConditions.push({ email: user.email });
+        orConditions.push({ email: user.email.toLowerCase() });
+      }
+
+      const orders = await OrderModel.find({ $or: orConditions }).sort({ dt_created: -1 }).lean();
+
+      // Also fetch user reviews to mark items that have been reviewed
+      const userReviews = await ReviewModel.find({
+        $or: [{ user_id: userId }, ...(user?.s_user ? [{ user_name: user.s_user }] : [])],
+      }).lean();
+      const reviewedProductSet = new Set(userReviews.map((r) => r.product_id));
 
       const populatedOrders = await Promise.all(
         orders.map(async (ord) => {
@@ -251,6 +285,7 @@ export class OrderController {
               },
               quantity: d.quantity,
               selectedColor: d.selected_color || undefined,
+              isReviewed: reviewedProductSet.has(d.s_product_id),
             })),
           };
         })
@@ -277,6 +312,14 @@ export class OrderController {
       }
 
       const details = await OrderDetailModel.find({ s_order_id: order.s_ID }).lean();
+
+      // Check reviews
+      const productIds = details.map((d) => d.s_product_id);
+      const reviews = await ReviewModel.find({
+        product_id: { $in: productIds },
+        order_id: order.s_ID,
+      }).lean();
+      const reviewedSet = new Set(reviews.map((r) => r.product_id));
 
       const formatted = {
         id: order.s_order_id,
@@ -310,6 +353,7 @@ export class OrderController {
           },
           quantity: d.quantity,
           selectedColor: d.selected_color || undefined,
+          isReviewed: reviewedSet.has(d.s_product_id),
         })),
       };
 

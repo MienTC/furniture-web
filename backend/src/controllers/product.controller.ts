@@ -37,7 +37,7 @@ export class ProductController {
       warranty: p.warranty || '',
       description: p.description || '',
       specifications: p.specifications || {},
-      reviews: reviews.length > 0 ? reviews : undefined,
+      reviews: reviews || [],
     };
   }
 

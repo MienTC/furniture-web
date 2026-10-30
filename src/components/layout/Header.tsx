@@ -16,7 +16,7 @@ export const Header: React.FC = () => {
   const navigate = useNavigate();
   const { itemCount, subtotal } = useCart();
   const { wishlistIds } = useWishlist();
-  const { user, logout, isAdmin } = useAuth();
+  const { user, adminUser, logout, isAdmin } = useAuth();
   const { categories } = useCategories();
   const { data: contactSettings } = usePublicContactSettings();
 
@@ -180,6 +180,15 @@ export const Header: React.FC = () => {
             </Dropdown>
           ) : (
             <div className="flex items-center gap-2">
+              {adminUser && (
+                <Link
+                  to="/admin"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#2B5A50] bg-[#EDF5F2] hover:bg-[#D0DBD6] rounded-lg transition-colors border border-[#D0DBD6]"
+                >
+                  <SafetyCertificateOutlined style={{ fontSize: 13 }} />
+                  Quản Trị ({adminUser.name})
+                </Link>
+              )}
               <button
                 type="button"
                 onClick={() => openAuth('login')}

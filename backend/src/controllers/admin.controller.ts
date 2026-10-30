@@ -1158,8 +1158,27 @@ export class AdminController {
    */
   static async getReviews(req: AuthRequest, res: Response): Promise<any> {
     try {
-      const reviews = await ReviewModel.find().sort({ dt_create: -1 });
-      return sendSuccess(res, 'Lấy danh sách đánh giá thành công', reviews);
+      const reviews = await ReviewModel.find().sort({ dt_create: -1 }).lean();
+      const productIds = reviews.map((r) => r.product_id).filter(Boolean);
+      const products = await ProductModel.find({ s_ID: { $in: productIds } }).lean();
+      const productImages = await ProductImageModel.find({ s_product_ID: { $in: productIds }, is_primary: true }).lean();
+
+      const prodMap = new Map<string, any>();
+      products.forEach((p) => prodMap.set(p.s_ID, p));
+      const imgMap = new Map<string, string>();
+      productImages.forEach((img) => imgMap.set(img.s_product_ID, img.image_url));
+
+      const populated = reviews.map((r) => {
+        const p = prodMap.get(r.product_id);
+        return {
+          ...r,
+          product_name: p ? p.s_Name : (r.product_id || ''),
+          product_slug: p?.slug || r.product_id,
+          product_image: imgMap.get(r.product_id) || '',
+        };
+      });
+
+      return sendSuccess(res, 'Lấy danh sách đánh giá thành công', populated);
     } catch (e: any) {
       return sendError(res, e.message, 500);
     }

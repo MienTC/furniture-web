@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { ReviewModel } from '../models/Review.model.js';
 import { ProductModel } from '../models/Product.model.js';
+import { OrderModel } from '../models/Order.model.js';
 import { generateId } from '../utils/generateId.js';
 import { sendSuccess, sendError } from '../utils/response.js';
 import { AuthRequest } from '../types/index.js';
@@ -77,7 +78,7 @@ export class ReviewController {
   static async createReview(req: AuthRequest, res: Response): Promise<any> {
     try {
       const userId = req.user?.s_ID || 'guest_user';
-      const { product_id, rating, comment, user_name, user_avatar } = req.body;
+      const { product_id, rating, comment, user_name, user_avatar, order_id } = req.body;
 
       if (!product_id || !rating || !comment) {
         return sendError(res, 'Vui lòng cung cấp mã sản phẩm, điểm đánh giá và nhận xét', 400);
@@ -91,15 +92,47 @@ export class ReviewController {
         return sendError(res, 'Sản phẩm không tồn tại', 404);
       }
 
+      // Check if attached to completed order
+      let verifiedPurchase = false;
+      let resolvedOrderId: string | null = null;
+      let finalUserName = user_name || req.user?.s_user || req.user?.email || '';
+
+      if (order_id) {
+        const order = await OrderModel.findOne({
+          $or: [{ s_ID: order_id }, { s_order_id: order_id }],
+        }).lean();
+
+        if (order) {
+          resolvedOrderId = order.s_ID;
+          if (order.status === 'completed') {
+            verifiedPurchase = true;
+          }
+          if (!finalUserName && order.recipient_name) {
+            finalUserName = order.recipient_name;
+          }
+        }
+      } else if (userId !== 'guest_user') {
+        // Check if user has bought this product in any completed order
+        const userCompletedOrders = await OrderModel.find({
+          s_user_id: userId,
+          status: 'completed',
+        }).lean();
+        if (userCompletedOrders.length > 0) {
+          verifiedPurchase = true;
+          resolvedOrderId = userCompletedOrders[0].s_ID;
+        }
+      }
+
       const newReview = new ReviewModel({
         s_ID: generateId('rev'),
         product_id: product.s_ID,
         user_id: userId,
-        user_name: user_name || req.user?.s_user || req.user?.email || '',
+        user_name: finalUserName || 'Khách hàng',
         user_avatar: user_avatar || '',
+        order_id: resolvedOrderId,
         rating: Math.min(5, Math.max(1, Number(rating))),
         comment: comment.trim(),
-        verified_purchase: true,
+        verified_purchase: verifiedPurchase,
         is_approved: true,
       });
 
@@ -123,7 +156,7 @@ export class ReviewController {
           rating: newReview.rating,
           comment: newReview.comment,
           date: new Date().toISOString().split('T')[0],
-          verifiedPurchase: true,
+          verifiedPurchase,
         },
         201
       );

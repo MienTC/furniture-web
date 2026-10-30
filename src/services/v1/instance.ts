@@ -9,8 +9,15 @@ const instanceBE = axios.create({
 
 instanceBE.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('luxdecor_access_token');
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+    // Separate admin token from customer storefront token
+    const isAdminRequest = config.url?.includes('/admin') || window.location.pathname.startsWith('/admin');
+    const adminToken = localStorage.getItem('luxdecor_admin_token');
+    const customerToken = localStorage.getItem('luxdecor_access_token');
+    const token = isAdminRequest ? (adminToken || customerToken) : (customerToken || adminToken);
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => Promise.reject(error)

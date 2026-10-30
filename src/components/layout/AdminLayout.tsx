@@ -25,7 +25,7 @@ import UBadge from "~/components/ui/ubadge";
 export const AdminLayout: React.FC = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { adminUser, logoutAdmin } = useAuth();
 
   const menu = [
     {
@@ -89,10 +89,10 @@ export const AdminLayout: React.FC = () => {
   const profileContent = (
     <div className="w-56 p-2 space-y-3">
       <div className="flex items-center gap-2 pb-2 border-b border-gray-100">
-        <UAvatar size={36} nickname={user?.name} src={user?.avatar} />
+        <UAvatar size={36} nickname={adminUser?.name} src={adminUser?.avatar} />
         <div className="overflow-hidden">
-          <p className="text-sm font-semibold text-gray-800 truncate">{user?.name}</p>
-          <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+          <p className="text-sm font-semibold text-gray-800 truncate">{adminUser?.name}</p>
+          <p className="text-xs text-gray-500 truncate">{adminUser?.email}</p>
         </div>
       </div>
       <div className="space-y-1">
@@ -110,7 +110,7 @@ export const AdminLayout: React.FC = () => {
           className="w-full !flex !items-center !justify-start gap-2 text-xs"
           icon={<IconLogout size={16} />}
           onClick={() => {
-            logout();
+            logoutAdmin();
             navigate("/admin/login");
           }}
         >
@@ -138,10 +138,10 @@ export const AdminLayout: React.FC = () => {
         <div className="flex items-center gap-4">
           <Popover content={profileContent} trigger="click" placement="bottomRight">
             <div className="flex items-center gap-2 cursor-pointer p-1 rounded-md hover:bg-[#EDF5F2] transition-colors">
-              <UAvatar size={32} nickname={user?.name} src={user?.avatar} />
+              <UAvatar size={32} nickname={adminUser?.name} src={adminUser?.avatar} />
               <div className="hidden sm:block text-left">
-                <p className="text-xs font-semibold text-[#1A2421] leading-tight">{user?.name}</p>
-                <p className="text-[10px] text-[#2B5A50] font-bold capitalize">{user?.role}</p>
+                <p className="text-xs font-semibold text-[#1A2421] leading-tight">{adminUser?.name}</p>
+                <p className="text-[10px] text-[#2B5A50] font-bold capitalize">{adminUser?.role}</p>
               </div>
             </div>
           </Popover>

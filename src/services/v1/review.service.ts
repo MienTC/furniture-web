@@ -8,7 +8,13 @@ export class ReviewService {
   }
 
   async createReview(payload: CreateReviewPayload): Promise<any> {
-    const res = await instanceBE.post<any, ResponseAPI<any>>('/reviews', payload);
+    const res = await instanceBE.post<any, ResponseAPI<any>>('/reviews', {
+      product_id: payload.productId,
+      rating: payload.rating,
+      comment: payload.comment,
+      user_name: payload.name,
+      order_id: payload.orderId,
+    });
     return res.data;
   }
 

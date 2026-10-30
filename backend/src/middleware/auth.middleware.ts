@@ -54,6 +54,37 @@ export const verifyToken = async (
 };
 
 /**
+ * Middleware: Optional JWT Access Token
+ * If header Bearer token exists and is valid, attaches decoded user to req.user; otherwise passes through.
+ */
+export const optionalAuth = async (
+  req: AuthRequest,
+  _res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      if (token) {
+        try {
+          const decoded = verifyAccessToken(token);
+          const user = await UserModel.findOne({ s_ID: decoded.s_ID });
+          if (user && user.status) {
+            req.user = decoded;
+          }
+        } catch {
+          // Ignore invalid token in optional auth
+        }
+      }
+    }
+    next();
+  } catch {
+    next();
+  }
+};
+
+/**
  * Middleware: Enforce Specific Role (e.g. 'admin')
  */
 export const requireRole = (allowedRole: 'customer' | 'admin') => {

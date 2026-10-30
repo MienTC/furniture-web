@@ -27,7 +27,7 @@ import { useAuth } from '~/contexts/AuthContext';
 import { Spin } from 'antd';
 
 const AdminGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, isAdmin, isInitializing } = useAuth();
+  const { adminUser, isInitializing } = useAuth();
 
   if (isInitializing) {
     return (
@@ -37,7 +37,7 @@ const AdminGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     );
   }
 
-  if (!user || !isAdmin) {
+  if (!adminUser && !localStorage.getItem('luxdecor_admin_token')) {
     return <Navigate to="/admin/login" replace />;
   }
 

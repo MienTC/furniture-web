@@ -14,14 +14,14 @@ interface LoginFormInputs {
 export const AdminLoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { loginWithCredentials, user, isAdmin } = useAuth();
+  const { loginAsAdmin, adminUser } = useAuth();
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (user && isAdmin) {
+    if (adminUser) {
       navigate('/admin', { replace: true });
     }
-  }, [user, isAdmin, navigate]);
+  }, [adminUser, navigate]);
 
   const {
     control,
@@ -37,7 +37,7 @@ export const AdminLoginPage: React.FC = () => {
   const onSubmit = async (data: LoginFormInputs) => {
     setLoading(true);
     try {
-      const success = await loginWithCredentials(data.loginName, data.password);
+      const success = await loginAsAdmin(data.loginName, data.password);
       if (success) {
         navigate('/admin');
       }

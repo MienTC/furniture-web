@@ -1,15 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useMyOrders } from '~/features/orders/hooks';
 import { OrderCard } from '~/features/orders/components/OrderCard';
+import { ReviewModal } from '~/features/products/components/ReviewModal';
 import { InboxOutlined } from '@ant-design/icons';
 import { Tabs, Spin } from 'antd';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const OrderListPage: React.FC = () => {
   const { data: orders = [], isLoading } = useMyOrders();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('all');
 
-  const filtered = orders.filter((o) => activeTab === 'all' || o.status === activeTab);
+  const [reviewState, setReviewState] = useState<{
+    open: boolean;
+    product: any;
+    orderId: string;
+    customerName?: string;
+  }>({
+    open: false,
+    product: null,
+    orderId: '',
+  });
+
+  const counts = useMemo(() => {
+    return {
+      all: orders.length,
+      pending: orders.filter((o) => o.status === 'pending').length,
+      processing: orders.filter((o) => o.status === 'processing').length,
+      shipping: orders.filter((o) => o.status === 'shipping').length,
+      completed: orders.filter((o) => o.status === 'completed').length,
+      cancelled: orders.filter((o) => o.status === 'cancelled').length,
+    };
+  }, [orders]);
+
+  const filtered = useMemo(() => {
+    return orders.filter((o) => activeTab === 'all' || o.status === activeTab);
+  }, [orders, activeTab]);
+
+  const handleOpenReview = (product: any, orderId: string, customerName?: string) => {
+    setReviewState({
+      open: true,
+      product,
+      orderId,
+      customerName,
+    });
+  };
+
+  const handleCloseReview = () => {
+    setReviewState({ open: false, product: null, orderId: '' });
+    queryClient.invalidateQueries({ queryKey: ['myOrders'] });
+  };
 
   if (isLoading) {
     return (
@@ -30,11 +71,12 @@ export const OrderListPage: React.FC = () => {
         activeKey={activeTab}
         onChange={setActiveTab}
         items={[
-          { key: 'all', label: `Tất cả (${orders.length})` },
-          { key: 'pending', label: 'Chờ xác nhận' },
-          { key: 'processing', label: 'Đang xử lý' },
-          { key: 'shipping', label: 'Đang giao hàng' },
-          { key: 'completed', label: 'Đã hoàn thành' },
+          { key: 'all', label: `Tất cả (${counts.all})` },
+          { key: 'pending', label: `Chờ xác nhận (${counts.pending})` },
+          { key: 'processing', label: `Đang xử lý (${counts.processing})` },
+          { key: 'shipping', label: `Đang giao hàng (${counts.shipping})` },
+          { key: 'completed', label: `Đã hoàn thành (${counts.completed})` },
+          { key: 'cancelled', label: `Đã hủy (${counts.cancelled})` },
         ]}
       />
 
@@ -55,9 +97,19 @@ export const OrderListPage: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {filtered.map((o) => (
-            <OrderCard key={o.id} order={o} />
+            <OrderCard key={o.id} order={o} onReview={handleOpenReview} />
           ))}
         </div>
+      )}
+
+      {reviewState.open && reviewState.product && (
+        <ReviewModal
+          open={reviewState.open}
+          product={reviewState.product}
+          orderId={reviewState.orderId}
+          defaultName={reviewState.customerName}
+          onClose={handleCloseReview}
+        />
       )}
     </div>
   );

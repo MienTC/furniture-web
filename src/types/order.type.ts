@@ -21,10 +21,14 @@ export interface OrderCustomerInfo {
   paymentMethod: 'cod' | 'bank_transfer';
 }
 
+export interface OrderItem extends CartItem {
+  isReviewed?: boolean;
+}
+
 export interface Order {
   id: string;
   createdAt: string;
-  items: CartItem[];
+  items: OrderItem[];
   customerInfo: OrderCustomerInfo;
   subtotal: number;
   discountAmount: number;
