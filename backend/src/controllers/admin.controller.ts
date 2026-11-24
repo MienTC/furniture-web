@@ -21,6 +21,12 @@ export class AdminController {
    */
   static async getStats(req: AuthRequest, res: Response): Promise<any> {
     try {
+      const { startDate, endDate, days } = req.query as {
+        startDate?: string;
+        endDate?: string;
+        days?: string;
+      };
+
       const [
         totalProducts,
         totalOrders,
@@ -47,21 +53,44 @@ export class AdminController {
         { $group: { _id: '$status', count: { $sum: 1 } } },
       ]);
 
-      // Thống kê doanh thu theo 14 ngày gần nhất (chỉ tính đơn hàng đã thanh toán thực tế)
-      const fourteenDaysAgo = new Date();
-      fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+      // Xây dựng điều kiện lọc thời gian cho biểu đồ doanh thu (mặc định 30 ngày nếu không truyền)
+      let revenueDateFilter: any = null;
+
+      if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        revenueDateFilter = { $gte: start, $lte: end };
+      } else if (days && days !== 'all') {
+        const numDays = parseInt(days, 10) || 30;
+        const pastDate = new Date();
+        pastDate.setDate(pastDate.getDate() - numDays);
+        pastDate.setHours(0, 0, 0, 0);
+        revenueDateFilter = { $gte: pastDate };
+      } else if (days === 'all') {
+        // Toàn thời gian -> không giới hạn ngày
+        revenueDateFilter = null;
+      } else {
+        // Mặc định: 30 ngày gần nhất
+        const pastDate = new Date();
+        pastDate.setDate(pastDate.getDate() - 30);
+        pastDate.setHours(0, 0, 0, 0);
+        revenueDateFilter = { $gte: pastDate };
+      }
+
+      const revenueMatch: any = {
+        status: { $ne: 'cancelled' },
+        payment_status: { $in: ['paid', 'completed'] },
+      };
+      if (revenueDateFilter) {
+        revenueMatch.dt_created = revenueDateFilter;
+      }
 
       const revenueByDate = await OrderModel.aggregate([
-        {
-          $match: {
-            dt_created: { $gte: fourteenDaysAgo },
-            status: { $ne: 'cancelled' },
-            payment_status: { $in: ['paid', 'completed'] },
-          },
-        },
+        { $match: revenueMatch },
         {
           $group: {
-            _id: { $dateToString: { format: '%d/%m', date: '$dt_created' } },
+            _id: { $dateToString: { format: '%Y-%m-%d', date: '$dt_created' } },
             revenue: {
               $sum: '$total_amount',
             },
@@ -70,6 +99,9 @@ export class AdminController {
         },
         { $sort: { _id: 1 } },
       ]);
+
+      const periodRevenue = revenueByDate.reduce((sum, r) => sum + (r.revenue || 0), 0);
+      const periodOrders = revenueByDate.reduce((sum, r) => sum + (r.orders || 0), 0);
 
       // Thống kê doanh thu theo từng danh mục từ các đơn đã thanh toán
       const paidOrderIds = ordersData.map((o) => o.s_ID);
@@ -132,11 +164,18 @@ export class AdminController {
           acc[cur._id] = cur.count;
           return acc;
         }, {}),
-        revenueByDate: revenueByDate.map((r) => ({
-          date: r._id,
-          revenue: r.revenue,
-          orders: r.orders,
-        })),
+        periodRevenue,
+        periodOrders,
+        revenueByDate: revenueByDate.map((r) => {
+          const parts = (r._id || '').split('-');
+          const displayDate = parts.length === 3 ? `${parts[2]}/${parts[1]}` : r._id;
+          return {
+            date: displayDate,
+            fullDate: r._id,
+            revenue: r.revenue,
+            orders: r.orders,
+          };
+        }),
         topProducts: topSellingProducts.map((p) => ({
           name: p._id,
           revenue: p.revenue,

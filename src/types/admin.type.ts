@@ -10,6 +10,12 @@ export interface AdminPaginatedResponse<T> {
   pagination: AdminPagination;
 }
 
+export interface AdminStatsParams {
+  startDate?: string;
+  endDate?: string;
+  days?: number | string;
+}
+
 export interface AdminStats {
   totalRevenue: number;
   totalOrders: number;
@@ -17,7 +23,9 @@ export interface AdminStats {
   totalUsers: number;
   totalCategories: number;
   orderStatusCounts: Record<string, number>;
-  revenueByDate?: Array<{ date: string; revenue: number; orders: number }>;
+  periodRevenue?: number;
+  periodOrders?: number;
+  revenueByDate?: Array<{ date: string; fullDate?: string; revenue: number; orders: number }>;
   topProducts?: Array<{ name: string; revenue: number; quantity?: number }>;
   categoryRevenue?: Array<{ name: string; revenue: number; count?: number }>;
   categoryDistribution?: Array<{ name: string; count: number }>;

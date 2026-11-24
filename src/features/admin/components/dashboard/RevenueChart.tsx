@@ -72,10 +72,21 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ data }) => {
             axisLine={false}
             tickLine={false}
             tick={{ fill: '#94a3b8', fontSize: 11 }}
-            domain={[0, (dataMax: number) => (dataMax ? Math.ceil((dataMax * 1.25) / 10000000) * 10000000 : 10000000)]}
-            tickFormatter={(val) =>
-              val >= 1000000 ? `${(val / 1000000).toFixed(0)}tr` : `${val}`
-            }
+            domain={[
+              0,
+              (dataMax: number) => {
+                if (!dataMax || dataMax <= 0) return 1000000;
+                if (dataMax < 1000000) return Math.ceil(dataMax * 1.3);
+                const step = dataMax > 50000000 ? 10000000 : 1000000;
+                return Math.ceil((dataMax * 1.2) / step) * step;
+              },
+            ]}
+            tickFormatter={(val) => {
+              if (val >= 1000000000) return `${(val / 1000000000).toFixed(1)}tỷ`;
+              if (val >= 1000000) return `${(val / 1000000).toFixed(0)}tr`;
+              if (val >= 1000) return `${(val / 1000).toFixed(0)}k`;
+              return `${val}`;
+            }}
           />
           <Tooltip content={<CustomTooltip />} />
           <Area

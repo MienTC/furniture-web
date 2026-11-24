@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Row, Col, Table, Spin } from 'antd';
 import {
   IconCurrencyDollar,
@@ -18,9 +18,28 @@ import UButtonCopy from '~/components/ui/ubutton-copy';
 import RevenueChart from '~/features/admin/components/dashboard/RevenueChart';
 import OrderStatusPieChart from '~/features/admin/components/dashboard/OrderStatusPieChart';
 import TopProductsChart from '~/features/admin/components/dashboard/TopProductsChart';
+import { DateRangeFilter, dateOptions } from '~/components/common/filters/DateRangeFilter';
+import type { AdminStatsParams } from '~/types';
 
 export const AdminDashboardPage: React.FC = () => {
-  const { stats, isLoading } = useAdminStats();
+  // Mặc định chọn 30 ngày qua (theo chuẩn filter của tev-fe-admin)
+  const [dateRange, setDateRange] = useState<[string, string] | undefined>(() => {
+    const [start, end] = dateOptions['Last 30 Days']();
+    return [start.toISOString(), end.toISOString()];
+  });
+  const [rangeLabel, setRangeLabel] = useState<string>('30 ngày qua');
+
+  const statsParams = useMemo<AdminStatsParams>(() => {
+    if (!dateRange) {
+      return { days: 'all' };
+    }
+    return {
+      startDate: dateRange[0],
+      endDate: dateRange[1],
+    };
+  }, [dateRange]);
+
+  const { stats, isLoading } = useAdminStats(statsParams);
 
   if (isLoading) {
     return (
@@ -89,12 +108,28 @@ export const AdminDashboardPage: React.FC = () => {
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={16}>
           <div className="bg-white rounded-xl border border-gray-200/80 shadow-2xs p-5 h-full flex flex-col justify-between">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div className="flex items-center gap-2">
                 <IconChartBar size={18} className="text-sky-500" />
-                <h3 className="font-semibold text-gray-800 text-sm">Xu hướng Doanh thu (14 ngày qua)</h3>
+                <h3 className="font-semibold text-gray-800 text-sm">
+                  Xu hướng Doanh thu ({rangeLabel})
+                </h3>
               </div>
-              <UBadge color="green">Doanh thu trực tuyến</UBadge>
+              <div className="flex items-center flex-wrap gap-2">
+                {stats?.periodRevenue !== undefined && (
+                  <UBadge color="green">
+                    Kỳ này: {formatVND(stats.periodRevenue)}
+                  </UBadge>
+                )}
+                <DateRangeFilter
+                  value={dateRange}
+                  label={rangeLabel}
+                  onValueChange={(val, lbl) => {
+                    setDateRange(val);
+                    setRangeLabel(lbl || 'Tùy chọn');
+                  }}
+                />
+              </div>
             </div>
             <RevenueChart data={stats?.revenueByDate || []} />
           </div>

@@ -2,6 +2,7 @@ import instanceBE from './instance';
 import type {
   ResponseAPI,
   AdminStats,
+  AdminStatsParams,
   AdminProductPayload,
   ContactSettingsData,
   AdminOrderQueryParams,
@@ -11,8 +12,8 @@ import type {
 } from '~/types';
 
 export class AdminService {
-  async getStats(): Promise<AdminStats> {
-    const res = await instanceBE.get<any, ResponseAPI<AdminStats>>('/admin/stats');
+  async getStats(params?: AdminStatsParams): Promise<AdminStats> {
+    const res = await instanceBE.get<any, ResponseAPI<AdminStats>>('/admin/stats', { params });
     return res.data;
   }
 
