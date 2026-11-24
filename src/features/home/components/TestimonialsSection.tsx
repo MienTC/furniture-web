@@ -99,7 +99,7 @@ export const TestimonialsSection: React.FC = () => {
                 )}
                 <div>
                   <h4 className="font-bold text-xs text-[#2D2623]">{r.name}</h4>
-                  <p className="text-[10px] text-stone-400 font-medium">{r.role || 'Khách hàng xác thực'}</p>
+                  {r.role && <p className="text-[10px] text-stone-400 font-medium">{r.role}</p>}
                 </div>
               </div>
             </Link>

@@ -22,8 +22,8 @@ export const OrderDetailSummary: React.FC<OrderDetailSummaryProps> = ({
   onDiscountChange,
 }) => {
   return (
-    <div className="flex justify-end pt-2">
-      <div className="w-96 bg-slate-50 p-4 rounded-lg border border-slate-200/80 space-y-2.5 text-xs font-sans">
+    <div className="flex justify-end pt-2 w-full">
+      <div className="w-full sm:w-96 bg-slate-50 p-4 rounded-lg border border-slate-200/80 space-y-2.5 text-xs font-sans">
         <div className="flex justify-between items-center text-slate-600">
           <span>Tạm tính tiền hàng:</span>
           <span className="font-semibold text-slate-800">{formatVND(subtotal)}</span>

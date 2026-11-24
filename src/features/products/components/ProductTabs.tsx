@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Tabs, Tag, Rate, Button } from "antd";
 import { MessageOutlined } from "@ant-design/icons";
 import { RatingStars } from "~/components/ui/RatingStars";
@@ -7,6 +7,19 @@ import type { Product } from "~/types";
 
 export const ProductTabs: React.FC<{ product: Product }> = ({ product }) => {
   const [reviewOpen, setReviewOpen] = useState(false);
+  const descRef = useRef<HTMLDivElement>(null);
+
+  // Gracefully hide broken image tags inside description
+  useEffect(() => {
+    if (!descRef.current) return;
+    const imgs = descRef.current.querySelectorAll("img");
+    imgs.forEach((img) => {
+      img.onerror = () => {
+        img.style.display = "none";
+      };
+    });
+  }, [product.description]);
+
   return (
     <>
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-2xs">
@@ -19,6 +32,7 @@ export const ProductTabs: React.FC<{ product: Product }> = ({ product }) => {
               children: (
                 <div className="text-stone-700 text-xs sm:text-sm leading-relaxed py-4">
                   <div 
+                    ref={descRef}
                     className="prose prose-sm prose-stone max-w-none text-stone-700 leading-relaxed ck-content" 
                     dangerouslySetInnerHTML={{ __html: product.description }} 
                   />

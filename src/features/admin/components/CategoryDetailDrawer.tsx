@@ -222,7 +222,7 @@ export const CategoryDetailDrawer: React.FC<CategoryDetailDrawerProps> = ({
         open={open}
         onClose={onClose}
         width={860}
-        destroyOnClose
+        destroyOnHidden
         extra={
           <Space>
             <Button

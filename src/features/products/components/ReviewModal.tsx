@@ -64,7 +64,7 @@ export const ReviewModal: React.FC<ReviewModalProps> = ({
       cancelText="Hủy"
       confirmLoading={isPending}
       okButtonProps={{ className: "!bg-[#2B5A50] hover:!bg-[#20453D] font-bold" }}
-      destroyOnClose
+      destroyOnHidden
     >
       <div className="space-y-4 py-3 font-sans">
         {product && (

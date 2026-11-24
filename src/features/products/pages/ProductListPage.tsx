@@ -25,8 +25,8 @@ export const ProductListPage: React.FC = () => {
   const [filterParams, setFilterParams] = useState<ProductFilterParams>({
     categoryId: searchParams.get('category') ?? '',
     search: searchParams.get('search') ?? '',
-    minPrice: 0,
-    maxPrice: 60000000,
+    minPrice: undefined,
+    maxPrice: undefined,
     materials: [],
     inStockOnly: false,
     onSaleOnly: isSaleParam && !isFlashSaleParam,
@@ -59,25 +59,24 @@ export const ProductListPage: React.FC = () => {
   });
 
   const handleChange = (partial: Partial<ProductFilterParams>) => {
-    setFilterParams((prev) => {
-      const next = { ...prev, ...partial };
-      const newParams = new URLSearchParams();
-      if (next.categoryId) newParams.set('category', next.categoryId);
-      if (next.search?.trim()) newParams.set('search', next.search.trim());
-      if (next.flashsale) newParams.set('flashsale', 'true');
-      else if (next.onSaleOnly) newParams.set('sale', 'true');
-      setSearchParams(newParams);
-      return next;
-    });
+    const next = { ...filterParams, ...partial };
+    setFilterParams(next);
     setCurrentPage(1);
+
+    const newParams = new URLSearchParams();
+    if (next.categoryId) newParams.set('category', next.categoryId);
+    if (next.search?.trim()) newParams.set('search', next.search.trim());
+    if (next.flashsale) newParams.set('flashsale', 'true');
+    else if (next.onSaleOnly) newParams.set('sale', 'true');
+    setSearchParams(newParams);
   };
 
   const handleReset = () => {
     setFilterParams({
       categoryId: '',
       search: '',
-      minPrice: 0,
-      maxPrice: 60000000,
+      minPrice: undefined,
+      maxPrice: undefined,
       materials: [],
       inStockOnly: false,
       onSaleOnly: false,
@@ -88,7 +87,9 @@ export const ProductListPage: React.FC = () => {
     setSearchParams({});
   };
 
-  const totalProductsCount = categories.reduce((sum, c) => sum + (c.itemCount || 0), 0) || 668;
+  const totalProductsCount = categories
+    .filter((c) => !c.parentId)
+    .reduce((sum, c) => sum + (c.itemCount || 0), 0) || 561;
   const activeCategory = categories.find(
     (c) => c.id === filterParams.categoryId || c.slug === filterParams.categoryId
   );
@@ -101,11 +102,27 @@ export const ProductListPage: React.FC = () => {
           <div className="flex items-center gap-2 text-xs text-stone-500 mb-1">
             <Link to="/" className="hover:text-brand-coral transition-colors">Trang chủ</Link>
             <span>/</span>
-            <span className="text-stone-800 font-medium">Sản phẩm</span>
+            {activeCategory || filterParams.flashsale || filterParams.onSaleOnly ? (
+              <Link to="/products" className="hover:text-brand-coral transition-colors">Sản phẩm</Link>
+            ) : (
+              <span className="text-stone-800 font-medium">Sản phẩm</span>
+            )}
             {activeCategory && (
               <>
                 <span>/</span>
                 <span className="text-brand-coral font-bold">{activeCategory.name}</span>
+              </>
+            )}
+            {filterParams.flashsale && (
+              <>
+                <span>/</span>
+                <span className="text-brand-coral font-bold">Flash Sale</span>
+              </>
+            )}
+            {filterParams.onSaleOnly && !filterParams.flashsale && (
+              <>
+                <span>/</span>
+                <span className="text-brand-coral font-bold">Khuyến mãi</span>
               </>
             )}
           </div>
@@ -135,7 +152,7 @@ export const ProductListPage: React.FC = () => {
           <FilterPanel
             filterParams={filterParams}
             categories={categories}
-            totalCount={totalCount || totalProductsCount}
+            totalCount={totalProductsCount}
             getCategoryCount={(id) => {
               const cat = categories.find((c) => c.id === id);
               return cat?.itemCount || 0;
@@ -156,7 +173,7 @@ export const ProductListPage: React.FC = () => {
           <FilterPanel
             filterParams={filterParams}
             categories={categories}
-            totalCount={totalCount || totalProductsCount}
+            totalCount={totalProductsCount}
             getCategoryCount={(id) => {
               const cat = categories.find((c) => c.id === id);
               return cat?.itemCount || 0;
@@ -189,7 +206,7 @@ export const ProductListPage: React.FC = () => {
                     : 'bg-[#F4F6F5] text-[#1A2421] hover:bg-[#EDF5F2] hover:text-brand-coral font-medium'
                 }`}
               >
-                Tất Cả ({totalCount || totalProductsCount})
+                Tất Cả ({totalProductsCount})
               </button>
 
               {/* Chỉ hiển thị tab Flash Sale khi Flash Sale có sản phẩm */}
@@ -212,9 +229,9 @@ export const ProductListPage: React.FC = () => {
 
               <button
                 type="button"
-                onClick={() => handleChange({ sortBy: 'newest', flashsale: false })}
+                onClick={() => handleChange({ sortBy: 'newest', flashsale: false, onSaleOnly: false })}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer ${
-                  filterParams.sortBy === 'newest' && !filterParams.flashsale
+                  filterParams.sortBy === 'newest' && !filterParams.flashsale && !filterParams.onSaleOnly
                     ? 'bg-brand-coral text-white shadow-xs'
                     : 'bg-[#F4F6F5] text-[#1A2421] hover:bg-[#EDF5F2] hover:text-brand-coral font-medium'
                 }`}
@@ -224,9 +241,9 @@ export const ProductListPage: React.FC = () => {
 
               <button
                 type="button"
-                onClick={() => handleChange({ sortBy: 'rating', flashsale: false })}
+                onClick={() => handleChange({ sortBy: 'rating', flashsale: false, onSaleOnly: false })}
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer ${
-                  filterParams.sortBy === 'rating' && !filterParams.flashsale
+                  filterParams.sortBy === 'rating' && !filterParams.flashsale && !filterParams.onSaleOnly
                     ? 'bg-brand-coral text-white shadow-xs'
                     : 'bg-[#F4F6F5] text-[#1A2421] hover:bg-[#EDF5F2] hover:text-brand-coral font-medium'
                 }`}
@@ -238,7 +255,7 @@ export const ProductListPage: React.FC = () => {
             {/* Điều khiển Sắp xếp & Số lượng sản phẩm */}
             <div className="flex items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-stone-100">
               <span className="text-xs text-stone-500 font-medium whitespace-nowrap">
-                Hiển thị <strong className="text-stone-900">{products.length}</strong> sản phẩm
+                Hiển thị <strong className="text-stone-900">{products.length}</strong> / <strong className="text-stone-900">{totalCount}</strong> sản phẩm
               </span>
               <Select
                 value={filterParams.sortBy}
@@ -270,10 +287,10 @@ export const ProductListPage: React.FC = () => {
 
           {/* Lưới sản phẩm (Product Grid) */}
           {isProductsLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white rounded-xl overflow-hidden border border-stone-200 p-4 space-y-4 animate-pulse">
-                  <div className="aspect-[4/5] bg-stone-200 rounded-lg" />
+                <div key={i} className="bg-white rounded-xl overflow-hidden border border-stone-200 p-3 sm:p-4 space-y-3 sm:space-y-4 animate-pulse">
+                  <div className="aspect-square bg-stone-200 rounded-lg" />
                   <div className="h-4 bg-stone-200 rounded w-3/4 mx-auto" />
                   <div className="h-3 bg-stone-100 rounded w-1/2 mx-auto" />
                   <div className="h-5 bg-stone-200 rounded w-1/3 mx-auto" />
@@ -295,7 +312,7 @@ export const ProductListPage: React.FC = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
                 {products.map((p) => (
                   <ProductCard key={p.id} product={p} />
                 ))}

@@ -125,30 +125,32 @@ export const CategoryNav: React.FC = () => {
 
   return (
     <nav className="hidden md:block bg-white border-t border-stone-200/80 shadow-2xs relative z-30 font-sans">
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between text-xs font-semibold">
-        <ul className="flex items-center gap-1 list-none m-0 p-0 py-0.5">
-          <li className="shrink-0">
-            <Link
-              to="/products"
-              className={`px-3.5 py-3 flex items-center gap-2 transition-all rounded-md font-bold uppercase tracking-wider whitespace-nowrap ${
-                location.pathname === "/products" && !location.search
-                  ? "text-brand-coral bg-[#EDF5F2]"
-                  : "text-[#1A2421] hover:text-brand-coral hover:bg-stone-50"
-              }`}
-            >
-              <AppstoreOutlined className="text-brand-coral" style={{ fontSize: 14 }} />
-              <span>TẤT CẢ SẢN PHẨM</span>
-            </Link>
-          </li>
+      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4 text-xs font-semibold">
+        <div className="flex-1 min-w-0 overflow-x-auto scrollbar-hide py-0.5">
+          <ul className="flex items-center gap-1 list-none m-0 p-0">
+            <li className="shrink-0">
+              <Link
+                to="/products"
+                className={`px-3.5 py-3 flex items-center gap-2 transition-all rounded-md font-bold uppercase tracking-wider whitespace-nowrap ${
+                  location.pathname === "/products" && !location.search
+                    ? "text-brand-coral bg-[#EDF5F2]"
+                    : "text-[#1A2421] hover:text-brand-coral hover:bg-stone-50"
+                }`}
+              >
+                <AppstoreOutlined className="text-brand-coral" style={{ fontSize: 14 }} />
+                <span>TẤT CẢ SẢN PHẨM</span>
+              </Link>
+            </li>
 
-          {rootCategories.map((root) => (
-            <RootNavItem
-              key={root.id}
-              root={root}
-              allCategories={categories}
-            />
-          ))}
-        </ul>
+            {rootCategories.map((root) => (
+              <RootNavItem
+                key={root.id}
+                root={root}
+                allCategories={categories}
+              />
+            ))}
+          </ul>
+        </div>
 
         <div className="flex items-center gap-4 font-semibold text-xs shrink-0 pl-4 border-l border-stone-200/80 my-2">
           <Link

@@ -58,7 +58,9 @@ export interface AdminBannerDto {
   link_url?: string;
   badge_text?: string;
   highlights?: string[];
-  type?: 'hero' | 'showcase' | 'trustbar' | 'promo_img4';
+  type?: 'hero' | 'showcase' | 'trustbar' | 'trust_bar' | 'promo_img4';
+  sort_order?: number;
+  is_active?: boolean;
 }
 
 export interface AdminVoucherDto {

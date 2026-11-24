@@ -117,7 +117,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       onCancel={handleClose}
       width={900}
       centered
-      destroyOnClose
+      destroyOnHidden
       footer={
         <Flex justify="space-between" align="center" className="pt-2.5 border-t border-stone-100 font-sans">
           <span className="text-xs text-stone-400">

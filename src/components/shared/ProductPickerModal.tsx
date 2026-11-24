@@ -232,7 +232,7 @@ export const ProductPickerModal: React.FC<ProductPickerModalProps> = ({
         </div>
       }
       centered
-      destroyOnClose
+      destroyOnHidden
       footer={
         <Flex justify="end" gap={8} className="pt-2 border-t border-stone-100">
           <Button onClick={onCancel} className="!rounded-lg">

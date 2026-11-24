@@ -1028,17 +1028,18 @@ export class AdminController {
 
   static async createBanner(req: AuthRequest, res: Response): Promise<any> {
     try {
-      const { title, subtitle, image_url, link_url, badge_text, highlights, type, is_active } = req.body;
+      const { title, subtitle, image_url, link_url, badge_text, highlights, type, sort_order, is_active } = req.body;
       const s_ID = generateId('bnr');
       const banner = new BannerModel({
         s_ID,
-        title: title || 'Banner',
+        title: title !== undefined ? title : '',
         subtitle: subtitle || '',
         image_url,
         link_url: link_url || '',
         badge_text: badge_text || '',
         highlights: Array.isArray(highlights) ? highlights : (typeof highlights === 'string' ? highlights.split('\n').map((h: string) => h.trim()).filter(Boolean) : []),
         type: type || 'hero',
+        sort_order: sort_order !== undefined ? Number(sort_order) : 0,
         is_active: is_active !== undefined ? is_active : true,
       });
       await banner.save();
@@ -1055,15 +1056,16 @@ export class AdminController {
       const banner = await BannerModel.findOne({ s_ID: id });
       if (!banner) return sendError(res, 'Không tìm thấy banner', 404);
 
-      if (data.title) banner.title = data.title;
+      if (data.title !== undefined) banner.title = data.title;
       if (data.subtitle !== undefined) banner.subtitle = data.subtitle;
-      if (data.image_url) banner.image_url = data.image_url;
+      if (data.image_url !== undefined) banner.image_url = data.image_url;
       if (data.link_url !== undefined) banner.link_url = data.link_url;
       if (data.badge_text !== undefined) banner.badge_text = data.badge_text;
       if (data.highlights !== undefined) {
         banner.highlights = Array.isArray(data.highlights) ? data.highlights : (typeof data.highlights === 'string' ? data.highlights.split('\n').map((h: string) => h.trim()).filter(Boolean) : []);
       }
-      if (data.type) banner.type = data.type;
+      if (data.type !== undefined) banner.type = data.type;
+      if (data.sort_order !== undefined) banner.sort_order = Number(data.sort_order);
       if (data.is_active !== undefined) banner.is_active = data.is_active;
 
       await banner.save();

@@ -14,17 +14,33 @@ export class CategoryController {
     try {
       const categories = await CategoryModel.find({ is_active: true }).lean();
 
-      // Recalculate item count for accuracy
+      // Recalculate item count for accuracy including all descendant categories
       const categoriesWithCount = await Promise.all(
         categories.map(async (cat) => {
+          const targetIds = new Set<string>([cat.s_ID, cat.slug]);
+          let added = true;
+          while (added) {
+            added = false;
+            for (const c of categories) {
+              if ((c as any).s_parent_category_id && targetIds.has((c as any).s_parent_category_id)) {
+                if (!targetIds.has(c.s_ID) || !targetIds.has(c.slug)) {
+                  targetIds.add(c.s_ID);
+                  targetIds.add(c.slug);
+                  added = true;
+                }
+              }
+            }
+          }
+
           const count = await ProductModel.countDocuments({
-            $or: [{ category_id: cat.s_ID }, { category_id: cat.slug }],
+            category_id: { $in: Array.from(targetIds) },
             is_active: true,
           });
+
           let catImage = cat.image_url;
           if (!catImage) {
             const firstProduct = await ProductModel.findOne({
-              $or: [{ category_id: cat.s_ID }, { category_id: cat.slug }],
+              category_id: { $in: Array.from(targetIds) },
               is_active: true,
             }).lean();
             if (firstProduct) {

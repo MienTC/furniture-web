@@ -68,7 +68,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
       open={open}
       onCancel={handleClose}
       centered
-      destroyOnClose
+      destroyOnHidden
       width={560}
       footer={null}
     >

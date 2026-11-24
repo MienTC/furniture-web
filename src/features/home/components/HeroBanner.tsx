@@ -7,7 +7,7 @@ interface Props { banners: IFBanner[]; isLoading: boolean; }
 export const HeroBanner: React.FC<Props> = ({ banners, isLoading }) => {
   if (isLoading || banners.length === 0) {
     return (
-      <div className="w-full bg-stone-200 h-[280px] sm:h-[400px] md:h-[500px] animate-pulse" />
+      <div className="w-full bg-stone-200 h-[220px] xs:h-[280px] sm:h-[380px] md:h-[480px] lg:h-[540px] animate-pulse" />
     );
   }
   return (
@@ -20,16 +20,16 @@ export const HeroBanner: React.FC<Props> = ({ banners, isLoading }) => {
                 <a href={b.linkUrl} className="block w-full">
                   <img
                     src={b.imageUrl}
-                    alt={b.alt || ''}
-                    className="w-full h-auto max-h-[560px] object-contain sm:object-cover mx-auto"
+                    alt={b.alt || 'LuxDecor Hero Banner'}
+                    className="w-full h-[220px] xs:h-[280px] sm:h-[380px] md:h-[480px] lg:h-[540px] object-cover mx-auto"
                     loading="eager"
                   />
                 </a>
               ) : (
                 <img
                   src={b.imageUrl}
-                  alt={b.alt || ''}
-                  className="w-full h-auto max-h-[560px] object-contain sm:object-cover mx-auto"
+                  alt={b.alt || 'LuxDecor Hero Banner'}
+                  className="w-full h-[220px] xs:h-[280px] sm:h-[380px] md:h-[480px] lg:h-[540px] object-cover mx-auto"
                   loading="eager"
                 />
               )}

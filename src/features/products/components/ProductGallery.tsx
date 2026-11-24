@@ -32,15 +32,11 @@ export const ProductGallery: React.FC<Props> = ({
     if (images.length <= 1 || isHovered || previewVisible) return;
 
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => {
-        const next = (prev + 1) % images.length;
-        onSelect(images[next]);
-        return next;
-      });
+      setCurrentIndex((prev) => (prev + 1) % images.length);
     }, 4000);
 
     return () => clearInterval(timer);
-  }, [images, isHovered, previewVisible, onSelect]);
+  }, [images.length, isHovered, previewVisible]);
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -100,15 +96,15 @@ export const ProductGallery: React.FC<Props> = ({
           <>
             <button
               onClick={handlePrev}
-              aria-label="Previous image"
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-stone-800 shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 z-10 cursor-pointer"
+              aria-label="Ảnh trước"
+              className="absolute left-3 top-1/2 -translate-y-1/2 size-9 rounded-full bg-white/90 text-stone-800 shadow-md flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 z-10 cursor-pointer"
             >
               <LeftOutlined style={{ fontSize: 14 }} />
             </button>
             <button
               onClick={handleNext}
-              aria-label="Next image"
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 text-stone-800 shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 z-10 cursor-pointer"
+              aria-label="Ảnh tiếp theo"
+              className="absolute right-3 top-1/2 -translate-y-1/2 size-9 rounded-full bg-white/90 text-stone-800 shadow-md flex items-center justify-center opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 z-10 cursor-pointer"
             >
               <RightOutlined style={{ fontSize: 14 }} />
             </button>

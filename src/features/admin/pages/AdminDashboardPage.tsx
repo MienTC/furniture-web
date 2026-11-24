@@ -25,7 +25,10 @@ export const AdminDashboardPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex h-96 items-center justify-center">
-        <Spin size="large" tip="Đang tải dữ liệu báo cáo..." />
+        <div className="flex flex-col items-center gap-3">
+          <Spin size="large" />
+          <span className="text-xs text-stone-500 font-medium">Đang tải dữ liệu báo cáo...</span>
+        </div>
       </div>
     );
   }
@@ -138,9 +141,10 @@ export const AdminDashboardPage: React.FC = () => {
 
             <Table
               dataSource={stats?.recentOrders || []}
-              rowKey="_id"
+              rowKey={(r: any) => r._id || r.s_order_id || r.id}
               pagination={false}
               size="middle"
+              scroll={{ x: 'max-content' }}
               columns={[
                 {
                   title: 'Mã đơn',

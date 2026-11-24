@@ -19,8 +19,9 @@ export const AdminFlashSalePage: React.FC = () => {
 
   if (isFetching) {
     return (
-      <div className="p-12 text-center">
-        <Spin tip="Đang tải dữ liệu cấu hình Flash Sale..." size="large" />
+      <div className="p-12 flex flex-col items-center justify-center gap-3">
+        <Spin size="large" />
+        <span className="text-xs text-stone-500 font-medium">Đang tải dữ liệu cấu hình Flash Sale...</span>
       </div>
     );
   }

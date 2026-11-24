@@ -16,12 +16,13 @@ export const Header: React.FC = () => {
   const navigate = useNavigate();
   const { itemCount, subtotal } = useCart();
   const { wishlistIds } = useWishlist();
-  const { user, adminUser, logout, isAdmin } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const { categories } = useCategories();
   const { data: contactSettings } = usePublicContactSettings();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authDefaultTab, setAuthDefaultTab] = useState<'login' | 'register'>('login');
 
@@ -78,60 +79,73 @@ export const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-xs">
       {/* Top Banner - Tông Bắc Âu Nordic mát mắt, thanh lịch */}
-      <div className="bg-[#F4F6F5] text-[#4A5550] text-xs py-2 px-4 border-b border-[#E5EAE7]">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5 font-medium">
-              <CarOutlined className="text-brand-coral" style={{ fontSize: 14 }} /> Miễn phí giao hàng & lắp đặt toàn quốc
+      <div className="bg-[#F4F6F5] text-[#4A5550] text-[11px] sm:text-xs py-1.5 sm:py-2 px-3 sm:px-4 border-b border-[#E5EAE7]">
+        <div className="max-w-7xl mx-auto flex justify-between items-center gap-2">
+          <div className="flex items-center gap-4 sm:gap-6 truncate">
+            <span className="flex items-center gap-1.5 font-medium truncate">
+              <CarOutlined className="text-brand-coral shrink-0" style={{ fontSize: 13 }} />
+              <span className="truncate">Miễn phí giao hàng & lắp đặt</span>
             </span>
-            <span className="hidden md:flex items-center gap-1.5 font-medium">
-              <SafetyCertificateOutlined className="text-brand-coral" style={{ fontSize: 14 }} /> Bảo hành 5 năm tận nhà
+            <span className="hidden md:flex items-center gap-1.5 font-medium shrink-0">
+              <SafetyCertificateOutlined className="text-brand-coral shrink-0" style={{ fontSize: 13 }} /> Bảo hành 5 năm tận nhà
             </span>
           </div>
           {contactSettings?.hotline && (
             <a
               href={`tel:${contactSettings.hotline}`}
-              className="hover:text-brand-coral text-[#4A5550] flex items-center gap-1 font-semibold transition-colors"
+              className="hover:text-brand-coral text-[#4A5550] flex items-center gap-1 font-semibold transition-colors shrink-0"
             >
-              <PhoneOutlined style={{ fontSize: 12 }} /> Hotline: {contactSettings.hotline}
+              <PhoneOutlined style={{ fontSize: 11 }} /> <span className="hidden xs:inline">Hotline:</span> {contactSettings.hotline}
             </a>
           )}
         </div>
       </div>
 
       {/* Main Nav */}
-      <div className="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between gap-6">
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-15 h-15 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
-            <img src="/logo1.png" alt="" />
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3.5 flex items-center justify-between gap-3 sm:gap-6">
+        <Link to="/" className="flex items-center gap-1.5 sm:gap-2 group shrink-0 min-w-0">
+          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform overflow-hidden shrink-0">
+            <img src="/logo1.png" alt="LuxDecor Furniture Logo" className="w-full h-full object-contain" />
           </div>
-          <div>
-            <span className="text-2xl font-black text-stone-900 tracking-tight block leading-none">
+          <div className="min-w-0">
+            <span className="text-base sm:text-2xl font-black text-stone-900 tracking-tight block leading-none truncate">
               {APP_NAME}
             </span>
-            <span className="text-xs text-brand-coral tracking-widest uppercase font-bold">
+            <span className="text-[8px] sm:text-xs text-brand-coral tracking-widest uppercase font-bold block truncate">
               Interior Luxury
             </span>
           </div>
         </Link>
 
+        {/* Desktop Search Bar */}
         <form
           onSubmit={handleSearch}
-          className="hidden md:flex flex-1 max-w-md"
+          className="hidden md:flex flex-1 max-w-md mx-2"
         >
           <Input
             placeholder="Nhập từ khóa, mở lối không gian!"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             prefix={<SearchOutlined className="text-stone-400 mr-1" style={{ fontSize: 16 }} />}
-            className="w-full !rounded-full !bg-stone-100/80 hover:!bg-white focus:!bg-white !py-2 !border-stone-200"
+            className="w-full !rounded-full !bg-stone-100/80 hover:!bg-white focus:!bg-white !py-2 !border-stone-200 text-xs"
           />
         </form>
 
-        <div className="flex items-center gap-3 md:gap-5">
+        <div className="flex items-center gap-1.5 sm:gap-3 md:gap-4 shrink-0">
+          {/* Mobile Search Button Toggle */}
+          <button
+            type="button"
+            onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+            className="md:hidden p-2 text-stone-700 hover:text-brand-coral transition-colors cursor-pointer min-w-[38px] min-h-[38px] flex items-center justify-center rounded-lg hover:bg-stone-100"
+            aria-label="Tìm kiếm sản phẩm"
+          >
+            <SearchOutlined style={{ fontSize: 19 }} />
+          </button>
+
           <Link
             to="/wishlist"
-            className="relative p-2 text-stone-700 hover:text-brand-coral transition-colors"
+            className="hidden sm:flex relative p-2 text-stone-700 hover:text-brand-coral transition-colors min-w-[38px] min-h-[38px] items-center justify-center rounded-lg hover:bg-stone-100"
+            aria-label="Sản phẩm yêu thích"
           >
             <Badge
               count={wishlistIds.length}
@@ -139,13 +153,14 @@ export const Header: React.FC = () => {
               size="small"
               color="#2B5A50"
             >
-              <HeartOutlined style={{ fontSize: 22 }} />
+              <HeartOutlined style={{ fontSize: 20 }} />
             </Badge>
           </Link>
 
           <Link
             to="/cart"
-            className="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-stone-50 hover:bg-stone-100 transition-colors text-stone-800 border border-stone-200 shadow-2xs group"
+            className="flex items-center gap-2.5 p-2 sm:px-3.5 sm:py-2 rounded-xl bg-stone-50 hover:bg-stone-100 transition-colors text-stone-800 border border-stone-200 shadow-2xs group min-w-[38px] min-h-[38px] justify-center"
+            aria-label="Giỏ hàng"
           >
             <Badge
               count={itemCount}
@@ -155,7 +170,7 @@ export const Header: React.FC = () => {
             >
               <ShoppingOutlined className="text-stone-800 group-hover:text-brand-coral transition-colors" style={{ fontSize: 20 }} />
             </Badge>
-            <div className="flex flex-col text-left justify-center">
+            <div className="hidden sm:flex flex-col text-left justify-center">
               <span className="text-[11px] text-stone-500 font-semibold leading-none">
                 Giỏ hàng
               </span>
@@ -171,24 +186,15 @@ export const Header: React.FC = () => {
               placement="bottomRight"
               trigger={["click"]}
             >
-              <button className="flex items-center gap-2 p-1.5 rounded-full hover:bg-stone-100 transition-colors">
+              <button className="flex items-center gap-2 p-1 rounded-full hover:bg-stone-100 transition-colors cursor-pointer">
                 <UAvatar size={32} src={user.avatar} nickname={user.name} />
-                <span className="hidden md:inline text-xs font-semibold text-stone-800">
+                <span className="hidden lg:inline text-xs font-semibold text-stone-800">
                   {user.name?.split(" ")[0]}
                 </span>
               </button>
             </Dropdown>
           ) : (
-            <div className="flex items-center gap-2">
-              {adminUser && (
-                <Link
-                  to="/admin"
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#2B5A50] bg-[#EDF5F2] hover:bg-[#D0DBD6] rounded-lg transition-colors border border-[#D0DBD6]"
-                >
-                  <SafetyCertificateOutlined style={{ fontSize: 13 }} />
-                  Quản Trị ({adminUser.name})
-                </Link>
-              )}
+            <div className="hidden sm:flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => openAuth('login')}
@@ -207,13 +213,31 @@ export const Header: React.FC = () => {
           )}
 
           <button
+            type="button"
             onClick={() => setMobileMenuOpen(true)}
-            className="md:hidden p-2 text-stone-700 cursor-pointer"
+            className="md:hidden p-2 text-stone-700 hover:text-brand-coral transition-colors cursor-pointer min-w-[38px] min-h-[38px] flex items-center justify-center rounded-lg hover:bg-stone-100"
+            aria-label="Mở menu danh mục"
           >
-            <MenuOutlined style={{ fontSize: 22 }} />
+            <MenuOutlined style={{ fontSize: 20 }} />
           </button>
         </div>
       </div>
+
+      {/* Expandable Mobile Search Bar */}
+      {mobileSearchOpen && (
+        <div className="md:hidden px-4 pb-3 pt-1 border-t border-stone-100 bg-white shadow-inner animate-in fade-in duration-200">
+          <form onSubmit={(e) => { handleSearch(e); setMobileSearchOpen(false); }}>
+            <Input
+              autoFocus
+              placeholder="Nhập tên nội thất, sofa, bàn ghế..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              prefix={<SearchOutlined className="text-stone-400 mr-1" style={{ fontSize: 16 }} />}
+              className="w-full !rounded-full !bg-stone-50 !py-2 !border-stone-200 text-xs"
+            />
+          </form>
+        </div>
+      )}
 
       <CategoryNav />
 
@@ -290,7 +314,7 @@ export const Header: React.FC = () => {
                     setMobileMenuOpen(false);
                     openAuth('login');
                   }}
-                  className="!bg-[#2B5A50] hover:!bg-[#20453D] font-bold"
+                  className="!bg-[#2B5A50] hover:!bg-[#20453D] font-bold !h-10 cursor-pointer"
                 >
                   Đăng Nhập
                 </Button>
@@ -300,24 +324,57 @@ export const Header: React.FC = () => {
                     setMobileMenuOpen(false);
                     openAuth('register');
                   }}
+                  className="!h-10 cursor-pointer font-semibold"
                 >
                   Đăng Ký Tài Khoản
                 </Button>
               </div>
-            ) : null}
+            ) : (
+              <div className="p-3 rounded-xl bg-stone-100 flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <UAvatar size={36} src={user.avatar} nickname={user.name} />
+                  <div className="text-left overflow-hidden">
+                    <p className="text-xs font-bold text-stone-900 truncate m-0">{user.name}</p>
+                    <p className="text-[10px] text-stone-500 truncate m-0">{user.email}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="text-xs text-rose-600 font-semibold hover:underline cursor-pointer"
+                >
+                  Đăng xuất
+                </button>
+              </div>
+            )}
+            {isAdmin && (
+              <Link
+                to="/admin"
+                onClick={() => setMobileMenuOpen(false)}
+                className="py-2.5 px-3 rounded-lg text-brand-coral font-bold bg-brand-peach/20 flex items-center justify-between text-xs"
+              >
+                <span>Trang Quản Trị Hệ Thống</span>
+                <span>&rarr;</span>
+              </Link>
+            )}
             <Link
               to="/orders"
               onClick={() => setMobileMenuOpen(false)}
-              className="py-2 text-stone-700"
+              className="py-2.5 px-2 text-stone-700 hover:text-brand-coral font-medium text-xs flex items-center min-h-[44px]"
             >
               Quản lý Đơn hàng
             </Link>
             <Link
               to="/wishlist"
               onClick={() => setMobileMenuOpen(false)}
-              className="py-2 text-stone-700"
+              className="py-2.5 px-2 text-stone-700 hover:text-brand-coral font-medium text-xs flex items-center justify-between min-h-[44px]"
             >
-              Sản phẩm Yêu thích ({wishlistIds.length})
+              <span>Sản phẩm Yêu thích</span>
+              <span className="font-mono bg-stone-100 px-2 py-0.5 rounded-full text-stone-600 font-bold">
+                {wishlistIds.length}
+              </span>
             </Link>
           </div>
         </div>

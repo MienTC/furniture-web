@@ -75,7 +75,7 @@ export const UAlertDialog: React.FC<UAlertDialogProps> = ({
             variant: "filled",
             color: "default",
           }}
-          destroyOnClose
+          destroyOnHidden
         >
           <p className="text-sm text-gray-600 m-0">{description}</p>
         </Modal>

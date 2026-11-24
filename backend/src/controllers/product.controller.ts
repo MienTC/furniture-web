@@ -64,19 +64,48 @@ export class ProductController {
 
       const conditions: any[] = [{ is_active: true }];
 
-      // Category filter (match s_ID or slug)
+      // Category filter (match s_ID or slug, and all descendant categories)
       if (categoryId && categoryId !== 'all') {
-        const catStr = String(categoryId);
-        const cat = await CategoryModel.findOne({
-          $or: [{ slug: catStr }, { s_ID: catStr }],
-        }).lean();
-        if (cat) {
-          conditions.push({
-            $or: [{ category_id: (cat as any).s_ID }, { category_id: (cat as any).slug }],
-          });
+        const catStr = String(categoryId).trim();
+        const allCats = await CategoryModel.find({ is_active: true }).lean();
+        const targetCat = allCats.find(
+          (c: any) => c.slug === catStr || c.s_ID === catStr
+        );
+
+        if (targetCat) {
+          const targetIds = new Set<string>([targetCat.s_ID, targetCat.slug]);
+          let added = true;
+          while (added) {
+            added = false;
+            for (const c of allCats) {
+              if ((c as any).s_parent_category_id && targetIds.has((c as any).s_parent_category_id)) {
+                if (!targetIds.has(c.s_ID) || !targetIds.has(c.slug)) {
+                  targetIds.add(c.s_ID);
+                  targetIds.add(c.slug);
+                  added = true;
+                }
+              }
+            }
+          }
+          conditions.push({ category_id: { $in: Array.from(targetIds) } });
         } else {
           conditions.push({ category_id: catStr });
         }
+      }
+
+      // Flash sale filter (products configured in SettingModel flash_sale_config)
+      if (flashsale === 'true') {
+        const flashSetting = await SettingModel.findOne({ key: 'flash_sale_config' }).lean();
+        const productIds = (flashSetting?.value as any)?.product_ids || [];
+        conditions.push({ s_ID: { $in: productIds } });
+      }
+
+      // Explicit product IDs filter
+      if (ids) {
+        const idList = Array.isArray(ids)
+          ? (ids as any[]).map(String)
+          : String(ids).split(',').map((id) => id.trim());
+        conditions.push({ s_ID: { $in: idList } });
       }
 
       // Keyword search
@@ -95,12 +124,30 @@ export class ProductController {
         conditions.push({ price: priceCond });
       }
 
-      // Materials filter (comma separated or array)
+      // Materials filter (comma separated or array) with smart keyword matching
       if (materials) {
         const matList: string[] = Array.isArray(materials)
           ? (materials as any[]).map(String)
           : String(materials).split(',').map((m) => m.trim());
-        conditions.push({ material: { $in: matList.map((m) => new RegExp(m, 'i')) } });
+        
+        const matConditions: any[] = [];
+        for (const mat of matList) {
+          if (!mat) continue;
+          let kw = mat;
+          if (/gỗ|sồi|ash|walnut/i.test(mat)) kw = 'gỗ|sồi|ash|walnut';
+          else if (/plywood|melamine|ván/i.test(mat)) kw = 'plywood|melamine|ván gỗ';
+          else if (/da|da thật|da pu|da nỉ/i.test(mat)) kw = 'da|da pu|da nỉ';
+          else if (/vải|nỉ/i.test(mat)) kw = 'vải|nỉ';
+          else if (/đá|ceramic|marble/i.test(mat)) kw = 'đá|ceramic|marble';
+          else if (/thép|kim loại|sắt|inox/i.test(mat)) kw = 'thép|kim loại|sắt|inox';
+          else if (/kính|thủy tinh|pha lê/i.test(mat)) kw = 'kính|thủy tinh|pha lê';
+
+          matConditions.push({ material: new RegExp(kw, 'i') });
+        }
+
+        if (matConditions.length > 0) {
+          conditions.push({ $or: matConditions });
+        }
       }
 
       // Stock

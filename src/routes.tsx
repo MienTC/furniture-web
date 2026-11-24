@@ -32,7 +32,10 @@ const AdminGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (isInitializing) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-stone-50">
-        <Spin size="large" tip="Đang kiểm tra quyền quản trị..." />
+        <div className="flex flex-col items-center gap-3">
+          <Spin size="large" />
+          <span className="text-xs text-stone-500 font-medium">Đang kiểm tra quyền quản trị...</span>
+        </div>
       </div>
     );
   }

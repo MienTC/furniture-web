@@ -37,8 +37,8 @@ const UBreadcrumb: React.FC<BreadcrumbProps> = ({
 
   return (
     <Flex vertical gap={12} className="w-full!">
-      <div className="w-full flex justify-between items-center">
-        <Flex gap={12} align="center">
+      <div className="w-full flex flex-wrap justify-between items-center gap-3">
+        <Flex gap={12} align="center" wrap="wrap" className="min-w-0">
           {showBack && (
             <Button
               onClick={handleBack}
@@ -51,9 +51,9 @@ const UBreadcrumb: React.FC<BreadcrumbProps> = ({
               }
             />
           )}
-          <h3 className="text-lg font-bold text-gray-900 m-0">{title}</h3>
+          <h3 className="text-base sm:text-lg font-bold text-gray-900 m-0 truncate">{title}</h3>
         </Flex>
-        <Flex gap={12} align="center">
+        <Flex gap={8} align="center" wrap="wrap" className="shrink-0">
           {trailing}
         </Flex>
       </div>

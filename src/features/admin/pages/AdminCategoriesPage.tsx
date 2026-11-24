@@ -4,6 +4,7 @@ import {
   PlusOutlined,
   DeleteOutlined,
   EyeOutlined,
+  EditOutlined,
   AppstoreOutlined,
 } from '@ant-design/icons';
 import { useAdminCategories, useTableFilters } from '~/features/admin/hooks';
@@ -23,6 +24,7 @@ export const AdminCategoriesPage: React.FC = () => {
   const { filters, setFilter, resetFilters, hasActiveFilters } = useTableFilters();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [editingCategory, setEditingCategory] = useState<any>(null);
   const [isDetailDrawerOpen, setIsDetailDrawerOpen] = useState(false);
 
   // Hook tập trung quản lý categories
@@ -30,14 +32,32 @@ export const AdminCategoriesPage: React.FC = () => {
     categories,
     isLoading,
     createCategory,
+    updateCategory,
     deleteCategory,
     isCreating,
+    isUpdating,
     isDeleting,
   } = useAdminCategories();
 
+  const handleOpenCreate = () => {
+    setEditingCategory(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (cat: any) => {
+    setEditingCategory(cat);
+    setIsModalOpen(true);
+  };
+
   const handleFinish = async (values: AdminCategoryPayload) => {
-    await createCategory(values);
+    if (editingCategory) {
+      const catId = editingCategory.s_ID || editingCategory.id;
+      await updateCategory({ id: catId, payload: values });
+    } else {
+      await createCategory(values);
+    }
     setIsModalOpen(false);
+    setEditingCategory(null);
   };
 
   const handleOpenDetail = (cat: any) => {
@@ -96,7 +116,7 @@ export const AdminCategoriesPage: React.FC = () => {
     },
     {
       title: 'Thao Tác',
-      width: 100,
+      width: 120,
       render: (_: any, record: any) => (
         <Space size={2}>
           <Tooltip title="Xem chi tiết & danh sách sản phẩm">
@@ -105,6 +125,15 @@ export const AdminCategoriesPage: React.FC = () => {
               type="text"
               icon={<EyeOutlined style={{ fontSize: 16, color: '#2B5A50' }} />}
               onClick={() => handleOpenDetail(record)}
+            />
+          </Tooltip>
+
+          <Tooltip title="Chỉnh sửa danh mục">
+            <Button
+              size="small"
+              type="text"
+              icon={<EditOutlined style={{ fontSize: 16, color: '#64748b' }} />}
+              onClick={() => handleOpenEdit(record)}
             />
           </Tooltip>
 
@@ -129,7 +158,7 @@ export const AdminCategoriesPage: React.FC = () => {
           <Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleOpenCreate}
             className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-semibold !shadow-xs !h-9 !px-4 !rounded-lg cursor-pointer"
           >
             Thêm danh mục mới
@@ -175,9 +204,13 @@ export const AdminCategoriesPage: React.FC = () => {
 
       <CategoryModal
         open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingCategory(null);
+        }}
         onSubmit={handleFinish}
-        loading={isCreating}
+        initialData={editingCategory}
+        loading={isCreating || isUpdating}
       />
 
       {selectedCategory && (

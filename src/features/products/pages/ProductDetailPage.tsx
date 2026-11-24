@@ -72,7 +72,7 @@ export const ProductDetailPage: React.FC = () => {
   }
 
   const activeImage = selectedImage || product.images[0];
-  const activeColor = selectedColor || product.colorOptions?.[0] || 'Tiêu chuẩn';
+  const activeColor = selectedColor || product.colorOptions?.[0] || '';
   const liked       = isWishlisted(product.id);
   const related     = relatedProducts.filter(p => p.id !== product.id).slice(0, 4);
 
@@ -93,7 +93,7 @@ export const ProductDetailPage: React.FC = () => {
         <span className="text-stone-900 font-bold truncate max-w-xs">{product.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
         <ProductGallery product={product} activeImage={activeImage} onSelect={setSelectedImage} />
         <div className="space-y-6">
           <ProductInfo
@@ -119,7 +119,7 @@ export const ProductDetailPage: React.FC = () => {
       {related.length > 0 && (
         <div className="space-y-6">
           <h3 className="text-xl font-bold text-stone-900">Sản Phẩm Cùng Danh Mục</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
             {related.map(p => <ProductCard key={p.id} product={p} />)}
           </div>
         </div>

@@ -29,8 +29,9 @@ export const OrderDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <Spin size="large" tip="Đang tải thông tin đơn hàng..." />
+      <div className="max-w-7xl mx-auto px-4 py-20 flex flex-col items-center justify-center gap-3">
+        <Spin size="large" />
+        <span className="text-xs text-stone-500 font-medium">Đang tải thông tin đơn hàng...</span>
       </div>
     );
   }
@@ -128,7 +129,9 @@ export const OrderDetailPage: React.FC = () => {
                     <div className="text-xs min-w-0">
                       <h4 className="font-bold text-stone-900 text-sm truncate m-0">{item.product.name}</h4>
                       <p className="text-stone-500 m-0 mt-0.5">
-                        Màu: {item.selectedColor ?? 'Chuẩn'} | KT: {item.product.dimensions || 'Tiêu chuẩn'}
+                        {item.selectedColor ? `Màu: ${item.selectedColor}` : ''}
+                        {item.selectedColor && item.product.dimensions ? ' | ' : ''}
+                        {item.product.dimensions ? `KT: ${item.product.dimensions}` : ''}
                       </p>
                       <p className="text-stone-500 m-0">
                         SL: <strong>{item.quantity}</strong> x {formatVND(item.product.price)}

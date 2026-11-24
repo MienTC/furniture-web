@@ -53,7 +53,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ open, onClose, defaultTab 
       centered
       width={420}
       className="auth-modal"
-      destroyOnClose
+      destroyOnHidden
     >
       <div className="text-center pt-2 pb-4">
         <div className="w-12 h-12 rounded-2xl bg-brand-coral text-white mx-auto flex items-center justify-center mb-3 shadow-md">

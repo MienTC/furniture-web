@@ -48,13 +48,13 @@ export const OrderDetailInfoCard: React.FC<OrderDetailInfoCardProps> = ({
 
       {!isEditing ? (
         <Row gutter={[20, 16]}>
-          <Col span={6}>
+          <Col xs={24} sm={12} md={6}>
             <FieldCell label="Mã Đơn Hàng" value={order.id} />
           </Col>
-          <Col span={6}>
+          <Col xs={24} sm={12} md={6}>
             <FieldCell label="Ngày Đặt Hàng" value={order.createdAt} type="datetime" />
           </Col>
-          <Col span={6}>
+          <Col xs={24} sm={12} md={6}>
             <FieldCell
               label="Trạng Thái Đơn"
               type="custom"
@@ -71,7 +71,7 @@ export const OrderDetailInfoCard: React.FC<OrderDetailInfoCardProps> = ({
               }
             />
           </Col>
-          <Col span={6}>
+          <Col xs={24} sm={12} md={6}>
             <FieldCell
               label="Trạng Thái Thanh Toán"
               type="custom"
@@ -79,16 +79,16 @@ export const OrderDetailInfoCard: React.FC<OrderDetailInfoCardProps> = ({
             />
           </Col>
 
-          <Col span={6}>
+          <Col xs={24} sm={12} md={6}>
             <FieldCell label="Họ Tên Khách Hàng" value={order.recipient_name} />
           </Col>
-          <Col span={6}>
+          <Col xs={24} sm={12} md={6}>
             <FieldCell label="Số Điện Thoại" value={order.phone} />
           </Col>
-          <Col span={6}>
+          <Col xs={24} sm={12} md={6}>
             <FieldCell label="Email Khách Hàng" value={order.email} />
           </Col>
-          <Col span={6}>
+          <Col xs={24} sm={12} md={6}>
             <FieldCell
               label="Hình Thức Thanh Toán"
               value={
@@ -99,13 +99,13 @@ export const OrderDetailInfoCard: React.FC<OrderDetailInfoCardProps> = ({
             />
           </Col>
 
-          <Col span={12}>
+          <Col xs={24} md={12}>
             <FieldCell
               label="Địa Chỉ Nhận Hàng"
               value={[order.address_line, order.district, order.city].filter(Boolean).join(', ')}
             />
           </Col>
-          <Col span={6}>
+          <Col xs={24} sm={12} md={6}>
             <FieldCell
               label="Mã Giảm Giá (Voucher)"
               value={order.voucherCode}
@@ -113,12 +113,12 @@ export const OrderDetailInfoCard: React.FC<OrderDetailInfoCardProps> = ({
               tagColor="green"
             />
           </Col>
-          <Col span={6}>
+          <Col xs={24} sm={12} md={6}>
             <FieldCell label="Mã Giao Dịch SePay" value={order.paymentTransactionId} />
           </Col>
 
           {order.note && (
-            <Col span={24}>
+            <Col xs={24} span={24}>
               <FieldCell label="Ghi Chú Khách Hàng" value={order.note} />
             </Col>
           )}

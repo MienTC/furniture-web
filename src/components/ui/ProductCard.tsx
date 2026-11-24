@@ -64,18 +64,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             e.stopPropagation();
             toggleWishlist(product.id);
           }}
-          className={`absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center transition-colors z-20 cursor-pointer ${
+          className={`absolute top-2.5 right-2.5 size-8 sm:size-7 rounded-full flex items-center justify-center transition-colors z-20 cursor-pointer ${
             liked
               ? 'bg-brand-coral text-white shadow-md'
               : 'bg-white/95 text-stone-600 hover:text-brand-coral hover:bg-white shadow-xs'
           }`}
           title="Yêu thích"
+          aria-label="Thêm vào danh sách yêu thích"
         >
-          {liked ? <HeartFilled style={{ fontSize: 13 }} /> : <HeartOutlined style={{ fontSize: 13 }} />}
+          {liked ? <HeartFilled style={{ fontSize: 14 }} /> : <HeartOutlined style={{ fontSize: 14 }} />}
         </button>
 
-        {/* Action Overlay */}
-        <div className="product-card-actions absolute inset-x-0 bottom-2.5 px-2.5 flex gap-1.5 justify-center z-30 pointer-events-auto">
+        {/* Action Overlay for Desktop */}
+        <div className="product-card-actions absolute inset-x-0 bottom-2.5 px-2.5 hidden sm:flex gap-1.5 justify-center z-30 pointer-events-auto">
           <Link
             to={`/products/${product.slug}`}
             className="action-btn-detail flex-1 text-[11px] py-2 px-1.5 rounded-lg flex items-center justify-center gap-1 transition-colors uppercase tracking-wider cursor-pointer"
@@ -100,29 +101,46 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
 
       {/* Content: Padding gọn gàng, tinh gọn chiều cao */}
-      <div className="p-3 sm:p-3.5 flex-1 flex flex-col items-start text-left">
-        <span className="text-[11px] font-semibold text-stone-500 tracking-wider uppercase mb-1 block">
+      <div className="p-2.5 sm:p-3.5 flex-1 flex flex-col items-start text-left">
+        <span className="text-[10px] sm:text-[11px] font-semibold text-stone-500 tracking-wider uppercase mb-1 block truncate w-full">
           {product.categoryName}
         </span>
-        <h3 className="font-bold text-[#2D2623] hover:text-brand-coral transition-colors line-clamp-1 text-xs sm:text-sm leading-snug mb-1.5">
+        <h3 className="font-bold text-[#2D2623] hover:text-brand-coral transition-colors line-clamp-2 text-xs sm:text-sm leading-snug mb-1.5">
           <Link to={`/products/${product.slug}`}>
             {product.name}
           </Link>
         </h3>
 
-        <div className="mb-2">
-          <RatingStars rating={product.rating} count={product.reviewCount} size={13} />
+        <div className="mb-1.5">
+          <RatingStars rating={product.rating} count={product.reviewCount} size={12} />
         </div>
 
-        <div className="mt-auto pt-1.5 flex items-baseline gap-2 flex-wrap">
-          <span className="text-sm sm:text-base font-black text-brand-coral tabular-nums">
-            {formatVND(finalPrice)}
-          </span>
-          {product.discountPercent && (
-            <span className="text-[11px] text-stone-400 line-through font-medium">
-              {formatVND(product.price)}
+        <div className="mt-auto pt-1.5 flex items-center justify-between w-full gap-1">
+          <div className="flex items-baseline gap-1.5 flex-wrap">
+            <span className="text-xs sm:text-base font-black text-brand-coral tabular-nums">
+              {formatVND(finalPrice)}
             </span>
-          )}
+            {product.discountPercent && (
+              <span className="text-[10px] sm:text-[11px] text-stone-400 line-through font-medium">
+                {formatVND(product.price)}
+              </span>
+            )}
+          </div>
+
+          {/* Quick Buy Button for Mobile Touch */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              addToCart(product);
+            }}
+            className="sm:hidden size-7.5 rounded-lg bg-[#2B5A50] text-white flex items-center justify-center shrink-0 hover:bg-[#20453D] shadow-2xs cursor-pointer"
+            aria-label="Thêm vào giỏ"
+            title="Thêm vào giỏ"
+          >
+            <ShoppingOutlined style={{ fontSize: 13 }} />
+          </button>
         </div>
       </div>
     </div>

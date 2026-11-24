@@ -237,7 +237,10 @@ export const AdminOrderDetailPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="flex h-96 items-center justify-center font-sans">
-        <Spin size="large" tip="Đang tải dữ liệu đơn hàng..." />
+        <div className="flex flex-col items-center gap-3">
+          <Spin size="large" />
+          <span className="text-xs text-stone-500 font-medium">Đang tải dữ liệu đơn hàng...</span>
+        </div>
       </div>
     );
   }

@@ -33,7 +33,7 @@ export const CreateVoucherModal: React.FC<CreateVoucherModalProps> = ({
       onCancel={onCancel}
       width={580}
       centered
-      destroyOnClose
+      destroyOnHidden
       footer={[
         <Button key="cancel" onClick={onCancel} disabled={loading} className="!rounded-lg !h-9 !px-4">
           Hủy bỏ

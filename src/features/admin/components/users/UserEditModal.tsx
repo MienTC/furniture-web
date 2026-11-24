@@ -52,7 +52,7 @@ export const UserEditModal: React.FC<UserEditModalProps> = ({
       open={open}
       onCancel={handleClose}
       centered
-      destroyOnClose
+      destroyOnHidden
       width={460}
       footer={null}
     >

@@ -45,7 +45,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     selectedVariant?: import('~/types').ProductVariant,
     priceOverride?: number
   ) => {
-    const effectiveColor = selectedColor || product.colorOptions?.[0] || 'Tiêu chuẩn';
+    const effectiveColor = selectedColor || product.colorOptions?.[0] || '';
 
     setCart((prev) => {
       const matchKey = (item: CartItem) =>

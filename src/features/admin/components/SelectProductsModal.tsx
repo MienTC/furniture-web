@@ -216,7 +216,7 @@ export const SelectProductsModal: React.FC<SelectProductsModalProps> = ({
       onCancel={onClose}
       width={880}
       centered
-      destroyOnClose
+      destroyOnHidden
       footer={
         <div className="flex justify-between items-center pt-2 border-t border-gray-100 font-sans">
           <div className="flex items-center gap-2">

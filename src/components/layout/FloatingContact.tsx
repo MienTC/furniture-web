@@ -11,7 +11,8 @@ import {
   ReloadOutlined, 
   ShoppingOutlined 
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { cn } from "~/lib";
 import { useAIChat } from "~/common/hooks/useAIChat";
 import { usePublicContactSettings } from "~/features/admin/hooks";
 
@@ -23,6 +24,8 @@ export const FloatingContact: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'ai' | 'contact'>('ai');
   const [inputMessage, setInputMessage] = useState('');
   const { data: contactSettings } = usePublicContactSettings();
+  const { pathname } = useLocation();
+  const isProductDetail = pathname.startsWith('/products/') && pathname !== '/products';
 
   const { messages, isLoading, sendMessage, resetChat } = useAIChat();
 
@@ -53,7 +56,12 @@ export const FloatingContact: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-5 right-4 z-50 flex flex-col items-end gap-3 font-sans pointer-events-none">
+    <div
+      className={cn(
+        "fixed right-3 sm:right-4 z-50 flex flex-col items-end gap-3 font-sans pointer-events-none transition-all duration-300",
+        isProductDetail ? "bottom-20 lg:bottom-5" : "bottom-4 sm:bottom-5"
+      )}
+    >
       {/* Chat Window Panel */}
       {isOpen && (
         <div className="pointer-events-auto w-[380px] max-w-[calc(100vw-2rem)] h-[580px] max-h-[85vh] flex flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-[0_20px_60px_rgba(28,25,23,0.22)] transition-all duration-300 ease-in-out">

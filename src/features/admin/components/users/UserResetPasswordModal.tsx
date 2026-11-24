@@ -46,7 +46,7 @@ export const UserResetPasswordModal: React.FC<UserResetPasswordModalProps> = ({
       open={open}
       onCancel={handleClose}
       centered
-      destroyOnClose
+      destroyOnHidden
       width={420}
       footer={null}
     >

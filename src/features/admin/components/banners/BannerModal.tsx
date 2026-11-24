@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Modal, Flex, Button } from 'antd';
 import { FormProvider, useForm } from 'react-hook-form';
+import { IconPhotoPlus, IconEdit } from '@tabler/icons-react';
 import { BannerForm, type BannerFormValues } from './BannerForm';
 
 export interface BannerModalProps {
@@ -29,6 +30,7 @@ export const BannerModal: React.FC<BannerModalProps> = ({
       link_url: '',
       image_url: '',
       type: 'hero',
+      sort_order: 0,
       is_active: true,
     },
   });
@@ -36,6 +38,9 @@ export const BannerModal: React.FC<BannerModalProps> = ({
   useEffect(() => {
     if (open) {
       if (initialData) {
+        const rawType = initialData.type || 'hero';
+        const normalizedType = rawType === 'trust_bar' ? 'trustbar' : rawType;
+
         formMethods.reset({
           title: initialData.title || '',
           subtitle: initialData.subtitle || '',
@@ -45,10 +50,14 @@ export const BannerModal: React.FC<BannerModalProps> = ({
             : (initialData.highlights || ''),
           link_url: initialData.link_url || '',
           image_url: initialData.image_url || '',
-          type: initialData.type || 'hero',
+          type: normalizedType as any,
+          sort_order: initialData.sort_order !== undefined ? initialData.sort_order : 0,
           is_active: initialData.is_active !== undefined ? initialData.is_active : true,
         });
       } else {
+        const rawDefault = defaultType !== 'all' ? defaultType : 'hero';
+        const normalizedDefault = rawDefault === 'trust_bar' ? 'trustbar' : rawDefault;
+
         formMethods.reset({
           title: '',
           subtitle: '',
@@ -56,7 +65,8 @@ export const BannerModal: React.FC<BannerModalProps> = ({
           highlights: '',
           link_url: '',
           image_url: '',
-          type: (defaultType !== 'all' ? defaultType : 'hero') as any,
+          type: normalizedDefault as any,
+          sort_order: 0,
           is_active: true,
         });
       }
@@ -82,6 +92,7 @@ export const BannerModal: React.FC<BannerModalProps> = ({
       link_url: values.link_url?.trim() || '',
       image_url: values.image_url || '',
       type: values.type,
+      sort_order: Number(values.sort_order) || 0,
       is_active: values.is_active,
     });
   };
@@ -89,18 +100,28 @@ export const BannerModal: React.FC<BannerModalProps> = ({
   return (
     <Modal
       title={
-        <div className="pb-2 border-b border-stone-100 font-sans font-bold text-stone-900 text-base">
-          {initialData ? 'Chỉnh Sửa Banner' : 'Tạo Banner Mới'}
+        <div className="flex items-center gap-2.5 pb-3 border-b border-stone-100 font-sans">
+          <div className="size-8 rounded-lg bg-[#EDF5F2] text-[#2B5A50] flex items-center justify-center">
+            {initialData ? <IconEdit size={18} /> : <IconPhotoPlus size={18} />}
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-stone-900 m-0">
+              {initialData ? 'Chỉnh Sửa Banner' : 'Tạo Banner Mới'}
+            </h3>
+            <p className="text-xs text-stone-400 font-normal m-0">
+              {initialData ? 'Cập nhật nội dung, thứ tự hoặc hình ảnh' : 'Thêm banner trình chiếu mới vào hệ thống'}
+            </p>
+          </div>
         </div>
       }
       open={open}
       onCancel={handleClose}
       centered
-      destroyOnClose
-      width={680}
+      destroyOnHidden
+      width={760}
       footer={
-        <Flex justify="end" gap={8} className="pt-2 border-t border-stone-100">
-          <Button onClick={handleClose} disabled={loading}>
+        <Flex justify="end" gap={10} className="pt-3 border-t border-stone-100 font-sans">
+          <Button onClick={handleClose} disabled={loading} className="!rounded-lg !px-4">
             Hủy bỏ
           </Button>
           <Button
@@ -108,7 +129,7 @@ export const BannerModal: React.FC<BannerModalProps> = ({
             htmlType="submit"
             form="admin-banner-modal-form"
             loading={loading}
-            className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-bold"
+            className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-bold !rounded-lg !px-5 !shadow-xs"
           >
             {initialData ? 'Lưu thay đổi' : 'Tạo banner'}
           </Button>
@@ -119,7 +140,7 @@ export const BannerModal: React.FC<BannerModalProps> = ({
         <form
           id="admin-banner-modal-form"
           onSubmit={formMethods.handleSubmit(onInternalSubmit)}
-          className="max-h-[68vh] overflow-y-auto px-1 pr-2 custom-scrollbar"
+          className="max-h-[72vh] overflow-y-auto px-1 pr-2 custom-scrollbar"
         >
           <BannerForm />
         </form>
@@ -127,3 +148,5 @@ export const BannerModal: React.FC<BannerModalProps> = ({
     </Modal>
   );
 };
+
+export default BannerModal;

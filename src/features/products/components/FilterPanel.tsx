@@ -233,16 +233,20 @@ export const FilterPanel: React.FC<Props> = ({
           <Slider
             range
             min={0}
-            max={60000000}
+            max={100000000}
             step={1000000}
-            value={[filterParams.minPrice ?? 0, filterParams.maxPrice ?? 60000000]}
-            onChange={(val) => onChange({ minPrice: val[0], maxPrice: val[1] })}
+            value={[filterParams.minPrice ?? 0, filterParams.maxPrice ?? 100000000]}
+            onChange={(val) => {
+              const minVal = val[0] > 0 ? val[0] : undefined;
+              const maxVal = val[1] < 100000000 ? val[1] : undefined;
+              onChange({ minPrice: minVal, maxPrice: maxVal });
+            }}
             tooltip={{ formatter: (v) => `${((v ?? 0) / 1000000).toFixed(0)} triệu` }}
           />
         </div>
         <div className="flex justify-between text-xs text-stone-600 mt-2 font-medium">
           <span>{((filterParams.minPrice ?? 0) / 1000000).toFixed(0)}tr</span>
-          <span>{((filterParams.maxPrice ?? 60000000) / 1000000).toFixed(0)}tr</span>
+          <span>{((filterParams.maxPrice ?? 100000000) / 1000000).toFixed(0)}tr</span>
         </div>
       </div>
 

@@ -46,7 +46,7 @@ export const CreateOrderModal: React.FC<CreateOrderModalProps> = ({
         </Button>,
       ]}
       centered
-      destroyOnClose
+      destroyOnHidden
     >
       <div className="pt-3 max-h-[68vh] overflow-y-auto pr-1 custom-scrollbar">
         <CreateOrderForm id={formId} onSubmit={onSubmit} />

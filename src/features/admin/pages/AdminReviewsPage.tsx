@@ -174,6 +174,7 @@ export const AdminReviewsPage: React.FC = () => {
             showTotal: (t) => `Tổng số ${t} đánh giá`,
           }}
           size="middle"
+          scroll={{ x: 'max-content' }}
         />
       </div>
 
@@ -185,7 +186,7 @@ export const AdminReviewsPage: React.FC = () => {
         confirmLoading={isReplying}
         okText="Gửi phản hồi"
         cancelText="Đóng"
-        destroyOnClose
+        destroyOnHidden
       >
         <div className="p-3 bg-stone-50 rounded-xl text-xs text-stone-600 mb-3 border border-stone-200">
           <p className="font-semibold text-stone-800 mb-1">

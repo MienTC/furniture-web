@@ -5,13 +5,13 @@ export const SHIPPING_FEE = 0; // Miễn phí vận chuyển toàn quốc
 export const FREE_SHIPPING_THRESHOLD = 0; // Luôn miễn phí vận chuyển
 
 export const MATERIAL_OPTIONS = [
-  "Gỗ Sồi Tự Nhiên",
-  "Gỗ Óc Chó (Walnut)",
-  "Da Bò Ý Cao Cấp",
-  "Vải Nỉ Hàn Quốc",
-  "Đá Marble Tự Nhiên",
-  "Khung Thép Sơn Tĩnh Điện",
-  "Pha Lê & Thủy Tinh"
+  "Gỗ Tự Nhiên (Sồi, Ash, Walnut)",
+  "Gỗ Công Nghiệp (Plywood, Melamine)",
+  "Da Thật / Da Cao Cấp (PU, Nỉ)",
+  "Vải Nỉ / Vải Công Nghệ",
+  "Mặt Đá / Ceramic Cao Cấp",
+  "Khung Kim Loại / Thép / Inox",
+  "Kính Cường Lực / Pha Lê"
 ];
 
 export const ORDER_STATUS_LABEL: Record<string, { label: string; color: string }> = {

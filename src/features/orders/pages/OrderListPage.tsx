@@ -54,8 +54,9 @@ export const OrderListPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <Spin size="large" tip="Đang tải danh sách đơn hàng..." />
+      <div className="max-w-7xl mx-auto px-4 py-20 flex flex-col items-center justify-center gap-3">
+        <Spin size="large" />
+        <span className="text-xs text-stone-500 font-medium">Đang tải danh sách đơn hàng...</span>
       </div>
     );
   }

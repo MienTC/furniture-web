@@ -146,8 +146,15 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 pt-6 border-t border-[#E5EAE7] text-center text-xs text-[#606B66] font-medium">
+        <div className="max-w-7xl mx-auto px-4 pt-6 border-t border-[#E5EAE7] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#606B66] font-medium">
           <p>© 2026 {APP_NAME}. Bản quyền thuộc về LuxDecor Furniture Team.</p>
+          <div className="flex items-center gap-4 text-xs">
+            <Link to="/orders" className="hover:text-brand-coral transition-colors">Tra cứu đơn hàng</Link>
+            <span className="text-gray-300">•</span>
+            <Link to="/admin/login" className="hover:text-brand-coral text-stone-500 font-semibold transition-colors flex items-center gap-1">
+              <span>🔐</span> Cổng Quản Trị (Admin)
+            </Link>
+          </div>
         </div>
       </footer>
 

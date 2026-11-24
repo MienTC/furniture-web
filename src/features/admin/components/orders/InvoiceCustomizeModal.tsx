@@ -80,7 +80,7 @@ export const InvoiceCustomizeModal: React.FC<InvoiceCustomizeModalProps> = ({
         </Button>,
       ]}
       width={560}
-      destroyOnClose
+      destroyOnHidden
     >
       <Form
         form={form}

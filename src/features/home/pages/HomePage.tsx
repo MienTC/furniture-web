@@ -19,7 +19,7 @@ export const HomePage: React.FC = () => {
   const { products: featured, totalCount, isProductsLoading } = useProducts({ sortBy: 'featured', limit: 8 });
   const { showcase }                              = useShowcase();
 
-  const totalProducts = totalCount || categories.reduce((sum, c) => sum + (c.itemCount || 0), 0) || 668;
+  const totalProducts = totalCount || categories.reduce((sum, c) => sum + (c.itemCount || 0), 0) || 0;
 
   return (
     <div className="space-y-16 pb-16">
