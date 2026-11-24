@@ -36,6 +36,10 @@ const ProductVariantSchema = new Schema<IProductVariantDocument>(
       type: String,
       default: '',
     },
+    material: {
+      type: String,
+      default: '',
+    },
     image_url: {
       type: String,
       default: '',

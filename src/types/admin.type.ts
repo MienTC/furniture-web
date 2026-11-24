@@ -51,6 +51,19 @@ export interface AdminProductDto {
   inStock?: boolean;
   isNew?: boolean;
   isFeatured?: boolean;
+  colorOptions?: string[];
+  variants?: Array<{
+    s_ID?: string;
+    sku?: string;
+    variant_name: string;
+    size?: string;
+    material?: string;
+    color?: string;
+    image_url?: string;
+    list_price?: number;
+    sale_price: number;
+    stock_quantity?: number;
+  }>;
 }
 
 export interface AdminCategoryDto {

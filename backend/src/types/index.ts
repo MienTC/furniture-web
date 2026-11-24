@@ -105,6 +105,7 @@ export interface IProductVariant {
   variant_name?: string;
   color?: string;
   size?: string;
+  material?: string;
   image_url?: string;
   list_price: number;
   sale_price: number;

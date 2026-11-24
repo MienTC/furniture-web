@@ -2,6 +2,7 @@ import { Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { ProductModel } from '../models/Product.model.js';
 import { ProductImageModel } from '../models/ProductImage.model.js';
+import { ProductVariantModel } from '../models/ProductVariant.model.js';
 import { OrderModel } from '../models/Order.model.js';
 import { OrderDetailModel } from '../models/OrderDetail.model.js';
 import { UserModel } from '../models/User.model.js';
@@ -225,9 +226,10 @@ export class AdminController {
         .limit(limit);
 
       const productIds = items.map((p) => p.s_ID);
-      const allImages = await ProductImageModel.find({
-        s_product_ID: { $in: productIds },
-      }).sort({ sort_order: 1 });
+      const [allImages, allVariants] = await Promise.all([
+        ProductImageModel.find({ s_product_ID: { $in: productIds } }).sort({ sort_order: 1 }),
+        ProductVariantModel.find({ s_product_ID: { $in: productIds }, is_active: true }).lean(),
+      ]);
 
       const imageMap = new Map<string, string[]>();
       allImages.forEach((img: any) => {
@@ -235,6 +237,14 @@ export class AdminController {
           imageMap.set(img.s_product_ID, []);
         }
         imageMap.get(img.s_product_ID)!.push(img.image_url);
+      });
+
+      const variantMap = new Map<string, any[]>();
+      allVariants.forEach((v: any) => {
+        if (!variantMap.has(v.s_product_ID)) {
+          variantMap.set(v.s_product_ID, []);
+        }
+        variantMap.get(v.s_product_ID)!.push(v);
       });
 
       const mapped = items.map((p: any) => ({
@@ -258,6 +268,8 @@ export class AdminController {
         videoUrl: (p as any).video_url || '',
         origin: p.origin,
         warranty: p.warranty,
+        colorOptions: p.color_options || [],
+        variants: variantMap.get(p.s_ID) || [],
         createdAt: p.dt_create,
       }));
 
@@ -338,6 +350,24 @@ export class AdminController {
         await ProductImageModel.insertMany(imageDocs);
       }
 
+      if (Array.isArray(data.variants) && data.variants.length > 0) {
+        const variantDocs = data.variants.map((v: any, index: number) => ({
+          s_ID: generateId('var'),
+          s_product_ID: s_ID,
+          sku: v.sku || `SKU-${s_ID}-${index + 1}`,
+          variant_name: v.variant_name || v.size || `Phân loại ${index + 1}`,
+          size: v.size || v.variant_name || '',
+          material: v.material || '',
+          color: v.color || '',
+          image_url: v.image_url || '',
+          list_price: Number(v.list_price || v.originalPrice || 0),
+          sale_price: Number(v.sale_price || v.price || data.price || 0),
+          stock_quantity: Number(v.stock_quantity || v.stockQuantity || 0),
+          is_active: true,
+        }));
+        await ProductVariantModel.insertMany(variantDocs);
+      }
+
       return sendSuccess(res, 'Tạo sản phẩm thành công', newProduct, 201);
     } catch (error: any) {
       return sendError(res, error.message || 'Lỗi khi tạo sản phẩm', 500);
@@ -381,6 +411,9 @@ export class AdminController {
       }
       if (data.origin !== undefined) product.origin = data.origin;
       if (data.warranty !== undefined) product.warranty = data.warranty;
+      if (data.colorOptions !== undefined) {
+        product.color_options = Array.isArray(data.colorOptions) ? data.colorOptions : [];
+      }
 
       await product.save();
 
@@ -394,6 +427,27 @@ export class AdminController {
           is_primary: index === 0,
         }));
         await ProductImageModel.insertMany(imageDocs);
+      }
+
+      if (data.variants !== undefined) {
+        await ProductVariantModel.deleteMany({ s_product_ID: product.s_ID });
+        if (Array.isArray(data.variants) && data.variants.length > 0) {
+          const variantDocs = data.variants.map((v: any, index: number) => ({
+            s_ID: v.s_ID || generateId('var'),
+            s_product_ID: product.s_ID,
+            sku: v.sku || `SKU-${product.s_ID}-${index + 1}`,
+            variant_name: v.variant_name || v.size || `Phân loại ${index + 1}`,
+            size: v.size || v.variant_name || '',
+            material: v.material || '',
+            color: v.color || '',
+            image_url: v.image_url || '',
+            list_price: Number(v.list_price || v.originalPrice || 0),
+            sale_price: Number(v.sale_price || v.price || product.price || 0),
+            stock_quantity: Number(v.stock_quantity || v.stockQuantity || 0),
+            is_active: true,
+          }));
+          await ProductVariantModel.insertMany(variantDocs);
+        }
       }
 
       return sendSuccess(res, 'Cập nhật sản phẩm thành công', product);
@@ -412,6 +466,12 @@ export class AdminController {
       if (!product) {
         return sendError(res, 'Không tìm thấy sản phẩm cần xóa', 404);
       }
+
+      await Promise.all([
+        ProductImageModel.deleteMany({ s_product_ID: id }),
+        ProductVariantModel.deleteMany({ s_product_ID: id }),
+      ]);
+
       return sendSuccess(res, 'Xóa sản phẩm thành công');
     } catch (error: any) {
       return sendError(res, error.message || 'Lỗi khi xóa sản phẩm', 500);

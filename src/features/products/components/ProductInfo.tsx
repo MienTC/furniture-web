@@ -98,20 +98,18 @@ export const ProductInfo: React.FC<Props> = ({
   // Base price calculation or variant price
   const activeSalePrice = selectedVariant
     ? selectedVariant.sale_price
-    : product.discountPercent
-    ? calculateDiscountPrice(product.price, product.discountPercent)
     : product.price;
 
   const activeOriginalPrice = selectedVariant
     ? selectedVariant.list_price
-    : product.originalPrice || product.price;
+    : (product.originalPrice && product.originalPrice > product.price ? product.originalPrice : undefined);
 
   const discountPercent =
     activeOriginalPrice && activeOriginalPrice > activeSalePrice
       ? Math.round(
           ((activeOriginalPrice - activeSalePrice) / activeOriginalPrice) * 100
         )
-      : product.discountPercent;
+      : (product.discountPercent || 0);
 
   // Dynamic specs preview values
   const displayDimension = isMaterialDimension

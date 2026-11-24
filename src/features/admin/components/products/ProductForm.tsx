@@ -9,6 +9,9 @@ import {
   Button,
   Tag,
   Tooltip,
+  Table,
+  Empty,
+  Space,
 } from 'antd';
 import { Controller, useFormContext } from 'react-hook-form';
 import {
@@ -18,10 +21,13 @@ import {
   PictureOutlined,
   VideoCameraOutlined,
   FileTextOutlined,
+  AppstoreOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
 import UWrapperInput from '~/components/ui/uwrapper-input';
 import UImageUpload from '~/components/ui/uimage-upload';
 import WysiwygEditor, { normalizeVideoUrl } from '~/components/ui/WysiwygEditor';
+import CreatableSelect from '~/components/shared/CreatableSelect';
 import type { ProductFormValues } from '~/types';
 
 export interface ProductFormProps {
@@ -40,6 +46,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
   } = useFormContext<ProductFormValues>();
 
   const currentImages = watch('images') || [];
+  const currentVariants = watch('variants') || [];
   const watchVideoUrl = watch('videoUrl') || '';
   const embedVideoUrl = normalizeVideoUrl(watchVideoUrl);
 
@@ -60,6 +67,124 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
     const rest = currentImages.filter((_, i) => i !== index);
     setValue('images', [selected, ...rest], { shouldValidate: true });
   };
+
+  const handleAddVariant = (preset?: { name: string; size: string }) => {
+    const basePrice = watch('price') || 0;
+    const baseOriginalPrice = watch('originalPrice') || 0;
+    const newVariant = {
+      variant_name: preset?.name || `Phân loại ${currentVariants.length + 1}`,
+      size: preset?.size || preset?.name || '',
+      material: '',
+      color: '',
+      sale_price: basePrice,
+      list_price: baseOriginalPrice,
+      stock_quantity: 10,
+    };
+    setValue('variants', [...currentVariants, newVariant as any], { shouldValidate: true });
+  };
+
+  const handleUpdateVariant = (index: number, field: string, val: any) => {
+    const updated = [...currentVariants];
+    updated[index] = { ...updated[index], [field]: val };
+    setValue('variants', updated, { shouldValidate: true });
+  };
+
+  const handleRemoveVariant = (index: number) => {
+    const updated = currentVariants.filter((_, i) => i !== index);
+    setValue('variants', updated, { shouldValidate: true });
+  };
+
+  const variantColumns = [
+    {
+      title: 'Tên phân loại / Kiểu dáng *',
+      dataIndex: 'variant_name',
+      key: 'variant_name',
+      render: (_: any, record: any, index: number) => (
+        <Input
+          value={record.variant_name ?? ''}
+          onChange={(e) => handleUpdateVariant(index, 'variant_name', e.target.value)}
+          placeholder="Ví dụ: Văng đôi 2.1m hoặc 1m6 x 2m"
+          className="!rounded-md"
+        />
+      ),
+    },
+    {
+      title: 'Kích thước chi tiết',
+      dataIndex: 'size',
+      key: 'size',
+      width: 170,
+      render: (_: any, record: any, index: number) => (
+        <Input
+          value={record.size ?? ''}
+          onChange={(e) => handleUpdateVariant(index, 'size', e.target.value)}
+          placeholder="Ví dụ: 160 x 200 cm"
+          className="!rounded-md"
+        />
+      ),
+    },
+    {
+      title: 'Giá bán (VNĐ) *',
+      dataIndex: 'sale_price',
+      key: 'sale_price',
+      width: 160,
+      render: (_: any, record: any, index: number) => (
+        <InputNumber
+          value={record.sale_price ?? 0}
+          onChange={(val) => handleUpdateVariant(index, 'sale_price', val ?? 0)}
+          formatter={(val) => `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          parser={(val) => (val ? Number(val.replace(/,/g, '')) : 0)}
+          placeholder="Giá bán (₫)"
+          className="!w-full !rounded-md"
+        />
+      ),
+    },
+    {
+      title: 'Giá niêm yết (VNĐ)',
+      dataIndex: 'list_price',
+      key: 'list_price',
+      width: 160,
+      render: (_: any, record: any, index: number) => (
+        <InputNumber
+          value={record.list_price ?? 0}
+          onChange={(val) => handleUpdateVariant(index, 'list_price', val ?? 0)}
+          formatter={(val) => `${val}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+          parser={(val) => (val ? Number(val.replace(/,/g, '')) : 0)}
+          placeholder="Giá niêm yết (₫)"
+          className="!w-full !rounded-md"
+        />
+      ),
+    },
+    {
+      title: 'Tồn kho',
+      dataIndex: 'stock_quantity',
+      key: 'stock_quantity',
+      width: 100,
+      render: (_: any, record: any, index: number) => (
+        <InputNumber
+          value={record.stock_quantity ?? 0}
+          min={0}
+          onChange={(val) => handleUpdateVariant(index, 'stock_quantity', val ?? 0)}
+          placeholder="Tồn kho"
+          className="!w-full !rounded-md"
+        />
+      ),
+    },
+    {
+      title: '',
+      key: 'action',
+      width: 50,
+      render: (_: any, __: any, index: number) => (
+        <Tooltip title="Xóa phân loại này">
+          <Button
+            danger
+            type="text"
+            icon={<DeleteOutlined />}
+            onClick={() => handleRemoveVariant(index)}
+          />
+        </Tooltip>
+      ),
+    },
+  ];
 
   return (
     <div className="py-2 font-sans">
@@ -200,13 +325,25 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
                       name="material"
                       control={control}
                       render={({ field }) => (
-                        <UWrapperInput label="Chất liệu">
-                          <Input
-                            {...field}
-                            value={field.value ?? ''}
-                            placeholder="Nhập chất liệu sản phẩm"
-                            className="!rounded-lg !py-2"
-                            style={{ width: '100%' }}
+                        <UWrapperInput label="Chất liệu" help="Chọn hoặc tự gõ thêm chất liệu mới">
+                          <CreatableSelect
+                            placeholder="Chọn hoặc gõ chất liệu..."
+                            value={field.value || undefined}
+                            onChange={(val) => field.onChange(val || '')}
+                            createPlaceholder="Gõ chất liệu mới..."
+                            createBtnText="Thêm"
+                            className="!h-10 flex items-center"
+                            options={[
+                              { value: 'Đệm bọt biển cao cấp, Vải công nghệ', label: 'Đệm bọt biển cao cấp, Vải công nghệ' },
+                              { value: 'Gỗ sồi tự nhiên nhập khẩu', label: 'Gỗ sồi tự nhiên nhập khẩu' },
+                              { value: 'Gỗ óc chó Bắc Mỹ cao cấp', label: 'Gỗ óc chó Bắc Mỹ cao cấp' },
+                              { value: 'Gỗ công nghiệp MDF chống ẩm', label: 'Gỗ công nghiệp MDF chống ẩm' },
+                              { value: 'Da Microfiber chống trầy xước', label: 'Da Microfiber chống trầy xước' },
+                              { value: 'Da bò tự nhiên Ý nguyên tấm', label: 'Da bò tự nhiên Ý nguyên tấm' },
+                              { value: 'Khung thép carbon sơn tĩnh điện', label: 'Khung thép carbon sơn tĩnh điện' },
+                              { value: 'Mặt đá Ceramic chống trầy', label: 'Mặt đá Ceramic chống trầy' },
+                              { value: 'Mây tre đan tự nhiên cao cấp', label: 'Mây tre đan tự nhiên cao cấp' },
+                            ]}
                           />
                         </UWrapperInput>
                       )}
@@ -218,12 +355,12 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
                       name="dimensions"
                       control={control}
                       render={({ field }) => (
-                        <UWrapperInput label="Kích thước">
+                        <UWrapperInput label="Kích thước chung">
                           <Input
                             {...field}
                             value={field.value ?? ''}
                             placeholder="Nhập kích thước (D x R x C)"
-                            className="!rounded-lg !py-2"
+                            className="!rounded-lg !py-2 !h-10"
                             style={{ width: '100%' }}
                           />
                         </UWrapperInput>
@@ -236,13 +373,23 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
                       name="origin"
                       control={control}
                       render={({ field }) => (
-                        <UWrapperInput label="Xuất xứ">
-                          <Input
-                            {...field}
-                            value={field.value ?? ''}
-                            placeholder="Nhập xuất xứ sản phẩm"
-                            className="!rounded-lg !py-2"
-                            style={{ width: '100%' }}
+                        <UWrapperInput label="Xuất xứ" help="Chọn hoặc tự gõ thêm xuất xứ mới">
+                          <CreatableSelect
+                            placeholder="Chọn hoặc gõ xuất xứ..."
+                            value={field.value || undefined}
+                            onChange={(val) => field.onChange(val || '')}
+                            createPlaceholder="Gõ xuất xứ mới..."
+                            createBtnText="Thêm"
+                            className="!h-10 flex items-center"
+                            options={[
+                              { value: 'Việt Nam (LuxDecor Factory)', label: 'Việt Nam (LuxDecor Factory)' },
+                              { value: 'Nhập khẩu Ý (Italy)', label: 'Nhập khẩu Ý (Italy)' },
+                              { value: 'Nhập khẩu Đức (Germany)', label: 'Nhập khẩu Đức (Germany)' },
+                              { value: 'Nhập khẩu Hàn Quốc', label: 'Nhập khẩu Hàn Quốc' },
+                              { value: 'Nhập khẩu Nhật Bản', label: 'Nhập khẩu Nhật Bản' },
+                              { value: 'Nhập khẩu Malaysia', label: 'Nhập khẩu Malaysia' },
+                              { value: 'Nhập khẩu cao cấp', label: 'Nhập khẩu cao cấp' },
+                            ]}
                           />
                         </UWrapperInput>
                       )}
@@ -258,15 +405,132 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
                           <Input
                             {...field}
                             value={field.value ?? ''}
-                            placeholder="Nhập thời gian bảo hành"
-                            className="!rounded-lg !py-2"
+                            placeholder="Nhập thời gian bảo hành (ví dụ: Bảo hành 5 năm)"
+                            className="!rounded-lg !py-2 !h-10"
                             style={{ width: '100%' }}
                           />
                         </UWrapperInput>
                       )}
                     />
                   </Col>
+
+                  <Col span={24}>
+                    <Controller
+                      name="colorOptions"
+                      control={control}
+                      render={({ field }) => (
+                        <UWrapperInput
+                          label="Phân loại Màu sắc sản phẩm"
+                          help="Chọn màu có sẵn hoặc gõ màu mới rồi nhấn nút 'Thêm màu' hoặc nhấn Enter (hiển thị để khách chọn ngoài web)"
+                        >
+                          <CreatableSelect
+                            mode="multiple"
+                            placeholder="Chọn hoặc tự tạo thêm màu sắc mới..."
+                            value={field.value || []}
+                            onChange={field.onChange}
+                            className="!w-full min-h-[40px]"
+                            createPlaceholder="Nhập tên màu mới (ví dụ: Hồng pastel, Xanh olive, Nâu hạt dẻ...)"
+                            createBtnText="Thêm màu"
+                            options={[
+                              { value: 'Trắng kem', label: 'Trắng kem' },
+                              { value: 'Be sữa', label: 'Be sữa' },
+                              { value: 'Ghi sáng', label: 'Ghi sáng' },
+                              { value: 'Xám đậm', label: 'Xám đậm' },
+                              { value: 'Nâu da bò', label: 'Nâu da bò' },
+                              { value: 'Cam đất', label: 'Cam đất' },
+                              { value: 'Xanh rêu', label: 'Xanh rêu' },
+                              { value: 'Xanh navy', label: 'Xanh navy' },
+                              { value: 'Đen tuyền', label: 'Đen tuyền' },
+                              { value: 'Gỗ sồi tự nhiên', label: 'Gỗ sồi tự nhiên' },
+                              { value: 'Gỗ óc chó', label: 'Gỗ óc chó' },
+                            ]}
+                          />
+                        </UWrapperInput>
+                      )}
+                    />
+                  </Col>
                 </Row>
+              </div>
+            ),
+          },
+          {
+            key: 'variants',
+            label: (
+              <span className="flex items-center gap-1.5 font-medium">
+                <AppstoreOutlined /> Phân Loại & Biến Thể ({currentVariants.length})
+              </span>
+            ),
+            children: (
+              <div className="py-2 space-y-4">
+                <div className="p-4 bg-sky-50/70 rounded-xl border border-sky-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <p className="font-semibold text-xs text-sky-950 m-0">
+                      Quản lý phân loại kích thước, kiểu dáng & giá bán riêng
+                    </p>
+                    <p className="text-[11px] text-sky-700 m-0">
+                      Cho phép thiết lập các kích thước (1m2, 1m6, 1m8, 2m...) hoặc kiểu dáng (văng đơn, văng đôi, chữ L...) kèm mức giá bán và tồn kho riêng cho từng loại.
+                    </p>
+                  </div>
+                  <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => handleAddVariant()}
+                    className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-semibold !h-9 shrink-0 cursor-pointer"
+                  >
+                    Thêm phân loại
+                  </Button>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-semibold text-stone-500">Gợi ý kích thước nhanh:</span>
+                  {[
+                    { name: '1m2 x 2m', size: '120 x 200 cm' },
+                    { name: '1m4 x 2m', size: '140 x 200 cm' },
+                    { name: '1m6 x 2m', size: '160 x 200 cm' },
+                    { name: '1m8 x 2m', size: '180 x 200 cm' },
+                    { name: '2m x 2m2', size: '200 x 220 cm' },
+                    { name: 'Văng đơn 1.5m', size: '150 x 85 x 90 cm' },
+                    { name: 'Văng đôi 2.1m', size: '210 x 85 x 90 cm' },
+                    { name: 'Bộ góc L 2.8m', size: '280 x 170 x 90 cm' },
+                  ].map((preset) => (
+                    <Button
+                      key={preset.name}
+                      size="small"
+                      onClick={() => handleAddVariant(preset)}
+                      className="!text-xs !rounded-md cursor-pointer"
+                    >
+                      + {preset.name}
+                    </Button>
+                  ))}
+                </div>
+
+                {currentVariants.length === 0 ? (
+                  <div className="p-8 text-center border-2 border-dashed border-stone-200 rounded-xl bg-white space-y-2">
+                    <Empty
+                      description="Sản phẩm hiện chưa có phân loại biến thể riêng. Giá bán và số lượng tồn kho sẽ lấy theo thông tin chung ở tab 'Thông Tin & Giá Bán'."
+                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    />
+                    <Button
+                      type="dashed"
+                      icon={<PlusOutlined />}
+                      onClick={() => handleAddVariant()}
+                      className="!mt-2 cursor-pointer"
+                    >
+                      Thêm phân loại đầu tiên
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="border border-stone-200 rounded-xl overflow-hidden bg-white shadow-2xs">
+                    <Table
+                      dataSource={currentVariants}
+                      columns={variantColumns}
+                      rowKey={(_, idx) => String(idx)}
+                      pagination={false}
+                      size="small"
+                      scroll={{ x: 'max-content' }}
+                    />
+                  </div>
+                )}
               </div>
             ),
           },

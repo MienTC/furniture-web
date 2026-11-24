@@ -14,9 +14,7 @@ export const CartItemRow: React.FC<Props> = ({ item, onUpdateQty, onRemove }) =>
   const itemPrice =
     item.selectedPrice ??
     item.selectedVariant?.sale_price ??
-    (item.product.discountPercent
-      ? calculateDiscountPrice(item.product.price, item.product.discountPercent)
-      : item.product.price);
+    item.product.price;
 
   return (
     <div className="p-3.5 sm:p-6 flex flex-row items-start sm:items-center gap-3 sm:gap-6">

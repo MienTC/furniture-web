@@ -76,7 +76,7 @@ export const AdminOrdersPage: React.FC = () => {
             onClick={() => setIsCreateModalOpen(true)}
             className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-bold !h-9 !px-4 !rounded-lg !shadow-xs cursor-pointer"
           >
-            + Tạo đơn hàng mới
+            Tạo đơn hàng mới
           </Button>
         }
       />

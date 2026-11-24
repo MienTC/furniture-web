@@ -35,6 +35,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       videoUrl: '',
       description: '',
       images: [],
+      colorOptions: [],
+      variants: [],
     },
   });
 
@@ -54,6 +56,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           videoUrl: initialData.videoUrl || initialData.video_url || '',
           description: initialData.description || '',
           images: initialData.images || [],
+          colorOptions: initialData.colorOptions || initialData.color_options || [],
+          variants: initialData.variants || [],
         });
       } else {
         formMethods.reset({
@@ -69,6 +73,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
           videoUrl: '',
           description: '',
           images: [],
+          colorOptions: [],
+          variants: [],
         });
       }
     }
@@ -93,6 +99,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({
       images: values.images || [],
       videoUrl: values.videoUrl?.trim() || '',
       description: values.description || '',
+      colorOptions: values.colorOptions || [],
+      variants: values.variants || [],
     };
     await onSubmit(payload);
   };

@@ -76,7 +76,7 @@ export const ProductDetailPage: React.FC = () => {
   const liked       = isWishlisted(product.id);
   const related     = relatedProducts.filter(p => p.id !== product.id).slice(0, 4);
 
-  const finalPrice = selectedVariant?.sale_price || (product.discountPercent ? Math.round(product.price * (1 - product.discountPercent / 100)) : product.price);
+  const finalPrice = selectedVariant?.sale_price || product.price;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-10 pb-20 lg:pb-8">

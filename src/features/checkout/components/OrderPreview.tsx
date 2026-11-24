@@ -10,7 +10,7 @@ export const OrderPreview: React.FC<Props> = ({ cart, subtotal, discountAmount, 
     <h4 className="font-bold text-stone-900 text-base border-b border-stone-100 pb-3">Sản Phẩm ({cart.length})</h4>
     <div className="space-y-3 max-h-72 overflow-y-auto pr-1 divide-y divide-stone-100">
       {cart.map(item => {
-        const price = item.product.discountPercent ? calculateDiscountPrice(item.product.price, item.product.discountPercent) : item.product.price;
+        const price = item.selectedPrice ?? item.selectedVariant?.sale_price ?? item.product.price;
         return (
           <div key={item.product.id} className="pt-3 first:pt-0 flex items-center gap-3">
             <img src={item.product.images[0]} alt="" className="w-12 h-12 rounded-lg object-cover bg-stone-100" />

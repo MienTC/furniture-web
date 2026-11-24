@@ -17,9 +17,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { toggleWishlist, isWishlisted } = useWishlist();
   const liked = isWishlisted(product.id);
 
-  const finalPrice = product.discountPercent
-    ? calculateDiscountPrice(product.price, product.discountPercent)
-    : product.price;
+  const salePrice = product.price;
+  const originalPrice =
+    product.originalPrice && product.originalPrice > product.price
+      ? product.originalPrice
+      : undefined;
+  const discountPercent =
+    product.discountPercent ||
+    (originalPrice ? Math.round(((originalPrice - salePrice) / originalPrice) * 100) : 0);
 
   const handleCardClick = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
@@ -44,9 +49,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         {/* Badges */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 items-start z-10">
-          {product.discountPercent && (
+          {discountPercent > 0 && (
             <span className="bg-brand-coral text-white font-extrabold px-2 py-0.5 rounded text-[11px] uppercase tracking-wider shadow-xs">
-              -{product.discountPercent}%
+              -{discountPercent}%
             </span>
           )}
           {product.isNew && (
@@ -118,11 +123,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <div className="mt-auto pt-1.5 flex items-center justify-between w-full gap-1">
           <div className="flex items-baseline gap-1.5 flex-wrap">
             <span className="text-xs sm:text-base font-black text-brand-coral tabular-nums">
-              {formatVND(finalPrice)}
+              {formatVND(salePrice)}
             </span>
-            {product.discountPercent && (
+            {originalPrice && (
               <span className="text-[10px] sm:text-[11px] text-stone-400 line-through font-medium">
-                {formatVND(product.price)}
+                {formatVND(originalPrice)}
               </span>
             )}
           </div>

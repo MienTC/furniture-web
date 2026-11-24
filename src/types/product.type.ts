@@ -71,4 +71,6 @@ export interface ProductFormValues {
   videoUrl?: string;
   description?: string;
   images?: string[];
+  colorOptions?: string[];
+  variants?: ProductVariant[];
 }
