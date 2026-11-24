@@ -1,7 +1,7 @@
 import { Request } from 'express';
 
 /**
- * Standard API Response Format (aligned with Pet_Manager)
+ * Standard API Response Format
  */
 export interface ResponseAPI<T = any> {
   error: boolean;
@@ -18,7 +18,7 @@ export interface ResponseAPI<T = any> {
 }
 
 /**
- * Standard Token Pair (aligned with Pet_Manager IFTokens)
+ * Standard Token Pair
  */
 export interface IFTokens {
   access_token: string;

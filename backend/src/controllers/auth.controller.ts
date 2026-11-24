@@ -142,7 +142,6 @@ export class AuthController {
   /**
    * POST /api/v1/auth/refresh
    * Refresh expired access token using refresh token
-   * Aligned with Pet_Manager `instanceBE.interceptors.response`
    */
   static async refresh(req: Request, res: Response): Promise<any> {
     try {

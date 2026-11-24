@@ -418,7 +418,7 @@ export const FlashSaleConfigForm: React.FC<FlashSaleConfigFormProps> = ({
         </div>
       </Form>
 
-      {/* Modal Pick sản phẩm chuẩn UserPicker của tev-fe-admin với server pagination Antd */}
+      {/* Modal chọn sản phẩm với phân trang */}
       <ProductPickerModal
         open={isPickerOpen}
         onCancel={() => setIsPickerOpen(false)}

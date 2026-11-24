@@ -35,7 +35,7 @@ export const AdminOrderDetailPage: React.FC = () => {
 
   const [orderForm] = Form.useForm<AdminUpdateOrderPayload>();
 
-  // State chế độ chỉnh sửa đơn hàng (theo chuẩn Ticket / SellingTab của tev-fe-admin)
+  // Chế độ chỉnh sửa thông tin đơn hàng
   const [isEditing, setIsEditing] = useState(false);
   const [editableItems, setEditableItems] = useState<AdminOrderItem[]>([]);
   const [editableShippingFee, setEditableShippingFee] = useState<number>(0);

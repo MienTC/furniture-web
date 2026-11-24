@@ -22,7 +22,7 @@ import { DateRangeFilter, dateOptions } from '~/components/common/filters/DateRa
 import type { AdminStatsParams } from '~/types';
 
 export const AdminDashboardPage: React.FC = () => {
-  // Mặc định chọn 30 ngày qua (theo chuẩn filter của tev-fe-admin)
+  // Mặc định chọn 30 ngày qua
   const [dateRange, setDateRange] = useState<[string, string] | undefined>(() => {
     const [start, end] = dateOptions['Last 30 Days']();
     return [start.toISOString(), end.toISOString()];
@@ -83,7 +83,7 @@ export const AdminDashboardPage: React.FC = () => {
     <div className="flex flex-col gap-6 font-sans">
       <UBreadcrumb title="Tổng Quan Bảng Điều Khiển" showBack={false} />
 
-      {/* KPI Cards theo phong cách tev-fe-admin */}
+      {/* Thẻ chỉ số KPI */}
       <Row gutter={[16, 16]}>
         {statCards.map((item, index) => (
           <Col xs={24} sm={12} lg={6} key={index}>

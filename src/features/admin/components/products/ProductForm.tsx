@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Tabs,
   Row,
@@ -11,7 +11,7 @@ import {
   Tooltip,
   Table,
   Empty,
-  Space,
+  Modal,
 } from 'antd';
 import { Controller, useFormContext } from 'react-hook-form';
 import {
@@ -23,11 +23,19 @@ import {
   FileTextOutlined,
   AppstoreOutlined,
   PlusOutlined,
+  UploadOutlined,
+  LinkOutlined,
 } from '@ant-design/icons';
 import UWrapperInput from '~/components/ui/uwrapper-input';
-import UImageUpload from '~/components/ui/uimage-upload';
+import { compressImageClient } from '~/components/ui/uimage-upload';
 import WysiwygEditor, { normalizeVideoUrl } from '~/components/ui/WysiwygEditor';
 import CreatableSelect from '~/components/shared/CreatableSelect';
+import {
+  DEFAULT_MATERIAL_OPTIONS,
+  DEFAULT_ORIGIN_OPTIONS,
+  DEFAULT_COLOR_OPTIONS,
+  PRESET_SIZE_VARIANTS,
+} from '~/common/constants';
 import type { ProductFormValues } from '~/types';
 
 export interface ProductFormProps {
@@ -36,7 +44,10 @@ export interface ProductFormProps {
 
 export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
   const [activeTab, setActiveTab] = useState('info');
-  const [newUploadedUrl, setNewUploadedUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [urlModalOpen, setUrlModalOpen] = useState(false);
+  const [imageUrlInput, setImageUrlInput] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
     control,
@@ -50,11 +61,29 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
   const watchVideoUrl = watch('videoUrl') || '';
   const embedVideoUrl = normalizeVideoUrl(watchVideoUrl);
 
-  const handleAddUploadedImage = (url: string) => {
-    if (url) {
-      setValue('images', [...currentImages, url], { shouldValidate: true });
-      setNewUploadedUrl(null);
+  const handleFilesUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setIsUploading(true);
+    try {
+      const uploadPromises = Array.from(files).map((file) => compressImageClient(file, 1600, 0.85));
+      const results = await Promise.all(uploadPromises);
+      const newUrls = results.map((r) => r.dataUrl);
+      setValue('images', [...currentImages, ...newUrls], { shouldValidate: true });
+    } catch (err) {
+      console.error('Lỗi khi xử lý hình ảnh tải lên:', err);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
+  };
+
+  const handleAddUrlImage = () => {
+    const trimmed = imageUrlInput.trim();
+    if (!trimmed) return;
+    setValue('images', [...currentImages, trimmed], { shouldValidate: true });
+    setImageUrlInput('');
+    setUrlModalOpen(false);
   };
 
   const handleRemoveImage = (index: number) => {
@@ -196,7 +225,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
             key: 'info',
             label: (
               <span className="flex items-center gap-1.5 font-medium">
-                <InfoCircleOutlined /> Thông Tin & Giá Bán
+                <InfoCircleOutlined /> Thông Tin
               </span>
             ),
             children: (
@@ -333,17 +362,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
                             createPlaceholder="Gõ chất liệu mới..."
                             createBtnText="Thêm"
                             className="!h-10 flex items-center"
-                            options={[
-                              { value: 'Đệm bọt biển cao cấp, Vải công nghệ', label: 'Đệm bọt biển cao cấp, Vải công nghệ' },
-                              { value: 'Gỗ sồi tự nhiên nhập khẩu', label: 'Gỗ sồi tự nhiên nhập khẩu' },
-                              { value: 'Gỗ óc chó Bắc Mỹ cao cấp', label: 'Gỗ óc chó Bắc Mỹ cao cấp' },
-                              { value: 'Gỗ công nghiệp MDF chống ẩm', label: 'Gỗ công nghiệp MDF chống ẩm' },
-                              { value: 'Da Microfiber chống trầy xước', label: 'Da Microfiber chống trầy xước' },
-                              { value: 'Da bò tự nhiên Ý nguyên tấm', label: 'Da bò tự nhiên Ý nguyên tấm' },
-                              { value: 'Khung thép carbon sơn tĩnh điện', label: 'Khung thép carbon sơn tĩnh điện' },
-                              { value: 'Mặt đá Ceramic chống trầy', label: 'Mặt đá Ceramic chống trầy' },
-                              { value: 'Mây tre đan tự nhiên cao cấp', label: 'Mây tre đan tự nhiên cao cấp' },
-                            ]}
+                            options={DEFAULT_MATERIAL_OPTIONS}
                           />
                         </UWrapperInput>
                       )}
@@ -381,15 +400,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
                             createPlaceholder="Gõ xuất xứ mới..."
                             createBtnText="Thêm"
                             className="!h-10 flex items-center"
-                            options={[
-                              { value: 'Việt Nam (LuxDecor Factory)', label: 'Việt Nam (LuxDecor Factory)' },
-                              { value: 'Nhập khẩu Ý (Italy)', label: 'Nhập khẩu Ý (Italy)' },
-                              { value: 'Nhập khẩu Đức (Germany)', label: 'Nhập khẩu Đức (Germany)' },
-                              { value: 'Nhập khẩu Hàn Quốc', label: 'Nhập khẩu Hàn Quốc' },
-                              { value: 'Nhập khẩu Nhật Bản', label: 'Nhập khẩu Nhật Bản' },
-                              { value: 'Nhập khẩu Malaysia', label: 'Nhập khẩu Malaysia' },
-                              { value: 'Nhập khẩu cao cấp', label: 'Nhập khẩu cao cấp' },
-                            ]}
+                            options={DEFAULT_ORIGIN_OPTIONS}
                           />
                         </UWrapperInput>
                       )}
@@ -421,7 +432,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
                       render={({ field }) => (
                         <UWrapperInput
                           label="Phân loại Màu sắc sản phẩm"
-                          help="Chọn màu có sẵn hoặc gõ màu mới rồi nhấn nút 'Thêm màu' hoặc nhấn Enter (hiển thị để khách chọn ngoài web)"
+                          help="Chọn màu có sẵn hoặc gõ màu mới rồi nhấn nút 'Thêm màu' hoặc nhấn Enter"
                         >
                           <CreatableSelect
                             mode="multiple"
@@ -431,19 +442,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
                             className="!w-full min-h-[40px]"
                             createPlaceholder="Nhập tên màu mới (ví dụ: Hồng pastel, Xanh olive, Nâu hạt dẻ...)"
                             createBtnText="Thêm màu"
-                            options={[
-                              { value: 'Trắng kem', label: 'Trắng kem' },
-                              { value: 'Be sữa', label: 'Be sữa' },
-                              { value: 'Ghi sáng', label: 'Ghi sáng' },
-                              { value: 'Xám đậm', label: 'Xám đậm' },
-                              { value: 'Nâu da bò', label: 'Nâu da bò' },
-                              { value: 'Cam đất', label: 'Cam đất' },
-                              { value: 'Xanh rêu', label: 'Xanh rêu' },
-                              { value: 'Xanh navy', label: 'Xanh navy' },
-                              { value: 'Đen tuyền', label: 'Đen tuyền' },
-                              { value: 'Gỗ sồi tự nhiên', label: 'Gỗ sồi tự nhiên' },
-                              { value: 'Gỗ óc chó', label: 'Gỗ óc chó' },
-                            ]}
+                            options={DEFAULT_COLOR_OPTIONS}
                           />
                         </UWrapperInput>
                       )}
@@ -457,7 +456,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
             key: 'variants',
             label: (
               <span className="flex items-center gap-1.5 font-medium">
-                <AppstoreOutlined /> Phân Loại & Biến Thể ({currentVariants.length})
+                <AppstoreOutlined /> Biến Thể ({currentVariants.length})
               </span>
             ),
             children: (
@@ -468,7 +467,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
                       Quản lý phân loại kích thước, kiểu dáng & giá bán riêng
                     </p>
                     <p className="text-[11px] text-sky-700 m-0">
-                      Cho phép thiết lập các kích thước (1m2, 1m6, 1m8, 2m...) hoặc kiểu dáng (văng đơn, văng đôi, chữ L...) kèm mức giá bán và tồn kho riêng cho từng loại.
+                      Cho phép thiết lập các kích thước hoặc kiểu dáng kèm mức giá bán và tồn kho riêng cho từng loại.
                     </p>
                   </div>
                   <Button
@@ -483,16 +482,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
 
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs font-semibold text-stone-500">Gợi ý kích thước nhanh:</span>
-                  {[
-                    { name: '1m2 x 2m', size: '120 x 200 cm' },
-                    { name: '1m4 x 2m', size: '140 x 200 cm' },
-                    { name: '1m6 x 2m', size: '160 x 200 cm' },
-                    { name: '1m8 x 2m', size: '180 x 200 cm' },
-                    { name: '2m x 2m2', size: '200 x 220 cm' },
-                    { name: 'Văng đơn 1.5m', size: '150 x 85 x 90 cm' },
-                    { name: 'Văng đôi 2.1m', size: '210 x 85 x 90 cm' },
-                    { name: 'Bộ góc L 2.8m', size: '280 x 170 x 90 cm' },
-                  ].map((preset) => (
+                  {PRESET_SIZE_VARIANTS.map((preset) => (
                     <Button
                       key={preset.name}
                       size="small"
@@ -507,7 +497,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
                 {currentVariants.length === 0 ? (
                   <div className="p-8 text-center border-2 border-dashed border-stone-200 rounded-xl bg-white space-y-2">
                     <Empty
-                      description="Sản phẩm hiện chưa có phân loại biến thể riêng. Giá bán và số lượng tồn kho sẽ lấy theo thông tin chung ở tab 'Thông Tin & Giá Bán'."
+                      description="Sản phẩm hiện chưa có phân loại biến thể riêng. Giá bán và số lượng tồn kho sẽ lấy theo thông tin chung ở tab 'Thông Tin'."
                       image={Empty.PRESENTED_IMAGE_SIMPLE}
                     />
                     <Button
@@ -538,35 +528,56 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
             key: 'media',
             label: (
               <span className="flex items-center gap-1.5 font-medium">
-                <PictureOutlined /> Hình Ảnh Sản Phẩm ({currentImages.length})
+                <PictureOutlined /> Hình Ảnh ({currentImages.length})
               </span>
             ),
             children: (
               <div className="py-2 space-y-4">
-                <div className="p-4 bg-stone-50 rounded-xl border border-stone-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div className="p-4 bg-stone-50 rounded-xl border border-stone-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="space-y-1">
                     <p className="font-semibold text-xs text-stone-900 m-0">
-                      Tải lên hình ảnh sản phẩm thực tế từ máy tính
+                      Tải lên hình ảnh sản phẩm từ máy tính hoặc qua đường dẫn
                     </p>
                     <p className="text-[11px] text-stone-500 m-0">
-                      Ảnh đầu tiên sẽ là ảnh đại diện hiển thị ra cửa hàng. Hỗ trợ định dạng JPG, PNG, WebP (Tối đa 5MB).
+                      Ảnh đầu tiên sẽ là ảnh đại diện hiển thị ra cửa hàng. Tự động tối ưu dung lượng ảnh.
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 w-full md:w-auto">
-                    <UImageUpload
-                      value={newUploadedUrl}
-                      onChange={(url) => {
-                        setNewUploadedUrl(url);
-                        if (url) handleAddUploadedImage(url);
-                      }}
-                      className="!w-32 !h-10"
+                  <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      accept="image/png,image/jpeg,image/webp"
+                      className="hidden"
+                      onChange={handleFilesUpload}
                     />
+                    <Button
+                      type="primary"
+                      icon={<UploadOutlined />}
+                      loading={isUploading}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="!bg-[#2B5A50] hover:!bg-[#20453D] !font-medium cursor-pointer"
+                    >
+                      Tải ảnh từ máy tính
+                    </Button>
+                    <Button
+                      icon={<LinkOutlined />}
+                      onClick={() => setUrlModalOpen(true)}
+                      className="cursor-pointer"
+                    >
+                      Thêm bằng URL
+                    </Button>
                   </div>
                 </div>
 
                 {currentImages.length === 0 ? (
-                  <div className="p-8 text-center border-2 border-dashed border-stone-200 rounded-xl bg-white text-stone-400 text-xs">
-                    Chưa có hình ảnh nào được tải lên cho sản phẩm này. Hãy chọn ảnh tải lên ở khung phía trên.
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className="p-8 text-center border-2 border-dashed border-stone-200 hover:border-[#2B5A50] rounded-xl bg-white hover:bg-stone-50/50 cursor-pointer transition-colors space-y-2"
+                  >
+                    <PictureOutlined className="text-3xl text-stone-400" />
+                    <p className="text-xs text-stone-600 font-medium m-0">Chưa có hình ảnh nào được tải lên cho sản phẩm này</p>
+                    <p className="text-[11px] text-stone-400 m-0">Nhấn vào đây hoặc sử dụng nút "Tải ảnh từ máy tính" ở trên để chọn ảnh</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 pt-2">
@@ -617,6 +628,27 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
                     ))}
                   </div>
                 )}
+
+                <Modal
+                  title="Thêm hình ảnh bằng URL"
+                  open={urlModalOpen}
+                  onCancel={() => setUrlModalOpen(false)}
+                  onOk={handleAddUrlImage}
+                  okText="Thêm ảnh"
+                  cancelText="Hủy"
+                  okButtonProps={{ className: '!bg-[#2B5A50]' }}
+                >
+                  <div className="py-2 space-y-2 font-sans">
+                    <p className="text-xs text-stone-500 m-0">Nhập đường link hình ảnh trực tiếp (JPG, PNG, WebP):</p>
+                    <Input
+                      value={imageUrlInput}
+                      onChange={(e) => setImageUrlInput(e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                      onPressEnter={handleAddUrlImage}
+                      autoFocus
+                    />
+                  </div>
+                </Modal>
               </div>
             ),
           },
@@ -624,7 +656,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
             key: 'video',
             label: (
               <span className="flex items-center gap-1.5 font-medium">
-                <VideoCameraOutlined /> Video Trải Nghiệm
+                <VideoCameraOutlined /> Video
               </span>
             ),
             children: (
@@ -670,7 +702,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ categories }) => {
             key: 'desc',
             label: (
               <span className="flex items-center gap-1.5 font-medium">
-                <FileTextOutlined /> Mô Tả Chi Tiết
+                <FileTextOutlined /> Mô Tả
               </span>
             ),
             children: (

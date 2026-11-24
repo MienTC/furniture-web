@@ -21,7 +21,7 @@ const parseExpiresInSeconds = (duration: string): number => {
 };
 
 /**
- * Generate Access and Refresh Tokens matching Pet_Manager `IFTokens`
+ * Generate Access and Refresh Tokens
  */
 export const generateTokens = (payload: JWTPayload): IFTokens => {
   const expiresInSeconds = parseExpiresInSeconds(ACCESS_EXPIRES_IN);

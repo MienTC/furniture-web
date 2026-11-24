@@ -14,7 +14,7 @@ export const CategoryForm: React.FC = () => {
   return (
     <div className="py-2 font-sans">
       <div className="flex flex-col sm:flex-row gap-5 items-start">
-        {/* Ảnh đại diện bên trái theo pattern Pet_Manager / tev-fe-admin */}
+        {/* Ảnh đại diện bên trái */}
         <div className="flex-none flex flex-col items-center">
           <Controller
             name="image_url"

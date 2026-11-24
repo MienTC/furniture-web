@@ -9,7 +9,7 @@ import { cn } from '~/lib';
 dayjs.extend(isoWeek);
 dayjs.extend(quarterOfYear);
 
-// === PRESET OPTIONS (Tham chiếu từ E:\FW\tev-fe-admin\src\components\filters\DateRangeFilter.tsx)
+// === PRESET OPTIONS
 export const dateOptions: Record<string, () => [Dayjs, Dayjs]> = {
   Today: () => [dayjs().startOf('day'), dayjs().endOf('day')],
   Yesterday: () => [

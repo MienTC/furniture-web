@@ -3,7 +3,7 @@ export const swaggerDocument = {
   info: {
     title: 'LuxDecor Furniture API Documentation',
     version: '1.0.0',
-    description: 'Tài liệu API hoàn chỉnh cho hệ thống Website Nội Thất Cao Cấp LuxDecor (Node.js + TypeScript + MongoDB Atlas). Chuẩn JWT Authentication tương thích Pet_Manager.',
+    description: 'Tài liệu API hoàn chỉnh cho hệ thống Website Nội Thất Cao Cấp LuxDecor (Node.js + TypeScript + MongoDB Atlas).',
     contact: {
       name: 'LuxDecor Dev Team',
       email: 'admin@luxdecor.vn',

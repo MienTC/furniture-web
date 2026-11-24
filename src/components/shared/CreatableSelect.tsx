@@ -24,8 +24,7 @@ export interface CreatableSelectProps {
 }
 
 /**
- * CreatableSelect - Cho phép chọn từ danh sách có sẵn HOẶC tự tạo mới option ngay trong dropdown
- * Tham chiếu kiến trúc Clean Component từ E:\FW\Pet_Manager & chuẩn GEMINI.md
+ * CreatableSelect - Cho phép chọn từ danh sách có sẵn hoặc tự tạo mới tùy chọn trong dropdown
  */
 export const CreatableSelect: React.FC<CreatableSelectProps> = ({
   value,

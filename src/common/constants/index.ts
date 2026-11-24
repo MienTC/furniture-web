@@ -35,3 +35,6 @@ export const PAYMENT_STATUS_OPTIONS = [
   { value: 'paid', label: 'Đã thanh toán' },
   { value: 'unpaid', label: 'Chưa thanh toán' },
 ];
+
+export * from './product-options.constant';
+

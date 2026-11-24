@@ -279,9 +279,9 @@ export const ProductPickerModal: React.FC<ProductPickerModalProps> = ({
           )}
         </div>
 
-        {/* Khung 2 cột chuẩn Pick theo tev-fe-admin có Pagination Antd */}
+        {/* Khung 2 cột chọn sản phẩm có phân trang */}
         <div className="grid grid-cols-12 gap-3 min-h-[360px] border border-stone-200 rounded-xl p-2.5 bg-white">
-          {/* Cột trái (7 cols): Bảng sản phẩm phân trang Ant Design chuẩn 6 item/trang */}
+          {/* Cột trái (7 cols): Bảng sản phẩm phân trang */}
           <div className="col-span-7 flex flex-col justify-between border-r border-stone-200 pr-2">
             <div>
               <Table
@@ -307,7 +307,7 @@ export const ProductPickerModal: React.FC<ProductPickerModalProps> = ({
             </div>
           </div>
 
-          {/* Cột phải (5 cols): Danh sách sản phẩm ĐÃ CHỌN chuẩn tev-fe-admin */}
+          {/* Cột phải (5 cols): Danh sách sản phẩm đã chọn */}
           <div className="col-span-5 flex flex-col h-full pl-1">
             <div className="flex items-center justify-between pb-2 border-b border-stone-100 text-xs flex-none">
               <span className="font-semibold text-stone-700">Đã chọn:</span>
